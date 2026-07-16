@@ -1,0 +1,18 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="NovaLite.UI.Controls.TypingIndicator">
+
+    <Border Background="{DynamicResource AiBubbleBrush}"
+            CornerRadius="18,18,18,4"
+            Padding="14,10"
+            HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+            <Ellipse x:Name="Dot1" Width="7" Height="7"
+                     Fill="{DynamicResource TextMutedBrush}"/>
+            <Ellipse x:Name="Dot2" Width="7" Height="7"
+                     Fill="{DynamicResource TextMutedBrush}"/>
+            <Ellipse x:Name="Dot3" Width="7" Height="7"
+                     Fill="{DynamicResource TextMutedBrush}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

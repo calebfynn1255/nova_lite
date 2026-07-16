@@ -1,0 +1,145 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:NovaLite.UI.ViewModels"
+        xmlns:setup="using:NovaLite.Setup"
+        x:Class="NovaLite.UI.Views.SetupWindow"
+        x:DataType="vm:SetupWindowViewModel"
+        Title="NovaLite Setup"
+        Width="900"
+        Height="750"
+        MinWidth="800"
+        MinHeight="650"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BgPrimaryBrush}"
+        Icon="avares://NovaLite/Assets/icon.png">
+
+    <Design.DataContext>
+        <vm:SetupWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="40">
+        
+        <!-- Step 0: Welcome / Scan -->
+        <StackPanel IsVisible="{Binding IsStepScan}"
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+            <TextBlock Text="Welcome to Nova Lite" Classes="h1" TextAlignment="Center"/>
+            <TextBlock Text="Let&#x2019;s scan your hardware to find the best AI model for you."
+                       Classes="secondary" TextAlignment="Center"/>
+            <Button Classes="primary" Content="Scan My Hardware" 
+                    Command="{Binding StartScanCommand}" 
+                    HorizontalAlignment="Center" Width="200" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Step 1: Recommendations -->
+        <Grid IsVisible="{Binding IsStepRecommend}" MaxWidth="750" RowDefinitions="*,Auto">
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Your Hardware" Classes="h2"/>
+                    
+                    <Border Classes="card" Padding="16">
+                        <StackPanel Spacing="8">
+                            <!-- CPU -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="CPU:" FontWeight="Bold" FontSize="12" Width="50"/>
+                                <TextBlock Text="{Binding Hardware.CpuName}" FontSize="12"/>
+                                <TextBlock Text="{Binding Hardware.CpuCores, StringFormat=({0} cores)}" FontSize="11"
+                                           Foreground="{DynamicResource TextMutedBrush}"/>
+                            </StackPanel>
+                            <!-- RAM -->
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="RAM:" FontWeight="Bold" FontSize="12" Width="50"/>
+                                <TextBlock Text="{Binding Hardware.TotalRamMB, StringFormat={}{0} MB}" FontSize="12"/>
+                            </StackPanel>
+                            <!-- GPUs -->
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="GPUs:" FontWeight="Bold" FontSize="12"/>
+                                <ItemsControl ItemsSource="{Binding Hardware.Gpus}" Margin="58,0,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="setup:GpuInfo">
+                                            <TextBlock Text="{Binding DisplayText}" FontSize="12"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                            <!-- Drives -->
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="Drives:" FontWeight="Bold" FontSize="12"/>
+                                <ItemsControl ItemsSource="{Binding Hardware.Drives}" Margin="58,0,0,0">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="setup:DiskDriveInfo">
+                                            <TextBlock Text="{Binding DisplayText}" FontSize="12"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="Recommended Models" Classes="h2" Margin="0,10,0,0"/>
+                    <TextBlock Text="Hold Ctrl and click to select multiple models" FontSize="11"
+                               Foreground="{DynamicResource TextMutedBrush}"/>
+                    
+                    <ListBox x:Name="ModelsListBox"
+                             ItemsSource="{Binding Recommendations}" 
+                             SelectionMode="Multiple,Toggle"
+                             SelectionChanged="OnModelSelectionChanged"
+                             Background="Transparent" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="setup:RecommendedModel">
+                                <Border Classes="card" Margin="0,0,0,8" Padding="12">
+                                    <StackPanel Spacing="4">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" FontSize="16" Grid.Column="0"/>
+                                            <TextBlock Text="{Binding Model.RecommendedRamMB, StringFormat={}{0} MB}" 
+                                                       FontSize="11" Foreground="{DynamicResource TextMutedBrush}" 
+                                                       VerticalAlignment="Center" Grid.Column="1" Margin="0,0,12,0"/>
+                                            <TextBlock Text="{Binding StarRating, StringFormat={}{0} &#x2605;}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Grid.Column="2"/>
+                                        </Grid>
+                                        <TextBlock Text="{Binding Model.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding Reason}" FontSize="11" FontStyle="Italic" Foreground="{DynamicResource TextMutedBrush}" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Buttons docked at bottom -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+                <Button Classes="secondary" Content="&#x2190; Back" 
+                        Command="{Binding GoBackCommand}"/>
+                <Button Classes="primary" Content="Next &#x2192;" 
+                        Command="{Binding GoToPathSelectionCommand}" Width="150" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Step 2: Path & Shortcut -->
+        <StackPanel IsVisible="{Binding IsStepPath}" VerticalAlignment="Center" Spacing="20" MaxWidth="600">
+            <TextBlock Text="Installation Settings" Classes="h1" TextAlignment="Center"/>
+            
+            <TextBlock Text="Where would you like to store your GGUF models?" FontSize="13"/>
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0" Text="{Binding InstallPath}" IsReadOnly="True" Margin="0,0,8,0"/>
+                <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowsePathCommand}"/>
+            </Grid>
+            
+            <TextBlock Text="{Binding RequiredSpaceStr}" FontSize="12" Foreground="{DynamicResource TextMutedBrush}"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+                <Button Classes="secondary" Content="&#x2190; Back" 
+                        Command="{Binding GoBackCommand}"/>
+                <Button Classes="primary" Content="Download &amp; Install" 
+                        Command="{Binding StartDownloadCommand}" Width="220" HorizontalContentAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Step 3: Download -->
+        <StackPanel IsVisible="{Binding IsStepDownload}"
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
+            <TextBlock Text="{Binding DownloadStatus}" Classes="h2" TextAlignment="Center"/>
+            <ProgressBar Value="{Binding DownloadProgress}" Maximum="100" Width="400" Height="14"/>
+        </StackPanel>
+
+    </Grid>
+</Window>

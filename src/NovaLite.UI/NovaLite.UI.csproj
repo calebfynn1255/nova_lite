@@ -1,0 +1,64 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>NovaLite.UI</RootNamespace>
+    <AssemblyName>NovaLite</AssemblyName>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.3" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.2.3" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.3" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Serilog" Version="4.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NovaLite.Core\NovaLite.Core.csproj" />
+    <ProjectReference Include="..\NovaLite.Engine\NovaLite.Engine.csproj" />
+    <ProjectReference Include="..\NovaLite.Database\NovaLite.Database.csproj" />
+  </ItemGroup>
+
+  <!-- Compiled XAML with code-behind -->
+  <ItemGroup>
+    <None Remove="**\*.xaml" />
+    <AvaloniaXaml Include="App.xaml" />
+    <AvaloniaXaml Include="MainWindow.xaml" />
+    <AvaloniaXaml Include="Controls\ChatBubble.xaml" />
+    <AvaloniaXaml Include="Controls\SidebarButton.xaml" />
+    <AvaloniaXaml Include="Controls\TypingIndicator.xaml" />
+    <AvaloniaXaml Include="Views\WelcomePage.xaml" />
+    <AvaloniaXaml Include="Views\ChatPage.xaml" />
+    <AvaloniaXaml Include="Views\ModelManagerPage.xaml" />
+    <AvaloniaXaml Include="Views\SettingsPage.xaml" />
+    <AvaloniaXaml Include="Views\AboutPage.xaml" />
+    <AvaloniaXaml Include="Views\SetupWindow.xaml" />
+  </ItemGroup>
+
+  <!-- Runtime resource dictionaries (themes, styles) -->
+  <ItemGroup>
+    <None Remove="Themes\**" />
+    <AvaloniaResource Include="Themes\**" />
+    <None Remove="Styles\**" />
+    <AvaloniaResource Include="Styles\**" />
+    <None Remove="Assets\**" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+</Project>

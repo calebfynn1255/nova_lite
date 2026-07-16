@@ -1,0 +1,68 @@
+2026-07-15 16:59:46.323 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:07:26.633 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:08:21.610 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:25:32.975 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:25:47.613 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 105
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 40
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 17:32:49.235 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:34:00.273 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:37:57.547 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:47:04.601 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 17:53:50.549 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 20:03:24.298 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 20:06:18.238 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 20:06:38.888 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 20:07:33.312 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 21:25:18.666 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 21:26:06.748 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 94
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 36
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 21:27:00.767 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 21:27:16.607 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 94
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 36
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 21:27:30.616 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 94
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 36
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 22:03:25.271 [INF]  NovaLite starting — version 1.0.0.0

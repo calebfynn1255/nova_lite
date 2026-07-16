@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NovaLite.UI.ViewModels"
+             x:Class="NovaLite.UI.Views.AboutPage"
+             x:DataType="vm:AboutViewModel"
+             Background="{DynamicResource BgPrimaryBrush}">
+
+    <ScrollViewer>
+        <StackPanel Spacing="0" Margin="32,32,32,32" MaxWidth="540" HorizontalAlignment="Left">
+
+            <!-- Logo -->
+            <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,0,0,32">
+                <Border Width="56" Height="56" CornerRadius="14"
+                        Background="{DynamicResource AccentBrush}">
+                    <TextBlock Text="N"
+                               FontSize="30"
+                               FontWeight="ExtraBold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="NovaLite" Classes="h2"/>
+                    <TextBlock Text="{Binding AppVersion, StringFormat='Version {0}'}"
+                               Classes="secondary" FontSize="13"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Description -->
+            <Border Classes="card" Margin="0,0,0,20">
+                <TextBlock Text="{Binding Description}"
+                           FontSize="14"
+                           LineHeight="22"
+                           Classes="secondary"/>
+            </Border>
+
+            <!-- Links -->
+            <TextBlock Text="LINKS" Classes="section-header" Margin="0,0,0,10"/>
+            <Border Classes="card" Padding="0">
+                <ItemsControl ItemsSource="{Binding Links}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:LinkItem}">
+                            <Border BorderThickness="0,0,0,1"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                    Padding="16,12"
+                                    Cursor="Hand">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Grid.Column="0"
+                                               Text="{Binding Label}"
+                                               FontSize="13"
+                                               FontWeight="Medium"
+                                               VerticalAlignment="Center"/>
+                                    <PathIcon Grid.Column="1"
+                                              Width="14" Height="14"
+                                              Data="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"
+                                              Foreground="{DynamicResource TextMutedBrush}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+
+            <!-- Built with -->
+            <StackPanel Spacing="4" Margin="0,24,0,0">
+                <TextBlock Text="BUILT WITH" Classes="section-header"/>
+                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                    <Border Classes="badge">
+                        <TextBlock Text="llama.cpp" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}"/>
+                    </Border>
+                    <Border Classes="badge">
+                        <TextBlock Text="Avalonia UI" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}"/>
+                    </Border>
+                    <Border Classes="badge">
+                        <TextBlock Text=".NET 9" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}"/>
+                    </Border>
+                    <Border Classes="badge">
+                        <TextBlock Text="ONNX Runtime" FontSize="11" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}"/>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

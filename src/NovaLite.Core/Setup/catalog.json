@@ -1,0 +1,41 @@
+[
+  {
+    "Name": "Phi-3 Mini 4k",
+    "Description": "A highly capable small model by Microsoft. Excellent reasoning for its size.",
+    "MinRamMB": 4096,
+    "RecommendedRamMB": 8192,
+    "TargetTier": 1,
+    "CpuFriendly": true,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf"
+    ],
+    "ExpectedSha256": ""
+  },
+  {
+    "Name": "Qwen 2.5 1.5B",
+    "Description": "A lightweight but smart model from Alibaba.",
+    "MinRamMB": 2048,
+    "RecommendedRamMB": 4096,
+    "TargetTier": 2,
+    "CpuFriendly": true,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+    ],
+    "ExpectedSha256": ""
+  },
+  {
+    "Name": "Qwen 2.5 0.5B",
+    "Description": "Tiny, ultra-fast model for very low-end hardware.",
+    "MinRamMB": 512,
+    "RecommendedRamMB": 1024,
+    "TargetTier": 1,
+    "CpuFriendly": true,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q8_0.gguf"
+    ],
+    "ExpectedSha256": ""
+  }
+]

@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NovaLite.UI.ViewModels"
+             x:Class="NovaLite.UI.Controls.ChatBubble"
+             x:DataType="vm:ChatMessageViewModel">
+
+    <UserControl.Styles>
+        <!-- User bubble: right-aligned, violet -->
+        <Style Selector="Border.user-bubble">
+            <Setter Property="Background" Value="{DynamicResource UserBubbleBrush}"/>
+            <Setter Property="CornerRadius" Value="20,4,20,20"/>
+            <Setter Property="MaxWidth" Value="540"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+        <!-- AI bubble: left-aligned, surface -->
+        <Style Selector="Border.ai-bubble">
+            <Setter Property="Background" Value="{DynamicResource AiBubbleBrush}"/>
+            <Setter Property="CornerRadius" Value="4,20,20,20"/>
+            <Setter Property="MaxWidth" Value="600"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="0,4">
+        <!-- Date Separator -->
+        <Border IsVisible="{Binding IsSeparator}"
+                HorizontalAlignment="Center"
+                Background="{DynamicResource BgSurfaceVariantBrush}"
+                CornerRadius="12"
+                Padding="12,4"
+                Margin="0,8">
+            <TextBlock Text="{Binding SeparatorText}"
+                       FontSize="11"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextMutedBrush}"/>
+        </Border>
+
+        <!-- User message layout (right-aligned) -->
+        <StackPanel IsVisible="{Binding IsUserMessage}"
+                    HorizontalAlignment="Right"
+                    Spacing="4"
+                    Margin="64,0,0,0">
+            <Border Classes="user-bubble">
+                <Grid ColumnDefinitions="*,Auto">
+                    <SelectableTextBlock Grid.Column="0" Text="{Binding Content}"
+                                         Foreground="{DynamicResource UserBubbleTextBrush}"
+                                         FontSize="14"
+                                         LineHeight="22"
+                                         TextWrapping="Wrap"/>
+                    <Button Grid.Column="1" Classes="ghost" Command="{Binding CopyTextCommand}" ToolTip.Tip="Copy" Margin="8,0,0,0" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <PathIcon Width="12" Height="12" Data="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" Foreground="{DynamicResource UserBubbleTextBrush}" Opacity="0.6"/>
+                    </Button>
+                </Grid>
+            </Border>
+            <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm}}"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       HorizontalAlignment="Right"
+                       Margin="0,0,4,0"/>
+        </StackPanel>
+
+        <!-- AI message layout (left-aligned) -->
+        <StackPanel IsVisible="{Binding IsAiMessage}"
+                    HorizontalAlignment="Left"
+                    Spacing="4"
+                    Margin="0,0,64,0">
+            <!-- Author row -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="2,0">
+                <Border Width="22" Height="22" CornerRadius="11"
+                        Background="{DynamicResource AccentBrush}">
+                    <TextBlock Text="N"
+                               FontSize="11"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="{Binding AuthorLabel}"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <Border Classes="ai-bubble">
+                <Grid ColumnDefinitions="*,Auto">
+                    <SelectableTextBlock Grid.Column="0" Text="{Binding Content}"
+                                         Foreground="{DynamicResource AiBubbleTextBrush}"
+                                         FontSize="14"
+                                         LineHeight="22"
+                                         TextWrapping="Wrap"/>
+                    <Button Grid.Column="1" Classes="ghost" Command="{Binding CopyTextCommand}" ToolTip.Tip="Copy" Margin="8,0,0,0" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <PathIcon Width="12" Height="12" Data="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" Foreground="{DynamicResource AiBubbleTextBrush}" Opacity="0.6"/>
+                    </Button>
+                </Grid>
+            </Border>
+            <TextBlock Text="{Binding Timestamp, StringFormat={}{0:HH:mm}}"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextMutedBrush}"
+                       Margin="4,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

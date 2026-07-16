@@ -1,0 +1,17 @@
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\bin\Release\net9.0\NovaLite.Core.deps.json
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\bin\Release\net9.0\NovaLite.Core.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\bin\Release\net9.0\NovaLite.Core.pdb
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\bin\Release\net9.0\NovaLite.Core.xml
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.csproj.AssemblyReference.cache
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.AssemblyInfoInputs.cache
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.AssemblyInfo.cs
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.csproj.CoreCompileInputs.cache
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\refint\NovaLite.Core.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.xml
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.Core.pdb
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\ref\NovaLite.Core.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\bin\Release\net9.0\NovaLite.Database.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\bin\Release\net9.0\NovaLite.Database.pdb
+C:\Users\Fynn\nova_lite\src\NovaLite.Core\obj\Release\net9.0\NovaLite.746DAE77.Up2Date

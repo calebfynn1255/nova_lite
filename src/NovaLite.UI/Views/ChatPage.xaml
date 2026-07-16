@@ -1,0 +1,116 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NovaLite.UI.ViewModels"
+             xmlns:controls="using:NovaLite.UI.Controls"
+             x:Class="NovaLite.UI.Views.ChatPage"
+             x:DataType="vm:ChatPageViewModel"
+             Background="{DynamicResource BgPrimaryBrush}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ── Top bar ── -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource BgSurfaceBrush}"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource BorderBrush}"
+                Padding="20,12">
+            <DockPanel>
+                <Button Classes="ghost"
+                        DockPanel.Dock="Right"
+                        IsVisible="{Binding IsGenerating}"
+                        Command="{Binding StopGenerationCommand}"
+                        ToolTip.Tip="Stop generation"
+                        Margin="0,0,4,0">
+                    <PathIcon Width="16" Height="16"
+                              Data="M6 6h12v12H6z"
+                              Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </Button>
+                <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Border Width="8" Height="8" CornerRadius="4"
+                            Background="{DynamicResource AccentBrush}"/>
+                    <TextBlock Text="{Binding ActiveModelName}"
+                               FontSize="13"
+                               FontWeight="Medium"
+                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ── Messages area ── -->
+        <ScrollViewer Grid.Row="1"
+                      Name="MessagesScroll"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <!-- Welcome state -->
+                <StackPanel IsVisible="{Binding !HasMessages}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Spacing="8"
+                            Margin="40,80">
+                    <Border Width="60" Height="60" CornerRadius="16"
+                            Background="{DynamicResource AccentGlowBrush}"
+                            HorizontalAlignment="Center">
+                        <PathIcon Width="28" Height="28"
+                                  Data="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
+                                  Foreground="{DynamicResource AccentBrush}"/>
+                    </Border>
+                    <TextBlock Text="Start a conversation"
+                               Classes="h2"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Type a message below or load a model from the Models tab."
+                               Classes="secondary"
+                               FontSize="13"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Message list -->
+                <ItemsControl ItemsSource="{Binding Messages}" Margin="16,12">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ChatMessageViewModel}">
+                            <controls:ChatBubble DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Typing indicator -->
+                <controls:TypingIndicator
+                    IsVisible="{Binding IsGenerating}"
+                    Margin="16,4,16,8"/>
+
+                <!-- Bottom padding -->
+                <Rectangle Height="16"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ── Input bar ── -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource BgSurfaceBrush}"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource BorderBrush}"
+                Padding="16,12">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBox Grid.Column="0"
+                         Text="{Binding InputText}"
+                         Watermark="Message NovaLite… (Enter to send, Shift+Enter for newline)"
+                         AcceptsReturn="True"
+                         MaxLines="6"
+                         MinHeight="44"
+                         VerticalContentAlignment="Center"
+                         Name="InputBox"
+                         KeyDown="InputBox_KeyDown"/>
+                <Button Grid.Column="1"
+                        Classes="send"
+                        Command="{Binding SendCommand}"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Bottom">
+                    <PathIcon Width="18" Height="18"
+                              Data="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+                              Foreground="White"/>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+

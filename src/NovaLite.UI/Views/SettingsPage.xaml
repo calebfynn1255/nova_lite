@@ -1,0 +1,169 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NovaLite.UI.ViewModels"
+             x:Class="NovaLite.UI.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Background="{DynamicResource BgPrimaryBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="28" Margin="32,24,32,32" MaxWidth="640">
+
+            <!-- Page title -->
+            <StackPanel Spacing="4" Margin="0,0,0,4">
+                <TextBlock Text="Settings" Classes="h2"/>
+                <TextBlock Text="Customise NovaLite to your preferences."
+                           Classes="secondary" FontSize="13"/>
+            </StackPanel>
+
+            <!-- ── Appearance ── -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="APPEARANCE" Classes="section-header"/>
+                <Border Classes="card">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Theme" FontWeight="SemiBold" FontSize="14"/>
+                        <TextBlock Text="Choose how NovaLite looks. OLED Black conserves battery on AMOLED displays."
+                                   Classes="secondary" FontSize="12"/>
+
+                        <!-- Theme swatches -->
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+
+                            <!-- Light -->
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <Border Width="100" Height="72" CornerRadius="10"
+                                        BorderThickness="2"
+                                        Cursor="Hand"
+                                        Background="#F7F7F9">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                                    </Border.BorderBrush>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <Border Width="40" Height="8" CornerRadius="4" Background="#E4E4E7"/>
+                                        <Border Width="30" Height="6" CornerRadius="3" Background="#D4D4D8"/>
+                                    </StackPanel>
+                                </Border>
+                                <RadioButton Content="Light"
+                                             IsChecked="{Binding IsLightTheme}"
+                                             HorizontalAlignment="Center"
+                                             Command="{Binding SelectThemeCommand}"
+                                             CommandParameter="Light"/>
+                            </StackPanel>
+
+                            <!-- Dark -->
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <Border Width="100" Height="72" CornerRadius="10"
+                                        BorderThickness="2"
+                                        Cursor="Hand"
+                                        Background="#18181B">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                                    </Border.BorderBrush>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <Border Width="40" Height="8" CornerRadius="4" Background="#3F3F46"/>
+                                        <Border Width="30" Height="6" CornerRadius="3" Background="#27272A"/>
+                                    </StackPanel>
+                                </Border>
+                                <RadioButton Content="Dark"
+                                             IsChecked="{Binding IsDarkTheme}"
+                                             HorizontalAlignment="Center"
+                                             Command="{Binding SelectThemeCommand}"
+                                             CommandParameter="Dark"/>
+                            </StackPanel>
+
+                            <!-- System -->
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <Border Width="100" Height="72" CornerRadius="10"
+                                        BorderThickness="2"
+                                        Cursor="Hand"
+                                        Background="#27272A">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                                    </Border.BorderBrush>
+                                    <PathIcon Width="22" Height="22"
+                                              Data="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z"
+                                              Foreground="#71717A"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                                <RadioButton Content="System"
+                                             IsChecked="{Binding IsSystemTheme}"
+                                             HorizontalAlignment="Center"
+                                             Command="{Binding SelectThemeCommand}"
+                                             CommandParameter="System"/>
+                            </StackPanel>
+
+                            <!-- OLED Black -->
+                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                <Border Width="100" Height="72" CornerRadius="10"
+                                        BorderThickness="2"
+                                        Cursor="Hand"
+                                        Background="#000000">
+                                    <Border.BorderBrush>
+                                        <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                                    </Border.BorderBrush>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4">
+                                        <Border Width="40" Height="8" CornerRadius="4" Background="#111111"/>
+                                        <Border Width="30" Height="6" CornerRadius="3" Background="#0A0A0A"/>
+                                    </StackPanel>
+                                </Border>
+                                <RadioButton Content="OLED Black"
+                                             IsChecked="{Binding IsOledTheme}"
+                                             HorizontalAlignment="Center"
+                                             Command="{Binding SelectThemeCommand}"
+                                             CommandParameter="OledBlack"/>
+                            </StackPanel>
+
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- ── Inference ── -->
+            <StackPanel Spacing="12">
+                <TextBlock Text="INFERENCE" Classes="section-header"/>
+                <Border Classes="card">
+                    <StackPanel Spacing="16">
+
+                        <Grid ColumnDefinitions="*,16,*">
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock Text="Temperature" FontWeight="Medium" FontSize="13"/>
+                                <TextBlock Text="{Binding Temperature, StringFormat={}{0:F2}}"
+                                           Classes="caption"/>
+                                <Slider Value="{Binding Temperature}"
+                                        Minimum="0" Maximum="2" TickFrequency="0.05"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="6">
+                                <TextBlock Text="Top-P" FontWeight="Medium" FontSize="13"/>
+                                <TextBlock Text="{Binding TopP, StringFormat={}{0:F2}}"
+                                           Classes="caption"/>
+                                <Slider Value="{Binding TopP}"
+                                        Minimum="0" Maximum="1" TickFrequency="0.05"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,16,*">
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock Text="Max Tokens" FontWeight="Medium" FontSize="13"/>
+                                <NumericUpDown Value="{Binding MaxTokens}"
+                                               Minimum="128" Maximum="32768" Increment="128"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="6">
+                                <TextBlock Text="GPU Layers" FontWeight="Medium" FontSize="13"/>
+                                <NumericUpDown Value="{Binding GpuLayers}"
+                                               Minimum="0" Maximum="200" Increment="1"/>
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Save -->
+            <Button Classes="primary"
+                    Command="{Binding SaveCommand}"
+                    Width="120">
+                <TextBlock Text="Save" Foreground="White"/>
+            </Button>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

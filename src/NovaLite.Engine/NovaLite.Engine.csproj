@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>NovaLite.Engine</RootNamespace>
+    <AssemblyName>NovaLite.Engine</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- MLX is Apple Silicon only -->
+    <DefineConstants Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">$(DefineConstants);PLATFORM_MLX</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NovaLite.Core\NovaLite.Core.csproj" />
+    <ProjectReference Include="..\NovaLite.Native\NovaLite.Native.csproj" />
+  </ItemGroup>
+
+</Project>

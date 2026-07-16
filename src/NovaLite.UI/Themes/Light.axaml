@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ── Backgrounds ───────────────────────────────────────────── -->
+    <Color x:Key="BgPrimaryColor">#F7F7F9</Color>
+    <Color x:Key="BgSurfaceColor">#FFFFFF</Color>
+    <Color x:Key="BgSurfaceVariantColor">#EFEFF2</Color>
+    <Color x:Key="BgSidebarColor">#EAEAEE</Color>
+    <Color x:Key="BgInputColor">#FFFFFF</Color>
+    <Color x:Key="BgOverlayColor">#33000000</Color>
+
+    <SolidColorBrush x:Key="BgPrimaryBrush"        Color="{StaticResource BgPrimaryColor}"/>
+    <SolidColorBrush x:Key="BgSurfaceBrush"        Color="{StaticResource BgSurfaceColor}"/>
+    <SolidColorBrush x:Key="BgSurfaceVariantBrush" Color="{StaticResource BgSurfaceVariantColor}"/>
+    <SolidColorBrush x:Key="BgSidebarBrush"        Color="{StaticResource BgSidebarColor}"/>
+    <SolidColorBrush x:Key="BgInputBrush"          Color="{StaticResource BgInputColor}"/>
+
+    <!-- ── Borders ────────────────────────────────────────────────── -->
+    <Color x:Key="BorderColor">#D8D8DD</Color>
+    <SolidColorBrush x:Key="BorderBrush"        Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="BorderSubtleBrush"  Color="#E8E8EC"/>
+
+    <!-- ── Accent (violet) ───────────────────────────────────────── -->
+    <Color x:Key="AccentColor">#7C3AED</Color>
+    <SolidColorBrush x:Key="AccentBrush"        Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="AccentHoverBrush"   Color="#6D28D9"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#5B21B6"/>
+    <SolidColorBrush x:Key="AccentGlowBrush"    Color="#267C3AED"/>
+
+    <!-- ── Text ───────────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#18181B"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#52525B"/>
+    <SolidColorBrush x:Key="TextMutedBrush"     Color="#A1A1AA"/>
+    <SolidColorBrush x:Key="TextOnAccentBrush"  Color="#FFFFFF"/>
+
+    <!-- ── Chat bubbles ───────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="UserBubbleBrush"     Color="#7C3AED"/>
+    <SolidColorBrush x:Key="UserBubbleTextBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="AiBubbleBrush"       Color="#EEECF5"/>
+    <SolidColorBrush x:Key="AiBubbleTextBrush"   Color="#18181B"/>
+
+    <!-- ── Sidebar interactive ────────────────────────────────────── -->
+    <SolidColorBrush x:Key="SidebarButtonHoverBrush"  Color="#1F7C3AED"/>
+    <SolidColorBrush x:Key="SidebarButtonActiveBrush" Color="#337C3AED"/>
+
+    <!-- ── Scrollbar ─────────────────────────────────────────────── -->
+    <SolidColorBrush x:Key="ScrollbarThumbBrush" Color="#C4C4CA"/>
+
+</ResourceDictionary>

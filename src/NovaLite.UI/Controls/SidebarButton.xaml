@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="NovaLite.UI.Controls.SidebarButton">
+
+    <UserControl.Styles>
+        <Style Selector="Button.nav-btn">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.1"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.nav-btn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SidebarButtonHoverBrush}"/>
+        </Style>
+        <Style Selector="Button.nav-btn.active /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SidebarButtonActiveBrush}"/>
+        </Style>
+        <Style Selector="Button.nav-btn:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SidebarButtonActiveBrush}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Button Name="Btn"
+            Classes="nav-btn"
+            Command="{Binding Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            HorizontalAlignment="Stretch">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <PathIcon Name="IconPath"
+                      Width="16" Height="16"
+                      VerticalAlignment="Center"
+                      Foreground="{DynamicResource TextSecondaryBrush}"/>
+            <TextBlock Name="LabelText"
+                       VerticalAlignment="Center"
+                       FontSize="13.5"
+                       FontWeight="Medium"
+                       Foreground="{DynamicResource TextSecondaryBrush}"/>
+        </StackPanel>
+    </Button>
+</UserControl>

@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:NovaLite.UI.ViewModels"
+             x:Class="NovaLite.UI.Views.ModelManagerPage"
+             x:DataType="vm:ModelManagerViewModel"
+             Background="{DynamicResource BgPrimaryBrush}">
+
+    <DockPanel Margin="24,20">
+
+        <!-- Header -->
+        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,20">
+            <TextBlock Text="Models" Classes="h2"/>
+            <TextBlock Text="Load GGUF, ONNX, Safetensors, or MLX models from your disk."
+                       Classes="secondary" FontSize="13"/>
+        </StackPanel>
+
+        <!-- Directory row -->
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,8,Auto,8,Auto" Margin="0,0,0,16">
+            <TextBox Grid.Column="0"
+                     Text="{Binding ScanDirectory}"
+                     Watermark="Model directory path…"/>
+            <Button Grid.Column="2" Classes="ghost"
+                    Command="{Binding BrowseDirectoryCommand}"
+                    ToolTip.Tip="Browse folder">
+                <PathIcon Width="16" Height="16"
+                          Data="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+                          Foreground="{DynamicResource TextSecondaryBrush}"/>
+            </Button>
+            <Button Grid.Column="4" Classes="primary"
+                    Command="{Binding ScanCommand}"
+                    IsEnabled="{Binding !IsScanning}">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <PathIcon Width="14" Height="14"
+                              Data="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                              Foreground="White"/>
+                    <TextBlock Text="Scan" Foreground="White"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Status -->
+        <TextBlock DockPanel.Dock="Top"
+                   Text="{Binding StatusMessage}"
+                   Classes="caption"
+                   Margin="0,0,0,12"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+        <!-- Model list + detail split -->
+        <Grid ColumnDefinitions="*,16,280">
+
+            <!-- List -->
+            <Border Grid.Column="0" Classes="card" Padding="0">
+                <ListBox ItemsSource="{Binding Models}"
+                         SelectedItem="{Binding SelectedModel}"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ModelInfoViewModel}">
+                            <Grid ColumnDefinitions="*,Auto" Margin="12,10">
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="{Binding FileName}"
+                                               FontWeight="Medium"
+                                               FontSize="13"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Border Classes="badge" Padding="4,2" Background="{DynamicResource BgSurfaceVariantBrush}" CornerRadius="4">
+                                            <TextBlock Text="{Binding Format}"
+                                                       FontSize="10"
+                                                       FontWeight="Bold"
+                                                       Foreground="{DynamicResource AccentBrush}"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding SizeDisplay}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                    <!-- Empty state -->
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Border>
+
+            <!-- Detail panel -->
+            <Border Grid.Column="2" Classes="card"
+                    IsVisible="{Binding SelectedModel, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{Binding SelectedModel.FileName}"
+                               Classes="h3"
+                               TextWrapping="Wrap"/>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="FORMAT" Classes="section-header"/>
+                        <TextBlock Text="{Binding SelectedModel.Format}" FontSize="13"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="SIZE" Classes="section-header"/>
+                        <TextBlock Text="{Binding SelectedModel.SizeDisplay}" FontSize="13"/>
+                    </StackPanel>
+
+                    <Button Classes="primary"
+                            Command="{Binding LoadSelectedCommand}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center">
+                        <TextBlock Text="{Binding LoadButtonText}"
+                                   Foreground="White"/>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</UserControl>

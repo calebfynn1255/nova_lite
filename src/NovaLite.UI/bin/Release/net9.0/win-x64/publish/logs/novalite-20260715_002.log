@@ -1,0 +1,227 @@
+2026-07-15 22:03:30.912 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 22:04:17.147 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 94
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 36
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 22:18:41.732 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 22:19:01.918 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 94
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 36
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 22:28:26.285 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 22:28:44.953 [ERR]  Chat inference failed
+System.Exception: llama_tokenize failed with code: 0
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 94
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 36
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 22:35:24.604 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 22:42:59.921 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 22:43:31.317 [ERR]  Chat inference failed
+System.EntryPointNotFoundException: Unable to find an entry point named 'llama_kv_cache_clear' in DLL 'llama'.
+   at NovaLite.Native.LlamaCppBindings.llama_kv_cache_clear(IntPtr ctx)
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 42
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 65
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 65
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 22:52:44.368 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 23:29:21.146 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 23:55:43.300 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 23:55:44.403 [FTL]  NovaLite terminated unexpectedly
+System.ArgumentException: Unable to resolve type vm:MainWindowViewModel from any of the following locations: 
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.XamlTypeResolver.Resolve(String qualifiedTypeName)
+   at Avalonia.Markup.Xaml.Extensions.ResolveType(IServiceProvider ctx, String namespacePrefix, String type)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.LookupType(Func`3 typeResolver, String namespace, String name)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.CreateFromAst(List`1 astNodes, Func`3 typeResolver, INameScope nameScope, Boolean& isRooted)
+   at Avalonia.Data.Binding.InstanceCore(AvaloniaProperty targetProperty, AvaloniaObject target, Object anchor, Boolean enableDataValidation)
+   at Avalonia.Data.Binding.Instance(AvaloniaObject target, AvaloniaProperty targetProperty, Object anchor)
+   at Avalonia.Data.BindingBase.Avalonia.Data.Core.IBinding2.Instance(AvaloniaObject target, AvaloniaProperty property, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding)
+   at Avalonia.AvaloniaObjectExtensions.Bind(AvaloniaObject target, AvaloniaProperty property, IBinding binding, Object anchor)
+   at NovaLite.UI.MainWindow.XamlClosure_1.Build_6(IServiceProvider) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\MainWindow.xaml:line 174
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.PointerDeferredContent`1.InvokeBuilder(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.DeferredContent`1.Build(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load[T](Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load(Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.DataTemplate.Build(Object data, Control existing)
+   at Avalonia.Controls.Presenters.ContentPresenter.CreateChild(Object content, Control oldChild, IDataTemplate template)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild(Object content)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild()
+   at Avalonia.Controls.Presenters.ContentPresenter.ApplyTemplate()
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Controls.VirtualizingStackPanel.RealizeElements(IReadOnlyList`1 items, Size availableSize, MeasureViewport& viewport)
+   at Avalonia.Controls.VirtualizingStackPanel.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.LayoutManager.Measure(Layoutable control)
+   at Avalonia.Layout.LayoutManager.ExecuteMeasurePass()
+   at Avalonia.Layout.LayoutManager.InnerLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteQueuedLayoutPass()
+   at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+   at Avalonia.Media.MediaContext.RenderCore()
+   at Avalonia.Media.MediaContext.Render()
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32DispatcherImpl.DispatchWorkItem()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-15 23:56:07.915 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 23:56:08.943 [FTL]  NovaLite terminated unexpectedly
+System.ArgumentException: Unable to resolve type vm:MainWindowViewModel from any of the following locations: 
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.XamlTypeResolver.Resolve(String qualifiedTypeName)
+   at Avalonia.Markup.Xaml.Extensions.ResolveType(IServiceProvider ctx, String namespacePrefix, String type)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.LookupType(Func`3 typeResolver, String namespace, String name)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.CreateFromAst(List`1 astNodes, Func`3 typeResolver, INameScope nameScope, Boolean& isRooted)
+   at Avalonia.Data.Binding.InstanceCore(AvaloniaProperty targetProperty, AvaloniaObject target, Object anchor, Boolean enableDataValidation)
+   at Avalonia.Data.Binding.Instance(AvaloniaObject target, AvaloniaProperty targetProperty, Object anchor)
+   at Avalonia.Data.BindingBase.Avalonia.Data.Core.IBinding2.Instance(AvaloniaObject target, AvaloniaProperty property, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding)
+   at Avalonia.AvaloniaObjectExtensions.Bind(AvaloniaObject target, AvaloniaProperty property, IBinding binding, Object anchor)
+   at NovaLite.UI.MainWindow.XamlClosure_1.Build_6(IServiceProvider) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\MainWindow.xaml:line 174
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.PointerDeferredContent`1.InvokeBuilder(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.DeferredContent`1.Build(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load[T](Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load(Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.DataTemplate.Build(Object data, Control existing)
+   at Avalonia.Controls.Presenters.ContentPresenter.CreateChild(Object content, Control oldChild, IDataTemplate template)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild(Object content)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild()
+   at Avalonia.Controls.Presenters.ContentPresenter.ApplyTemplate()
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Controls.VirtualizingStackPanel.RealizeElements(IReadOnlyList`1 items, Size availableSize, MeasureViewport& viewport)
+   at Avalonia.Controls.VirtualizingStackPanel.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.LayoutManager.Measure(Layoutable control)
+   at Avalonia.Layout.LayoutManager.ExecuteMeasurePass()
+   at Avalonia.Layout.LayoutManager.InnerLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteQueuedLayoutPass()
+   at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+   at Avalonia.Media.MediaContext.RenderCore()
+   at Avalonia.Media.MediaContext.Render()
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32DispatcherImpl.DispatchWorkItem()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-15 23:58:39.977 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 23:58:41.015 [FTL]  NovaLite terminated unexpectedly
+System.ArgumentException: Unable to resolve type vm:MainWindowViewModel from any of the following locations: 
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.XamlTypeResolver.Resolve(String qualifiedTypeName)
+   at Avalonia.Markup.Xaml.Extensions.ResolveType(IServiceProvider ctx, String namespacePrefix, String type)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.LookupType(Func`3 typeResolver, String namespace, String name)
+   at Avalonia.Markup.Parsers.ExpressionNodeFactory.CreateFromAst(List`1 astNodes, Func`3 typeResolver, INameScope nameScope, Boolean& isRooted)
+   at Avalonia.Data.Binding.InstanceCore(AvaloniaProperty targetProperty, AvaloniaObject target, Object anchor, Boolean enableDataValidation)
+   at Avalonia.Data.Binding.Instance(AvaloniaObject target, AvaloniaProperty targetProperty, Object anchor)
+   at Avalonia.Data.BindingBase.Avalonia.Data.Core.IBinding2.Instance(AvaloniaObject target, AvaloniaProperty property, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding, Object anchor)
+   at Avalonia.AvaloniaObject.Bind(AvaloniaProperty property, IBinding binding)
+   at Avalonia.AvaloniaObjectExtensions.Bind(AvaloniaObject target, AvaloniaProperty property, IBinding binding, Object anchor)
+   at NovaLite.UI.MainWindow.XamlClosure_1.Build_6(IServiceProvider) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\MainWindow.xaml:line 174
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.PointerDeferredContent`1.InvokeBuilder(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.XamlIl.Runtime.XamlIlRuntimeHelpers.DeferredContent`1.Build(IServiceProvider serviceProvider)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load[T](Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.TemplateContent.Load(Object templateContent)
+   at Avalonia.Markup.Xaml.Templates.DataTemplate.Build(Object data, Control existing)
+   at Avalonia.Controls.Presenters.ContentPresenter.CreateChild(Object content, Control oldChild, IDataTemplate template)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild(Object content)
+   at Avalonia.Controls.Presenters.ContentPresenter.UpdateChild()
+   at Avalonia.Controls.Presenters.ContentPresenter.ApplyTemplate()
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Controls.VirtualizingStackPanel.RealizeElements(IReadOnlyList`1 items, Size availableSize, MeasureViewport& viewport)
+   at Avalonia.Controls.VirtualizingStackPanel.MeasureOverride(Size availableSize)
+   at Avalonia.Layout.Layoutable.MeasureCore(Size availableSize)
+   at Avalonia.Layout.Layoutable.Measure(Size availableSize)
+   at Avalonia.Layout.LayoutManager.Measure(Layoutable control)
+   at Avalonia.Layout.LayoutManager.ExecuteMeasurePass()
+   at Avalonia.Layout.LayoutManager.InnerLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteLayoutPass()
+   at Avalonia.Layout.LayoutManager.ExecuteQueuedLayoutPass()
+   at Avalonia.Media.MediaContext.FireInvokeOnRenderCallbacks()
+   at Avalonia.Media.MediaContext.RenderCore()
+   at Avalonia.Media.MediaContext.Render()
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32DispatcherImpl.DispatchWorkItem()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27

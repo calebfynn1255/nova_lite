@@ -1,0 +1,98 @@
+2026-07-15 14:41:46.187 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:03:29.745 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:05:20.554 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:05:59.792 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:08:12.143 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:12:46.477 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:13:04.891 [FTL]  NovaLite terminated unexpectedly
+System.InvalidOperationException: Model has no native handle.
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 56
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at CommunityToolkit.Mvvm.Input.AsyncRelayCommand.AwaitAndThrowIfFailed(Task executionTask)
+   at System.Threading.Tasks.Task.<>c.<ThrowAsync>b__128_0(Object state)
+   at Avalonia.Threading.SendOrPostCallbackDispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 17
+2026-07-15 16:13:07.503 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:14:13.511 [FTL]  NovaLite terminated unexpectedly
+System.InvalidOperationException: Model has no native handle.
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 56
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at CommunityToolkit.Mvvm.Input.AsyncRelayCommand.AwaitAndThrowIfFailed(Task executionTask)
+   at System.Threading.Tasks.Task.<>c.<ThrowAsync>b__128_0(Object state)
+   at Avalonia.Threading.SendOrPostCallbackDispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 17
+2026-07-15 16:16:35.627 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:19:14.697 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:21:16.053 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:34:39.724 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:39:41.527 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:48:56.701 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:49:13.431 [ERR]  Chat inference failed
+System.Runtime.InteropServices.SEHException (0x80004005): External component has thrown an exception.
+   at NovaLite.Native.LlamaCppBindings.<llama_tokenize>g____PInvoke|15_0(IntPtr __model_native, Byte* __text_native, Int32 __text_len_native, Int32* __tokens_native, Int32 __n_tokens_max_native, SByte __add_special_native, SByte __parse_special_native)
+   at NovaLite.Native.LlamaCppBindings.llama_tokenize(IntPtr model, String text, Int32 text_len, Int32* tokens, Int32 n_tokens_max, Boolean add_special, Boolean parse_special) in C:\Users\Fynn\nova_lite\src\NovaLite.Native\obj\Release\net9.0\Microsoft.Interop.LibraryImportGenerator\Microsoft.Interop.LibraryImportGenerator\LibraryImports.g.cs:line 125
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 77
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 38
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 16:51:41.762 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:52:16.621 [ERR]  Chat inference failed
+System.Runtime.InteropServices.SEHException (0x80004005): External component has thrown an exception.
+   at NovaLite.Native.LlamaCppBindings.<llama_tokenize>g____PInvoke|15_0(IntPtr __model_native, Byte* __text_native, Int32 __text_len_native, Int32* __tokens_native, Int32 __n_tokens_max_native, SByte __add_special_native, SByte __parse_special_native)
+   at NovaLite.Native.LlamaCppBindings.llama_tokenize(IntPtr model, String text, Int32 text_len, Int32* tokens, Int32 n_tokens_max, Boolean add_special, Boolean parse_special) in C:\Users\Fynn\nova_lite\src\NovaLite.Native\obj\Release\net9.0\Microsoft.Interop.LibraryImportGenerator\Microsoft.Interop.LibraryImportGenerator\LibraryImports.g.cs:line 125
+   at NovaLite.Engine.LlamaSession.TokenizePrompt(String prompt) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 85
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 40
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 62
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 44
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 64
+2026-07-15 16:55:34.790 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-15 16:59:39.510 [INF]  NovaLite starting — version 1.0.0.0
