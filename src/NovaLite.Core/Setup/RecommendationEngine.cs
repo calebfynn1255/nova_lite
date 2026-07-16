@@ -16,72 +16,87 @@ public class RecommendationEngine
     public IReadOnlyList<RecommendedModel> GetRecommendations(HardwareProfile profile)
     {
         var recommendations = new List<RecommendedModel>();
+        
+        bool hasDedicatedGpu = profile.TotalVRamMB > 512;
+        
+        // Usable System RAM (leave 4GB for Windows/Apps)
+        long usableSysRam = profile.TotalRamMB - 4096;
+        if (usableSysRam < 1024) usableSysRam = 1024;
 
-        // Determine available memory for the model
-        long availableMemMB = 0;
-        bool hasDedicatedGpu = profile.TotalVRamMB > 512; // Basic check for dedicated GPU
-
-        if (hasDedicatedGpu)
-        {
-            // If there's a dedicated GPU, we try to fit models mostly into VRAM
-            // E.g., 16GB VRAM -> leave 1-2GB for OS -> ~14GB available. Let's use 85% of VRAM.
-            availableMemMB = (long)(profile.TotalVRamMB * 0.85);
-        }
-        else
-        {
-            // If no dedicated GPU, use System RAM but leave 4GB (4096MB) for Windows.
-            availableMemMB = profile.TotalRamMB - 4096;
-            if (availableMemMB < 1024) availableMemMB = 1024; // Ensure at least 1GB headroom for minimal models
-        }
+        // Usable VRAM (leave ~1GB for display/OS rendering if dedicated)
+        long usableVRam = hasDedicatedGpu ? profile.TotalVRamMB - 1024 : 0;
+        if (usableVRam < 0) usableVRam = 0;
 
         foreach (var model in ModelCatalog.Models)
         {
+            // 1. Filter out models that are WAY too big
+            if (model.MinRamMB > usableSysRam + usableVRam)
+                continue;
+
+            // 2. Filter out models that are WAY too small for high-end systems
+            // E.g., if you have 16GB+ RAM, we don't need to show tiny 1GB models
+            if (usableSysRam >= 16384 && model.RecommendedRamMB <= 2048)
+                continue;
+
             int stars = 1;
             string reason = "";
 
-            if (availableMemMB >= model.RecommendedRamMB)
+            // Score based on speed and headroom
+            if (hasDedicatedGpu && model.RecommendedRamMB <= usableVRam)
             {
                 stars = 5;
-                reason = "Perfect fit for your hardware.";
+                reason = "Lightning fast! Fits entirely in your dedicated GPU.";
             }
-            else if (availableMemMB >= model.MinRamMB)
+            else if (hasDedicatedGpu && model.MinRamMB <= usableVRam)
+            {
+                stars = 5;
+                reason = "Very fast! Mostly fits in your dedicated GPU.";
+            }
+            else if (model.RecommendedRamMB <= usableSysRam)
             {
                 stars = 4;
-                reason = "Good fit, but might push memory limits slightly.";
+                reason = "Perfect fit. Leaves plenty of headroom for Windows and apps.";
+                if (!hasDedicatedGpu && model.CpuFriendly) stars = 5; // Best case for CPU-only
             }
-            else if (profile.TotalRamMB >= model.MinRamMB)
+            else if (model.MinRamMB <= usableSysRam)
             {
                 stars = 3;
-                reason = "Will run, but will consume most of your available system RAM.";
+                reason = "Good fit, but uses most of your available RAM.";
             }
             else
             {
-                stars = 1;
-                reason = "Not recommended. Your system has less than the minimum required memory.";
+                stars = 2;
+                reason = "Will run, but might slow down your computer.";
             }
 
-            // Downgrade if it's not CPU friendly and we have no dedicated GPU
+            // Penalty for CPU-heavy models on CPU-only machines
             if (!model.CpuFriendly && !hasDedicatedGpu)
             {
                 stars--;
-                reason += " (Model is heavy on CPU).";
+                reason += " (Heavy on CPU).";
             }
 
-            // Bound stars
             if (stars < 1) stars = 1;
             if (stars > 5) stars = 5;
 
             recommendations.Add(new RecommendedModel(model, stars, reason, profile));
         }
 
-        // Sort by stars descending, then by name
-        var sorted = recommendations.OrderByDescending(r => r.StarRating).ThenBy(r => r.Model.Name).ToList();
+        // Sort by Stars (speed/fit), then Tier (capability), then Size
+        var sorted = recommendations
+            .OrderByDescending(r => r.StarRating)
+            .ThenByDescending(r => r.Model.TargetTier)
+            .ThenByDescending(r => r.Model.RecommendedRamMB)
+            .ToList();
+
+        // Take only the top 4 best matches
+        var finalModels = sorted.Take(4).ToList();
         
-        if (sorted.Count > 0)
+        if (finalModels.Count > 0)
         {
-            sorted[0] = sorted[0] with { IsRecommended = true };
+            finalModels[0] = finalModels[0] with { IsRecommended = true };
         }
 
-        return sorted;
+        return finalModels;
     }
 }

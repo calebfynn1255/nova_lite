@@ -19,3 +19,4 @@ C:\Users\Fynn\nova_lite\src\NovaLite.Native\bin\Debug\net9.0\MSVCP140.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.Native\bin\Debug\net9.0\VCRUNTIME140.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.Native\bin\Debug\net9.0\VCRUNTIME140_1.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.Native\bin\Debug\net9.0\VCOMP140.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Native\obj\Debug\net9.0\NovaLite.Native.sourcelink.json

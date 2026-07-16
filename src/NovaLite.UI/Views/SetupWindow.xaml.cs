@@ -29,6 +29,15 @@ public partial class SetupWindow : Window
 
                 return folders.Count > 0 ? folders[0].Path.LocalPath : null;
             };
+
+            vm.SelectModelInUiAction = (model) =>
+            {
+                ModelsListBox.SelectedItems?.Clear();
+                if (model != null)
+                {
+                    ModelsListBox.SelectedItems?.Add(model);
+                }
+            };
         }
     }
 
@@ -39,8 +48,8 @@ public partial class SetupWindow : Window
             vm.SelectedModels.Clear();
             foreach (var item in lb.SelectedItems!)
             {
-                if (item is RecommendedModel model)
-                    vm.SelectedModels.Add(model);
+                if (item is RecommendedModelViewModel vm2)
+                    vm.SelectedModels.Add(vm2.Source);
             }
         }
     }

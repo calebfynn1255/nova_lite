@@ -261,3 +261,4 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\zh-Hant\Microsoft.CodeA
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\runtimes\win-arm\native\e_sqlite3.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\NovaLite.Database.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\NovaLite.Database.pdb
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\obj\Debug\net9.0\NovaLite.UI.sourcelink.json

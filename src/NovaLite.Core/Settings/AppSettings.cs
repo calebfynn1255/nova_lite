@@ -18,6 +18,10 @@ public sealed class AppSettings
     public int ContextLength { get; set; } = 4096;
     // Setup
     public bool IsFirstRun { get; set; } = true;
+    public bool IsDownloadComplete { get; set; } = false;
+    public string PendingDownloadModelName { get; set; } = string.Empty;
+    public string PendingDownloadFilePath { get; set; } = string.Empty;
+    public double PendingDownloadProgress { get; set; } = 0;
 
     // Advanced
     public int GpuLayers { get; set; } = 0;   // 0 = CPU-only

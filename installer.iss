@@ -12,6 +12,8 @@ OutputDir=..\Setup
 OutputBaseFilename=NovaLiteSetup
 Compression=lzma2
 SolidCompression=yes
+SetupIconFile=src\NovaLite.UI\Assets\icon.ico
+WizardSmallImageFile=src\NovaLite.UI\Assets\icon.png
 
 ; Allow user to run without admin rights if they want, but default to admin
 PrivilegesRequired=admin
@@ -20,7 +22,7 @@ PrivilegesRequired=admin
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checkablealone
 
 [Files]
 ; IMPORTANT: Run `dotnet publish -c Release -r win-x64 --self-contained` in src\NovaLite.UI before compiling this script!

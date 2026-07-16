@@ -19,7 +19,7 @@ public record ModelCatalogEntry(
 public static class ModelCatalog
 {
     private static IReadOnlyList<ModelCatalogEntry>? _models;
-    private static readonly string CatalogUrl = "https://raw.githubusercontent.com/fynn-user/novalite-models/main/catalog.json"; // Placeholder URL
+    private static readonly string CatalogUrl = "https://raw.githubusercontent.com/calebfynn1255/novalite-models/main/catalog.json";
     private static readonly HttpClient _http = new();
 
     // Synchronous fallback/cached access

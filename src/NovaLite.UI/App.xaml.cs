@@ -116,14 +116,17 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (Settings.IsFirstRun)
+            var needsSetup = Settings.IsFirstRun ||
+                             (!Settings.IsDownloadComplete && !string.IsNullOrEmpty(Settings.PendingDownloadModelName));
+
+            if (needsSetup)
             {
                 var vm = new SetupWindowViewModel();
                 var setupWindow = new Views.SetupWindow { DataContext = vm };
                 setupWindow.Closed += (s, e) =>
                 {
-                    // After setup window closes, if it's no longer first run (setup completed), open main window
-                    if (!AppSettings.Load().IsFirstRun)
+                    var fresh = AppSettings.Load();
+                    if (!fresh.IsFirstRun && fresh.IsDownloadComplete)
                     {
                         var mainVm = new MainWindowViewModel();
                         desktop.MainWindow = new MainWindow { DataContext = mainVm };
@@ -132,7 +135,7 @@ public partial class App : Application
                     }
                     else
                     {
-                        // Setup was aborted
+                        // Setup was aborted or still incomplete
                         desktop.Shutdown();
                         try { File.AppendAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NovaLite", "startup.log"), $"[{DateTime.UtcNow:O}] Setup aborted, shutting down{Environment.NewLine}"); } catch {}
                     }
@@ -147,7 +150,6 @@ public partial class App : Application
                 try { File.AppendAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NovaLite", "startup.log"), $"[{DateTime.UtcNow:O}] MainWindow shown directly{Environment.NewLine}"); } catch {}
             }
 
-            desktop.Exit += (_, _) => Settings.Save();
         }
         base.OnFrameworkInitializationCompleted();
     }

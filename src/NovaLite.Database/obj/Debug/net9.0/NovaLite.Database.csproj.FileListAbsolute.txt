@@ -12,3 +12,4 @@ C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Debug\net9.0\refint\NovaLite.D
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Debug\net9.0\NovaLite.Database.pdb
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Debug\net9.0\NovaLite.Database.genruntimeconfig.cache
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Debug\net9.0\ref\NovaLite.Database.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Debug\net9.0\NovaLite.Database.sourcelink.json

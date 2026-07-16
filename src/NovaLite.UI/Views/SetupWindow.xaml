@@ -85,7 +85,7 @@
                              SelectionChanged="OnModelSelectionChanged"
                              Background="Transparent" BorderThickness="0">
                         <ListBox.ItemTemplate>
-                            <DataTemplate x:DataType="setup:RecommendedModel">
+                            <DataTemplate x:DataType="vm:RecommendedModelViewModel">
                                 <Border Classes="card" Margin="0,0,0,8" Padding="12">
                                     <StackPanel Spacing="4">
                                         <Grid ColumnDefinitions="*,Auto,Auto">
@@ -97,6 +97,41 @@
                                         </Grid>
                                         <TextBlock Text="{Binding Model.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
                                         <TextBlock Text="{Binding Reason}" FontSize="11" FontStyle="Italic" Foreground="{DynamicResource TextMutedBrush}" Margin="0,4,0,0"/>
+
+                                        <!-- Resume indicator: shown only when this model has a partial download -->
+                                        <Border IsVisible="{Binding IsPendingResume}"
+                                                Background="#1A8B5CF6" CornerRadius="8" Padding="12,10" Margin="0,8,0,0">
+                                            <StackPanel Spacing="8">
+                                                <!-- Header row -->
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <PathIcon Width="13" Height="13"
+                                                              Data="M8 5v14l11-7z"
+                                                              Foreground="{DynamicResource AccentBrush}"/>
+                                                    <TextBlock Text="Download in progress — you can resume this model"
+                                                               FontSize="12" FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource AccentBrush}"
+                                                               VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <!-- Progress -->
+                                                <ProgressBar Value="{Binding ResumeProgress}" Maximum="100" Height="6" CornerRadius="3"/>
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding ResumeProgress, StringFormat='{}{0:F1}% already downloaded'}"
+                                                               FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                                                    <!-- Resume button -->
+                                                    <Button Grid.Column="1" Classes="primary"
+                                                            Command="{Binding $parent[ListBox].DataContext.ResumeFromCardCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            Padding="12,4" FontSize="12">
+                                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                                            <PathIcon Width="11" Height="11"
+                                                                      Data="M8 5v14l11-7z" Foreground="White"/>
+                                                            <TextBlock Text="Resume" Foreground="White"/>
+                                                        </StackPanel>
+                                                    </Button>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
@@ -110,7 +145,9 @@
                 <Button Classes="secondary" Content="&#x2190; Back" 
                         Command="{Binding GoBackCommand}"/>
                 <Button Classes="primary" Content="Next &#x2192;" 
-                        Command="{Binding GoToPathSelectionCommand}" Width="150" HorizontalContentAlignment="Center"/>
+                        Command="{Binding GoToPathSelectionCommand}" 
+                        IsEnabled="{Binding HasSelection}"
+                        Width="150" HorizontalContentAlignment="Center"/>
             </StackPanel>
         </Grid>
 
@@ -136,9 +173,62 @@
 
         <!-- Step 3: Download -->
         <StackPanel IsVisible="{Binding IsStepDownload}"
-                    VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
-            <TextBlock Text="{Binding DownloadStatus}" Classes="h2" TextAlignment="Center"/>
-            <ProgressBar Value="{Binding DownloadProgress}" Maximum="100" Width="400" Height="14"/>
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20" Width="480">
+
+            <TextBlock Text="Downloading Model" Classes="h2" TextAlignment="Center"/>
+
+            <!-- Status -->
+            <TextBlock Text="{Binding DownloadStatus}"
+                       Classes="secondary" TextAlignment="Center"
+                       TextWrapping="Wrap"/>
+
+            <!-- Progress bar + percentage -->
+            <StackPanel Spacing="6">
+                <ProgressBar Value="{Binding DownloadProgress}" Maximum="100" Height="14" CornerRadius="7"/>
+                <TextBlock Text="{Binding DownloadProgress, StringFormat='{}{0:F1}%'}"
+                           FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                           HorizontalAlignment="Right"/>
+            </StackPanel>
+
+            <!-- Controls -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+
+                <!-- Pause (visible while downloading and not paused) -->
+                <Button Classes="secondary"
+                        Command="{Binding PauseDownloadCommand}"
+                        IsVisible="{Binding IsDownloading}"
+                        Width="120" HorizontalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <PathIcon Width="13" Height="13"
+                                  Data="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                        <TextBlock Text="Pause"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Resume (visible while paused) -->
+                <Button Classes="primary"
+                        Command="{Binding ResumeDownloadCommand}"
+                        IsVisible="{Binding IsPaused}"
+                        Width="120" HorizontalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <PathIcon Width="13" Height="13"
+                                  Data="M8 5v14l11-7z" Foreground="White"/>
+                        <TextBlock Text="Resume" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Stop (always visible during step 3) -->
+                <Button Classes="ghost"
+                        Command="{Binding StopDownloadCommand}"
+                        Width="120" HorizontalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <PathIcon Width="13" Height="13"
+                                  Data="M6 6h12v12H6z" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="Cancel"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
         </StackPanel>
 
     </Grid>

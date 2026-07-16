@@ -39,7 +39,10 @@ public sealed class GGUFLoader : IModelLoader
 
             // Model params
             var modelParams = LlamaCppBindings.llama_model_default_params();
-            modelParams.n_gpu_layers = 0; // CPU-only
+            
+            // Read from settings
+            var settings = NovaLite.Core.Settings.AppSettings.Load();
+            modelParams.n_gpu_layers = settings.GpuLayers; // 0 = CPU-only, >0 = GPU offloading
 
             // Load model — 2.24.0 API: llama_model_load_from_file takes byte* path
             IntPtr model;
