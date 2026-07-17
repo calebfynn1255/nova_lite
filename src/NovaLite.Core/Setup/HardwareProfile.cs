@@ -44,6 +44,25 @@ public class HardwareProfile
     
     [Ignore]
     public long TotalVRamMB => TotalVRamBytes / 1024 / 1024;
+
+    [Ignore]
+    public bool HasDedicatedGpu
+    {
+        get
+        {
+            if (TotalVRamMB <= 512) return false;
+            
+            // If it's an Intel GPU, it's integrated UNLESS it's an Intel Arc
+            if (GpuName.Contains("Intel", StringComparison.OrdinalIgnoreCase))
+            {
+                if (GpuName.Contains("Arc", StringComparison.OrdinalIgnoreCase))
+                    return true;
+                return false;
+            }
+            
+            return true;
+        }
+    }
 }
 
 public class GpuInfo

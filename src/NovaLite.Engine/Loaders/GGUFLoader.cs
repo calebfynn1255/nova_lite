@@ -40,9 +40,15 @@ public sealed class GGUFLoader : IModelLoader
             // Model params
             var modelParams = LlamaCppBindings.llama_model_default_params();
             
-            // Read from settings
+            // Read from settings (Force 0 for Milestone 1 since included llama.dll is CPU-only)
             var settings = NovaLite.Core.Settings.AppSettings.Load();
-            modelParams.n_gpu_layers = settings.GpuLayers; // 0 = CPU-only, >0 = GPU offloading
+            modelParams.n_gpu_layers = 0; // CPU-only
+            // CPU tensor repacking improves throughput but needs hundreds of additional MB.
+            // Keep the setup model load viable on low-memory machines.
+            modelParams.use_extra_bufts = 0;
+            
+            _logger.LogInformation("LlamaModelParams: devices={devices}, kv={kv}, mmap={mmap}",
+                modelParams.devices, modelParams.kv_overrides, modelParams.use_mmap);
 
             // Load model — 2.24.0 API: llama_model_load_from_file takes byte* path
             IntPtr model;
@@ -67,8 +73,8 @@ public sealed class GGUFLoader : IModelLoader
             ctxParams.n_ctx = 2048;
             ctxParams.n_batch = 512;
             ctxParams.n_ubatch = 512;
-            ctxParams.n_threads = (uint)Math.Min(Environment.ProcessorCount, 4);
-            ctxParams.n_threads_batch = (uint)Math.Min(Environment.ProcessorCount, 4);
+            ctxParams.n_threads = Math.Min(Environment.ProcessorCount, 4);
+            ctxParams.n_threads_batch = Math.Min(Environment.ProcessorCount, 4);
 
             // Create context — 2.24.0 API: llama_init_from_model
             IntPtr ctx = LlamaCppBindings.llama_init_from_model(model, ctxParams);
@@ -79,7 +85,7 @@ public sealed class GGUFLoader : IModelLoader
 
             // Build sampler chain — new 2.24.0 API
             var chainParams = LlamaCppBindings.llama_sampler_chain_default_params();
-            chainParams.no_perf = true;
+            chainParams.no_perf = 1;
             IntPtr sampler = LlamaCppBindings.llama_sampler_chain_init(chainParams);
             LlamaCppBindings.llama_sampler_chain_add(sampler, LlamaCppBindings.llama_sampler_init_top_k(40));
             LlamaCppBindings.llama_sampler_chain_add(sampler, LlamaCppBindings.llama_sampler_init_top_p(0.95f, (UIntPtr)1));

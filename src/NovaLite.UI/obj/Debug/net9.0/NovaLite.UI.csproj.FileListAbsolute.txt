@@ -24,10 +24,7 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.MicroCom.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.OpenGL.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Vulkan.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Controls.ColorPicker.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Controls.DataGrid.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Desktop.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Diagnostics.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Fonts.Inter.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.FreeDesktop.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Native.dll
@@ -35,7 +32,6 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.ReactiveUI.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Remote.Protocol.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Skia.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Themes.Fluent.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Themes.Simple.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.Win32.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\Avalonia.X11.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Debug\net9.0\CommunityToolkit.Mvvm.dll

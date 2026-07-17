@@ -31,7 +31,11 @@ public class SetupService
         StepChanged?.Invoke(1);
     }
 
-    public async Task DownloadAndBenchmarkAsync(RecommendedModel selectedModel, Action<double> progressCallback, CancellationToken ct = default)
+    public async Task DownloadAndBenchmarkAsync(
+        RecommendedModel selectedModel,
+        Action<double> progressCallback,
+        Action<string>? statusCallback = null,
+        CancellationToken ct = default)
     {
         StepChanged?.Invoke(2); // Download step
 
@@ -49,6 +53,7 @@ public class SetupService
 
         await _downloader.DownloadModelAsync(selectedModel.Model.DownloadUrls, selectedModel.Model.ExpectedSha256, destPath, progressCallback, ct);
 
+        statusCallback?.Invoke($"Download complete. Loading {selectedModel.Model.Name} for a quick performance check…");
         StepChanged?.Invoke(3); // Benchmark step
 
         // Apply configuration based on hardware
@@ -57,6 +62,7 @@ public class SetupService
         var result = await _benchmark.RunAsync(destPath, selectedModel.Model.Name, options);
         
         // Save benchmark result to DB
+        statusCallback?.Invoke("Saving performance results…");
         var db = await DatabaseManager.GetConnectionAsync();
         await db.InsertAsync(result);
 

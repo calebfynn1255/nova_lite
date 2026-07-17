@@ -6,8 +6,7 @@ using System.Runtime.CompilerServices;
 namespace NovaLite.Native;
 
 /// <summary>
-/// P/Invoke declarations matching llama.cpp C API version 2.24.0
-/// (as shipped with LM Studio llama.cpp-win-x86_64-avx2-2.24.0).
+/// P/Invoke declarations matching the bundled llama.cpp C API.
 /// </summary>
 public static unsafe partial class LlamaCppBindings
 {
@@ -17,26 +16,30 @@ public static unsafe partial class LlamaCppBindings
     [StructLayout(LayoutKind.Sequential)]
     public struct LlamaSamplerChainParams
     {
-        [MarshalAs(UnmanagedType.I1)] public bool no_perf;
+        public byte no_perf;
     }
 
     // ── Model params ──────────────────────────────────────────────────────────
     [StructLayout(LayoutKind.Sequential)]
     public struct LlamaModelParams
     {
+        public IntPtr devices;             // ggml_backend_dev_t* (NULL-terminated)
+        public IntPtr tensor_buft_overrides;
         public int n_gpu_layers;
         public int split_mode;
         public int main_gpu;
         public IntPtr tensor_split;        // float*
-        public IntPtr rpc_servers;         // const char**  (new in 2.24)
         public IntPtr progress_callback;
         public IntPtr progress_callback_user_data;
         public IntPtr kv_overrides;        // llama_model_kv_override*
-        public IntPtr devices;             // ggml_backend_dev_t*  (new in 2.24)
-        [MarshalAs(UnmanagedType.I1)] public bool vocab_only;
-        [MarshalAs(UnmanagedType.I1)] public bool use_mmap;
-        [MarshalAs(UnmanagedType.I1)] public bool use_mlock;
-        [MarshalAs(UnmanagedType.I1)] public bool check_tensors;
+        public byte vocab_only;
+        public byte use_mmap;
+        public byte use_direct_io;
+        public byte use_mlock;
+        public byte check_tensors;
+        public byte use_extra_bufts;
+        public byte no_host;
+        public byte no_alloc;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -46,11 +49,15 @@ public static unsafe partial class LlamaCppBindings
         public uint n_batch;
         public uint n_ubatch;
         public uint n_seq_max;
-        public uint n_threads;
-        public uint n_threads_batch;
+        public uint n_rs_seq;
+        public uint n_outputs_max;
+        public int n_threads;
+        public int n_threads_batch;
+        public int ctx_type;
         public int rope_scaling_type;
         public int pooling_type;
         public int attention_type;
+        public int flash_attn_type;
         public float rope_freq_base;
         public float rope_freq_scale;
         public float yarn_ext_factor;
@@ -63,14 +70,17 @@ public static unsafe partial class LlamaCppBindings
         public IntPtr cb_eval_user_data;
         public int type_k;
         public int type_v;
-        [MarshalAs(UnmanagedType.I1)] public bool swa_full;
-        [MarshalAs(UnmanagedType.I1)] public bool logits_all;
-        [MarshalAs(UnmanagedType.I1)] public bool embeddings;
-        [MarshalAs(UnmanagedType.I1)] public bool offload_kqv;
-        [MarshalAs(UnmanagedType.I1)] public bool flash_attn;
-        [MarshalAs(UnmanagedType.I1)] public bool no_perf;
         public IntPtr abort_callback;
         public IntPtr abort_callback_data;
+        public byte embeddings;
+        public byte offload_kqv;
+        public byte no_perf;
+        public byte op_offload;
+        public byte swa_full;
+        public byte kv_unified;
+        public IntPtr samplers;
+        public UIntPtr n_samplers;
+        public IntPtr ctx_other;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -127,9 +137,13 @@ public static unsafe partial class LlamaCppBindings
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
     public static partial void llama_free(IntPtr ctx);
 
-    [LibraryImport(LibName, EntryPoint = "llama_kv_cache_clear")]
+    [LibraryImport(LibName, EntryPoint = "llama_get_memory")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial void llama_kv_cache_clear(IntPtr ctx);
+    public static partial IntPtr llama_get_memory(IntPtr ctx);
+
+    [LibraryImport(LibName, EntryPoint = "llama_memory_clear")]
+    [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+    public static partial void llama_memory_clear(IntPtr memory, byte data);
 
     // ── Tokenisation - 2.24 uses llama_vocab* not model* ─────────────────────
     [LibraryImport(LibName, EntryPoint = "llama_tokenize")]
@@ -161,7 +175,7 @@ public static unsafe partial class LlamaCppBindings
 
     [LibraryImport(LibName, EntryPoint = "llama_batch_get_one")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial LlamaBatch llama_batch_get_one(int* tokens, int n_tokens, int pos0, int seq_id);
+    public static partial LlamaBatch llama_batch_get_one(int* tokens, int n_tokens);
 
     // ── New Sampler Chain API (2.24.0) ────────────────────────────────────────
     [LibraryImport(LibName, EntryPoint = "llama_sampler_chain_default_params")]

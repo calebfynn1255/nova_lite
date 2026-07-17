@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NovaLite.Database")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca5f32b75bddbd29f331abd1376e136ab54281b7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43d9edb917706dae1a5e4c6624b96acfc5d530b2")]
 [assembly: System.Reflection.AssemblyProductAttribute("NovaLite.Database")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NovaLite.Database")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

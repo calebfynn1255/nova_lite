@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Platform.Storage;
 using NovaLite.Setup;
 using NovaLite.UI.ViewModels;
@@ -7,9 +8,16 @@ namespace NovaLite.UI.Views;
 
 public partial class SetupWindow : Window
 {
+    private readonly WindowNotificationManager _notifications;
+
     public SetupWindow()
     {
         InitializeComponent();
+        _notifications = new WindowNotificationManager(this)
+        {
+            Position = NotificationPosition.TopRight,
+            MaxItems = 3
+        };
     }
 
     protected override void OnDataContextChanged(EventArgs e)
@@ -19,6 +27,8 @@ public partial class SetupWindow : Window
         if (DataContext is SetupWindowViewModel vm)
         {
             vm.CloseAction = () => Close();
+            vm.ShowNotificationAction = (title, message) =>
+                _notifications.Show(new Notification(title, message, NotificationType.Success, TimeSpan.FromSeconds(5)));
             vm.PickFolderAction = async () =>
             {
                 var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions

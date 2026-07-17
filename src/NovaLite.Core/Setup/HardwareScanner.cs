@@ -68,6 +68,21 @@ public class HardwareScanner
                     {
                         vram = ramVal;
                     }
+
+                    // WMI caps AdapterRAM at 4GB. We pull from Registry for accurate >4GB VRAM
+                    long regVRam = GetVRamFromRegistry(name);
+                    if (regVRam > 0)
+                    {
+                        vram = regVRam;
+                    }
+
+                    // Intel integrated graphics often erroneously report 2047MB or 1GB via WMI/Registry
+                    // but their true dedicated VRAM is usually ~128MB. 
+                    if (name.Contains("Intel", StringComparison.OrdinalIgnoreCase) && !name.Contains("Arc", StringComparison.OrdinalIgnoreCase))
+                    {
+                        vram = 128L * 1024 * 1024;
+                    }
+
                     gpus.Add(new GpuInfo { Name = name, VRamBytes = vram });
                     
                     // Keep the "best" one as primary for legacy properties
@@ -135,6 +150,7 @@ public class HardwareScanner
             existing.GpuName == profile.GpuName)
         {
             existing.LastScanned = DateTime.UtcNow;
+            existing.TotalVRamBytes = profile.TotalVRamBytes;
             existing.Gpus = profile.Gpus;
             existing.Drives = profile.Drives;
             await db.UpdateAsync(existing);
@@ -143,5 +159,49 @@ public class HardwareScanner
 
         await db.InsertAsync(profile);
         return profile;
+    }
+
+    private long GetVRamFromRegistry(string adapterName)
+    {
+        try
+        {
+            using var baseKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\ControlSet001\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}");
+            if (baseKey != null)
+            {
+                string normName = new string(adapterName.Where(char.IsLetterOrDigit).ToArray());
+
+                foreach (var subKeyName in baseKey.GetSubKeyNames())
+                {
+                    using var key = baseKey.OpenSubKey(subKeyName);
+                    if (key != null)
+                    {
+                        var desc = key.GetValue("DriverDesc")?.ToString();
+                        if (desc != null)
+                        {
+                            string normDesc = new string(desc.Where(char.IsLetterOrDigit).ToArray());
+                            if (normDesc.Contains(normName, StringComparison.OrdinalIgnoreCase) || normName.Contains(normDesc, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var qwMem = key.GetValue("HardwareInformation.qwMemorySize");
+                                if (qwMem != null)
+                                {
+                                    if (qwMem is long l) return l;
+                                    if (qwMem is byte[] b && b.Length == 8) return BitConverter.ToInt64(b, 0);
+                                }
+                                
+                                var mem = key.GetValue("HardwareInformation.MemorySize");
+                                if (mem != null)
+                                {
+                                    if (mem is int i) return (uint)i;
+                                    if (mem is long l) return l;
+                                    if (mem is byte[] b && b.Length >= 4) return BitConverter.ToUInt32(b, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch { }
+        return 0;
     }
 }

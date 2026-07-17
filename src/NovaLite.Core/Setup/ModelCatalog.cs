@@ -29,22 +29,19 @@ public static class ModelCatalog
     {
         try
         {
-            _http.DefaultRequestHeaders.UserAgent.ParseAdd("NovaLite/1.0");
             var json = await _http.GetStringAsync(CatalogUrl);
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var fetched = JsonSerializer.Deserialize<List<ModelCatalogEntry>>(json, options);
-            if (fetched != null && fetched.Count > 0)
-            {
-                _models = fetched;
-                return;
-            }
+            var remote = JsonSerializer.Deserialize<List<ModelCatalogEntry>>(json, options);
+            if (remote != null && remote.Count > 0)
+                _models = remote;
+            else
+                _models = LoadEmbedded();
         }
         catch
         {
-            // Fallback to embedded on failure
+            // Network unavailable — fall back to bundled catalog
+            _models = LoadEmbedded();
         }
-        
-        _models = LoadEmbedded();
     }
 
     private static IReadOnlyList<ModelCatalogEntry> LoadEmbedded()

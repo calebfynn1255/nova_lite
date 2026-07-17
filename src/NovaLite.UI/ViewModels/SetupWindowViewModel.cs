@@ -18,6 +18,7 @@ public partial class SetupWindowViewModel : ObservableObject
     
     public Action? CloseAction { get; set; }
     public Func<Task<string?>>? PickFolderAction { get; set; }
+    public Action<string, string>? ShowNotificationAction { get; set; }
     
     private CancellationTokenSource? _downloadCts;
 
@@ -52,6 +53,7 @@ public partial class SetupWindowViewModel : ObservableObject
     [ObservableProperty] private string _downloadStatus = string.Empty;
     [ObservableProperty] private bool _isDownloading;
     [ObservableProperty] private bool _isPaused;
+    [ObservableProperty] private bool _isBenchmarking;
 
     // Resume-step display info
     [ObservableProperty] private string _resumeModelName = string.Empty;
@@ -198,26 +200,63 @@ public partial class SetupWindowViewModel : ObservableObject
                 s2.PendingDownloadProgress = 0;
                 s2.Save();
 
-                await _setup.DownloadAndBenchmarkAsync(sm, p =>
-                {
-                    Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                await _setup.DownloadAndBenchmarkAsync(
+                    sm,
+                    p =>
                     {
-                        if (p > 100)
+                        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
-                            DownloadStatus = $"Verifying {sm.Model.Name}...";
-                        }
-                        else
+                            if (p > 100)
+                            {
+                                DownloadStatus = $"Benchmarking {sm.Model.Name}…";
+                                IsBenchmarking = true;
+                            }
+                            else
+                            {
+                                DownloadProgress = p;
+                                // Persist progress so resume screen is accurate
+                                var s3 = AppSettings.Load();
+                                s3.PendingDownloadProgress = p;
+                                s3.Save();
+                            }
+                        });
+                    },
+                    status => Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                    {
+                        DownloadStatus = status;
+                        if (status.StartsWith("Download complete.", StringComparison.Ordinal))
                         {
-                            DownloadProgress = p;
-                            // Persist progress so resume screen is accurate
-                            var s3 = AppSettings.Load();
-                            s3.PendingDownloadProgress = p;
-                            s3.Save();
+                            IsBenchmarking = true;
+                            ShowNotificationAction?.Invoke(
+                                "Download complete",
+                                $"{sm.Model.Name} is ready. NovaLite is loading it and running a quick performance check.");
+
+                            // Show native Windows Toast notification via PowerShell
+                            try
+                            {
+                                var script = $"[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null; " +
+                                             $"$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02); " +
+                                             $"$nodes = $template.GetElementsByTagName('text'); " +
+                                             $"$nodes[0].AppendChild($template.CreateTextNode('Download Complete')) > $null; " +
+                                             $"$nodes[1].AppendChild($template.CreateTextNode('{sm.Model.Name} has been downloaded and is being benchmarked.')) > $null; " +
+                                             $"$toast = [Windows.UI.Notifications.ToastNotification]::new($template); " +
+                                             $"[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('NovaLite').Show($toast);";
+                                
+                                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                                {
+                                    FileName = "powershell",
+                                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{script}\"",
+                                    UseShellExecute = false,
+                                    CreateNoWindow = true
+                                });
+                            }
+                            catch { }
                         }
-                    });
-                }, _downloadCts.Token);
+                    }),
+                    _downloadCts.Token);
             }
 
+            IsBenchmarking = false;
             // All done — mark as complete
             var sf = AppSettings.Load();
             sf.IsDownloadComplete = true;
@@ -225,15 +264,11 @@ public partial class SetupWindowViewModel : ObservableObject
             sf.PendingDownloadFilePath = string.Empty;
             sf.PendingDownloadProgress = 0;
             
-            // Automatically enable GPU offloading if they have a dedicated GPU
-            if (Hardware?.TotalVRamMB > 512)
-            {
-                sf.GpuLayers = 99; // 99 layers means offload everything to GPU in llama.cpp
-            }
+            // (GPU offloading disabled for Milestone 1 as included DLL is CPU-only)
 
             sf.Save();
 
-            DownloadStatus = "Setup complete!";
+            DownloadStatus = "Setup complete. Opening chat…";
             await Task.Delay(1000);
             CloseAction?.Invoke();
         }
@@ -246,11 +281,35 @@ public partial class SetupWindowViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            DownloadStatus = $"Network error (Paused): {ex.Message}";
-            IsPaused = true;
-            var se = AppSettings.Load();
-            se.PendingDownloadProgress = DownloadProgress;
-            se.Save();
+            if (DownloadProgress >= 100 || ex.Message.Contains("llama.cpp") || ex.Message.Contains("benchmark"))
+            {
+                // Download finished, but benchmarking failed (e.g. missing AVX, C++ redistributable, or out of memory).
+                // Show the error, but don't trap them in a paused network error state.
+                DownloadStatus = $"Downloaded successfully, but benchmark failed: {ex.Message}";
+                
+                // Complete the setup anyway so they aren't stuck
+                var sf = AppSettings.Load();
+                sf.IsDownloadComplete = true;
+                sf.PendingDownloadModelName = string.Empty;
+                sf.PendingDownloadFilePath = string.Empty;
+                sf.PendingDownloadProgress = 0;
+                
+                // (GPU offloading disabled for Milestone 1)
+
+                sf.Save();
+
+                // Wait a few seconds so the user can read the error before the window closes
+                await Task.Delay(3500);
+                CloseAction?.Invoke();
+            }
+            else
+            {
+                DownloadStatus = $"Network error (Paused): {ex.Message}";
+                IsPaused = true;
+                var se = AppSettings.Load();
+                se.PendingDownloadProgress = DownloadProgress;
+                se.Save();
+            }
         }
         finally
         {

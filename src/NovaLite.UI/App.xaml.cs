@@ -116,6 +116,24 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            // Safety check: if a model already exists on disk, treat setup as complete
+            // even if the settings flags weren't saved correctly (e.g. after a benchmark crash)
+            var modelDir = Settings.ModelDirectory;
+            if (!Settings.IsDownloadComplete && !string.IsNullOrEmpty(modelDir) && Directory.Exists(modelDir))
+            {
+                var existingModels = Directory.GetFiles(modelDir, "*.gguf", SearchOption.TopDirectoryOnly);
+                if (existingModels.Length > 0)
+                {
+                    Settings.IsFirstRun = false;
+                    Settings.IsDownloadComplete = true;
+                    Settings.PendingDownloadModelName = string.Empty;
+                    Settings.PendingDownloadFilePath = string.Empty;
+                    Settings.LastModelPath = existingModels[0];
+                    Settings.Save();
+                    try { File.AppendAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NovaLite", "startup.log"), $"[{DateTime.UtcNow:O}] Found existing model on disk, auto-completing setup{Environment.NewLine}"); } catch {}
+                }
+            }
+
             var needsSetup = Settings.IsFirstRun ||
                              (!Settings.IsDownloadComplete && !string.IsNullOrEmpty(Settings.PendingDownloadModelName));
 

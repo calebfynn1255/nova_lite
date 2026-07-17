@@ -70,7 +70,7 @@ public partial class ModelManagerViewModel : ObservableObject
             foreach (var m in found)
             {
                 var vm = new ModelInfoViewModel(m);
-                if (!string.IsNullOrEmpty(lastLoaded) &&
+                if (App.Provider.IsReady && !string.IsNullOrEmpty(lastLoaded) &&
                     string.Equals(m.FilePath, lastLoaded, StringComparison.OrdinalIgnoreCase))
                 {
                     vm.IsLoaded = true;

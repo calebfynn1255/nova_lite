@@ -38,7 +38,8 @@ public sealed class LlamaSession : IInferenceSession
         
         _logger.LogInformation("LlamaSession.InferAsync — prompt length: {Len}", prompt.Length);
         
-        // KV cache is automatically overwritten by resetting position to 0
+        // Clear the prior conversation's KV state before starting a new prompt.
+        LlamaCppBindings.llama_memory_clear(LlamaCppBindings.llama_get_memory(_ctx), 1);
         _nPast = 0;
 
         int[] tokens = TokenizePrompt(prompt);
@@ -110,7 +111,7 @@ public sealed class LlamaSession : IInferenceSession
     {
         fixed (int* pTok = tokens)
         {
-            LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, tokens.Length, _nPast, 0);
+            LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, tokens.Length);
             int ret = LlamaCppBindings.llama_decode(_ctx, batch);
             if (ret != 0)
                 throw new Exception($"llama_decode (prompt) returned {ret}");
@@ -122,7 +123,7 @@ public sealed class LlamaSession : IInferenceSession
     {
         int* pTok = stackalloc int[1];
         pTok[0] = token;
-        LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, 1, _nPast, 0);
+        LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, 1);
         int ret = LlamaCppBindings.llama_decode(_ctx, batch);
         if (ret != 0)
             _logger.LogWarning("llama_decode (token) returned {Ret}", ret);
