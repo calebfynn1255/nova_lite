@@ -19,12 +19,12 @@ public sealed class ContextWindowManager
     /// Returns a trimmed message list that fits within <see cref="_maxTokens"/>.
     /// Always preserves the system prompt (index 0 if role = System).
     /// </summary>
-    public IReadOnlyList<ChatMessage> Trim(IReadOnlyList<ChatMessage> messages)
+    public IReadOnlyList<ChatMessage> Trim(IReadOnlyList<ChatMessage> messages, int? maxTokens = null)
     {
         if (messages.Count == 0) return messages;
 
+        int budget = maxTokens ?? _maxTokens;
         var result = new List<ChatMessage>();
-        int budget = _maxTokens;
 
         // Always include system prompt
         ChatMessage? systemMsg = null;
@@ -38,7 +38,11 @@ public sealed class ContextWindowManager
         for (int i = messages.Count - 1; i >= (systemMsg != null ? 1 : 0); i--)
         {
             var msg = messages[i];
-            int cost = Math.Max(msg.TokenCount, 8); // floor estimate
+            // Persisted messages don't have tokenizer counts. Estimate from UTF-8 text
+            // and leave room for ChatML role markers so long follow-up chats don't
+            // overflow the native context window.
+            int estimatedTokens = Math.Max(8, (System.Text.Encoding.UTF8.GetByteCount(msg.Content) + 3) / 4);
+            int cost = Math.Max(msg.TokenCount, estimatedTokens) + 12;
             if (budget - cost < 256) break;         // leave room for response
             budget -= cost;
             result.Insert(0, msg);

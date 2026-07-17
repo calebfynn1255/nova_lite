@@ -258,3 +258,7 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\obj\Release\net9.0\refint\Avalonia\NovaL
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\obj\Release\net9.0\NovaLite.8C48CF04.Up2Date
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\obj\Release\net9.0\NovaLite.UI.genruntimeconfig.cache
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\obj\Release\net9.0\ref\NovaLite.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0\Avalonia.Controls.ColorPicker.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0\Avalonia.Controls.DataGrid.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0\Avalonia.Diagnostics.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0\Avalonia.Themes.Simple.dll

@@ -70,7 +70,7 @@ public sealed class GGUFLoader : IModelLoader
 
             // Context params
             var ctxParams = LlamaCppBindings.llama_context_default_params();
-            ctxParams.n_ctx = 2048;
+            ctxParams.n_ctx = 4096;
             ctxParams.n_batch = 512;
             ctxParams.n_ubatch = 512;
             ctxParams.n_threads = Math.Min(Environment.ProcessorCount, 4);

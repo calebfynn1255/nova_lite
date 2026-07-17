@@ -51,20 +51,31 @@ public sealed class LocalInferenceProvider : IInferenceProvider
 
         _logger.LogDebug("Starting inference. Messages: {Count}", messages.Count);
 
-        // Delegate to the engine session's streaming
-        // NativeHandle is not used for LLamaSharp-backed models; State holds the session.
+        // Build a proper ChatML multi-turn prompt from the full conversation history.
+        // This gives the model memory of previous exchanges.
+        var sb = new System.Text.StringBuilder();
 
-        // For Milestone 1, we just take the raw text of the last user message.
-        var lastUserMsg = messages.LastOrDefault(m => m.Role == NovaLite.Core.Models.ChatRole.User);
-        var userPrompt = lastUserMsg?.Content ?? string.Empty;
-        // Prepend a system instruction to prefer English replies.
-        const string systemInstruction = "You are a helpful assistant that must reply in English.";
-        var prompt = string.IsNullOrWhiteSpace(userPrompt)
-            ? systemInstruction
-            : systemInstruction + "\n\n" + userPrompt;
-        if (string.IsNullOrEmpty(prompt))
-            throw new Exception("Prompt was empty after finding user message.");
-        
+        foreach (var msg in messages)
+        {
+            string role = msg.Role switch
+            {
+                ChatRole.System => "system",
+                ChatRole.User => "user",
+                ChatRole.Assistant => "assistant",
+                _ => "user"
+            };
+
+            sb.Append("<|im_start|>");
+            sb.AppendLine(role);
+            sb.AppendLine(msg.Content);
+            sb.AppendLine("<|im_end|>");
+        }
+
+        // Add the assistant turn starter so the model knows to reply
+        sb.Append("<|im_start|>assistant\n");
+
+        var prompt = sb.ToString();
+
         if (_model.State is NovaLite.Core.Interfaces.IInferenceSession session)
         {
             await foreach (var token in session.InferAsync(prompt, options, ct))

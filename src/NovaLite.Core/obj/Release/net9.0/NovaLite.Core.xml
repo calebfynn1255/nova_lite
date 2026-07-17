@@ -86,7 +86,7 @@
             Uses a simple token-budget strategy: keep system prompt + most recent N messages.
             </summary>
         </member>
-        <member name="M:NovaLite.Core.Memory.ContextWindowManager.Trim(System.Collections.Generic.IReadOnlyList{NovaLite.Core.Models.ChatMessage})">
+        <member name="M:NovaLite.Core.Memory.ContextWindowManager.Trim(System.Collections.Generic.IReadOnlyList{NovaLite.Core.Models.ChatMessage},System.Nullable{System.Int32})">
             <summary>
             Returns a trimmed message list that fits within <see cref="F:NovaLite.Core.Memory.ContextWindowManager._maxTokens"/>.
             Always preserves the system prompt (index 0 if role = System).

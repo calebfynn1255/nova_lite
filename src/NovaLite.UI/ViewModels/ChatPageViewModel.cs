@@ -114,7 +114,7 @@ public partial class ChatPageViewModel : ObservableObject
             });
         }
 
-        // Add user message
+        // Add user message immediately so the UI feels responsive
         Messages.Add(new ChatMessageViewModel
         {
             Content = userText,
@@ -122,48 +122,84 @@ public partial class ChatPageViewModel : ObservableObject
             Timestamp = now
         });
         HasMessages = true;
+        ChatUpdated?.Invoke(); // scroll to bottom
 
-        // Add AI placeholder
-        var aiMsg = new ChatMessageViewModel
-        {
-            Content = string.Empty,
-            IsUser = false,
-            IsStreaming = true,
-            Timestamp = DateTime.Now
-        };
-        Messages.Add(aiMsg);
-
+        // IsGenerating shows the TypingIndicator — no blank bubble until first token
         IsGenerating = true;
         _cts = new CancellationTokenSource();
 
+        ChatMessageViewModel? aiMsg = null;
+
         try
         {
-            // Wire to ConversationService
+            // Yield once to let Avalonia render the user message + typing indicator
+            // before the heavy CPU work (tokenization/decode) begins on the background thread.
+            await Task.Yield();
+
             await foreach (var token in _conversationService.SendAsync(userText, null, _cts.Token))
             {
-                aiMsg.Content += token;
+                if (aiMsg == null)
+                {
+                    // First token — swap typing indicator for real bubble
+                    aiMsg = new ChatMessageViewModel
+                    {
+                        Content = token,
+                        IsUser = false,
+                        IsStreaming = true,
+                        Timestamp = DateTime.Now
+                    };
+                    Messages.Add(aiMsg);
+                    IsGenerating = false;
+                }
+                else
+                {
+                    aiMsg.Content += token;
+                }
             }
-            aiMsg.IsStreaming = false;
+
+            if (aiMsg != null)
+                aiMsg.IsStreaming = false;
+            else
+            {
+                Messages.Add(new ChatMessageViewModel
+                {
+                    Content = "*(no response)*",
+                    IsUser = false,
+                    Timestamp = DateTime.Now
+                });
+            }
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("No model loaded"))
         {
-            aiMsg.Content = "> ⚠️ No model loaded. Go to **Models** to load a GGUF file.";
-            aiMsg.IsStreaming = false;
+            Messages.Add(new ChatMessageViewModel
+            {
+                Content = "> ⚠️ No model loaded. Go to **Models** to load a GGUF file.",
+                IsUser = false,
+                Timestamp = DateTime.Now
+            });
         }
         catch (OperationCanceledException)
         {
-            aiMsg.Content += " *(cancelled)*";
-            aiMsg.IsStreaming = false;
+            if (aiMsg != null)
+            {
+                aiMsg.Content += " *(cancelled)*";
+                aiMsg.IsStreaming = false;
+            }
         }
         catch (Exception ex)
         {
-            aiMsg.Content = $"> ❌ Inference error: {ex.Message}";
-            aiMsg.IsStreaming = false;
+            Messages.Add(new ChatMessageViewModel
+            {
+                Content = $"> ❌ Error: {ex.Message}",
+                IsUser = false,
+                Timestamp = DateTime.Now
+            });
             Serilog.Log.Error(ex, "Chat inference failed");
         }
         finally
         {
             IsGenerating = false;
+            if (aiMsg != null) aiMsg.IsStreaming = false;
             _cts?.Dispose();
             _cts = null;
             ChatUpdated?.Invoke();

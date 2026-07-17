@@ -33,42 +33,88 @@ public sealed class LlamaSession : IInferenceSession
     {
         int maxTokens = options?.MaxTokens > 0 ? options.MaxTokens : 512;
         
-        // Wrap prompt in a robust user-assistant format so raw input doesn't confuse the model
-        prompt = $"<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n";
-        
         _logger.LogInformation("LlamaSession.InferAsync — prompt length: {Len}", prompt.Length);
         
-        // Clear the prior conversation's KV state before starting a new prompt.
-        LlamaCppBindings.llama_memory_clear(LlamaCppBindings.llama_get_memory(_ctx), 1);
-        _nPast = 0;
+        // Offload slow blocking P/Invoke ops to a background thread so the UI
+        // can render the user message and typing indicator immediately.
+        await Task.Run(() =>
+        {
+            LlamaCppBindings.llama_memory_clear(LlamaCppBindings.llama_get_memory(_ctx), 1);
+            _nPast = 0;
+        }, ct);
 
-        int[] tokens = TokenizePrompt(prompt);
+        int[] tokens = await Task.Run(() => TokenizePrompt(prompt), ct);
         if (tokens.Length == 0)
             throw new Exception("Tokenization produced 0 tokens.");
 
-        _logger.LogInformation("Tokenized to {Count} tokens, decoding prompt batch...", tokens.Length);
-        DecodePrompt(tokens);
+        _logger.LogInformation("Tokenized to {Count} tokens, decoding prompt...", tokens.Length);
+        await Task.Run(() => DecodePrompt(tokens), ct);
 
         _logger.LogInformation("Starting token generation loop...");
         byte[] pieceBuf = new byte[256];
+
+        // Small buffer to detect multi-piece control tokens like <|im_end|>
+        var pieceBuffer = new System.Text.StringBuilder(16);
 
         for (int i = 0; i < maxTokens; i++)
         {
             ct.ThrowIfCancellationRequested();
 
+            // SampleNext and DecodeToken are fast (<1ms each) — no Task.Run needed
             int newToken = SampleNext();
 
             if (IsEog(newToken))
             {
-                _logger.LogInformation("EOG token reached at step {I}", i);
+                _logger.LogInformation("EOG at step {I}", i);
                 break;
             }
 
             string piece = TokenToPiece(newToken, pieceBuf);
-            if (!string.IsNullOrEmpty(piece))
-                yield return piece;
+            pieceBuffer.Append(piece);
+
+            string buffered = pieceBuffer.ToString();
+
+            // Check if we hit any control markers (either complete or partial)
+            int endIdx = buffered.IndexOf("<|im_end|>", StringComparison.Ordinal);
+            if (endIdx == -1)
+                endIdx = buffered.IndexOf("<|im_start|>", StringComparison.Ordinal);
+            if (endIdx == -1)
+                endIdx = buffered.IndexOf("<|", StringComparison.Ordinal); // stop if model tries to output any tag raw
+
+            if (endIdx != -1)
+            {
+                // Yield the part before the tag, then stop
+                var clean = buffered.Substring(0, endIdx);
+                if (clean.Length > 0)
+                    yield return clean;
+                break;
+            }
+
+            // Hold back if the buffer ends with a partial tag prefix so we can detect it in the next loop
+            bool isMaybeTag = buffered.EndsWith("<", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|i", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_e", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_en", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_end", StringComparison.Ordinal) ||
+                              buffered.EndsWith("<|im_s", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_st", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_sta", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_star", StringComparison.Ordinal) || 
+                              buffered.EndsWith("<|im_start", StringComparison.Ordinal);
+
+            if (!isMaybeTag)
+            {
+                if (buffered.Length > 0)
+                    yield return buffered;
+                pieceBuffer.Clear();
+            }
 
             DecodeToken(newToken);
+
+            // Yield control so Avalonia can render each token as it arrives
             await Task.Yield();
         }
 
@@ -109,13 +155,19 @@ public sealed class LlamaSession : IInferenceSession
 
     private unsafe void DecodePrompt(int[] tokens)
     {
-        fixed (int* pTok = tokens)
+        const int maxBatchTokens = 512;
+        for (int offset = 0; offset < tokens.Length; offset += maxBatchTokens)
         {
-            LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, tokens.Length);
-            int ret = LlamaCppBindings.llama_decode(_ctx, batch);
-            if (ret != 0)
-                throw new Exception($"llama_decode (prompt) returned {ret}");
-            _nPast += tokens.Length;
+            int count = Math.Min(maxBatchTokens, tokens.Length - offset);
+            fixed (int* pTok = &tokens[offset])
+            {
+                LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, count);
+                int ret = LlamaCppBindings.llama_decode(_ctx, batch);
+                if (ret != 0)
+                    throw new Exception($"llama_decode (prompt batch) returned {ret}");
+            }
+
+            _nPast += count;
         }
     }
 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NovaLite")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43d9edb917706dae1a5e4c6624b96acfc5d530b2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+79db1f448297ee1fad52b131030bf20e5e8d5cd6")]
 [assembly: System.Reflection.AssemblyProductAttribute("NovaLite")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NovaLite")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

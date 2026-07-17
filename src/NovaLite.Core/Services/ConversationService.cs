@@ -73,25 +73,42 @@ public sealed class ConversationService : IAsyncDisposable
         if (ActiveSessionId.HasValue)
         {
             await _chatRepo.AddMessageAsync(ActiveSessionId.Value, userMsg);
-            // Fire and forget memory extraction
-            _ = _memoryService.ExtractMemoriesFromChatAsync(userText);
+            // Fire-and-forget memory extraction — never let it crash the app
+            _ = _memoryService.ExtractMemoriesFromChatAsync(userText)
+                .ContinueWith(t => _logger.LogWarning("Memory extraction failed: {Err}", t.Exception?.Message),
+                    System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
+        }
+
+        var allFacts = await _memoryService.GetAllFactsAsync();
+
+        // Build system prompt. Clearly separate assistant identity (Nova) from user identity.
+        // Inject any stored facts about the user so the model can reference them.
+        var systemPrompt = new System.Text.StringBuilder();
+        systemPrompt.AppendLine("You are Nova, a helpful AI assistant. Your name is Nova — this is YOUR name, not the user's name.");
+        systemPrompt.AppendLine("You do NOT know the user's personal details (such as their name, age, or preferences) unless they are listed below.");
+        systemPrompt.AppendLine("If the user asks about their own personal details and you have no stored information about it, honestly say you don't know and ask them to tell you.");
+        systemPrompt.AppendLine("When the user tells you personal information (like their name), remember and use it.");
+
+        if (allFacts.Count > 0)
+        {
+            systemPrompt.AppendLine("\nWhat you know about this user:");
+            foreach (var fact in allFacts)
+                systemPrompt.AppendLine($"- {fact.Fact}");
         }
 
         var assistantMsg = ChatMessage.FromAssistant(string.Empty);
         Session.AddMessage(assistantMsg);
 
-        // Feed memory context to prompt if necessary
-        // For milestone 1, we just prepend facts to the system prompt if we were using a system role.
-        var allFacts = await _memoryService.GetAllFactsAsync();
-        string systemContext = string.Join("\n", allFacts.Select(f => f.Fact));
+        // Keep the prompt comfortably below the 2K native context. The remaining
+        // space is reserved for formatting and the assistant's response.
+        var trimmed = _contextWindow.Trim(Session.Messages, maxTokens: 1100);
+        var messages = new List<ChatMessage> { ChatMessage.SystemPrompt(systemPrompt.ToString()) };
+        messages.AddRange(trimmed);
         
-        // In LocalInferenceProvider, we could inject this system context, but for now we'll stick to the basic prompt loop.
-
-        var trimmed = _contextWindow.Trim(Session.Messages);
         var sb = new System.Text.StringBuilder();
 
         await foreach (var token in _provider.InferStreamAsync(
-                           trimmed, options ?? InferenceOptions.Default, ct))
+                           messages, options ?? InferenceOptions.Default, ct))
         {
             sb.Append(token);
             assistantMsg.Content = sb.ToString();

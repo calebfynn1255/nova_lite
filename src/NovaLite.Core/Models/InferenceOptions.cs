@@ -8,7 +8,9 @@ public sealed class InferenceOptions
     public float Temperature { get; set; } = 0.7f;
     public float TopP { get; set; } = 0.9f;
     public float RepetitionPenalty { get; set; } = 1.1f;
-    public int MaxTokens { get; set; } = 2048;
+    // The loaded CPU context is 2K tokens. Keeping normal replies bounded
+    // leaves space for follow-up history and prevents KV-cache exhaustion.
+    public int MaxTokens { get; set; } = 512;
     public int Seed { get; set; } = -1; // -1 = random
     public IReadOnlyList<string> StopSequences { get; set; } = [];
 
