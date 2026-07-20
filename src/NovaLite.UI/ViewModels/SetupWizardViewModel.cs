@@ -53,6 +53,8 @@ public partial class SetupWizardViewModel : ObservableObject
     [RelayCommand]
     private async Task StartScan()
     {
+        // Ensure catalog is loaded before scanning so recommendations are available
+        await ModelCatalog.RefreshAsync();
         await _setup.ScanHardwareAsync();
         
         Hardware = _setup.Hardware;

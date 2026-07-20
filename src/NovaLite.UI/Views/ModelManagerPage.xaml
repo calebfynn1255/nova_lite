@@ -49,10 +49,12 @@
         <Grid ColumnDefinitions="*,16,280">
 
             <!-- List -->
-            <Border Grid.Column="0" Classes="card" Padding="0">
-                <ListBox ItemsSource="{Binding Models}"
-                         SelectedItem="{Binding SelectedModel}"
-                         Background="Transparent">
+            <StackPanel Grid.Column="0" Spacing="16">
+                <Border Classes="card" Padding="0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <ListBox ItemsSource="{Binding Models}"
+                             SelectedItem="{Binding SelectedModel}"
+                             Background="Transparent">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type vm:ModelInfoViewModel}">
                             <Grid ColumnDefinitions="*,Auto" Margin="12,10">
@@ -84,8 +86,72 @@
                             <StackPanel/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
-                </ListBox>
-            </Border>
+                    </ListBox>
+                    </ScrollViewer>
+                </Border>
+
+                <Border Classes="card" Padding="16">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Recommended models" Classes="h3"/>
+                        <TextBlock Text="Download and load models from the same screen without leaving the app." Classes="secondary" FontSize="12" TextWrapping="Wrap"/>
+                        <ItemsControl ItemsSource="{Binding RecommendedDownloads}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RecommendedModelViewModel">
+                                    <Border Margin="0,0,0,8" Padding="12" BorderThickness="2" CornerRadius="8" Background="{DynamicResource BgSurfaceVariantBrush}">
+                                        <Border.BorderBrush>
+                                            <DynamicResource ResourceKey="AccentBrush"/>
+                                        </Border.BorderBrush>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,12,0">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBlock Text="{Binding DisplayName}" FontWeight="Medium"/>
+                                                    <Border IsVisible="{Binding IsPaused}" Padding="6,2" CornerRadius="999" Background="{DynamicResource AccentBrush}">
+                                                        <TextBlock Text="{Binding PauseLabel}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                    </Border>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Model.Description}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Spacing="8">
+                                                <Button Classes="primary"
+                                                        IsVisible="{Binding !IsPaused}"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.DownloadRecommendedCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock Text="Download &amp; Load" Foreground="White"/>
+                                                </Button>
+                                                <Button Classes="primary"
+                                                        IsVisible="{Binding IsPaused}"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.ResumeRecommendedDownloadCommand}">
+                                                    <TextBlock Text="Resume" Foreground="White"/>
+                                                </Button>
+                                                <Button Classes="ghost"
+                                                        IsVisible="{Binding IsPaused}"
+                                                        Command="{Binding $parent[ItemsControl].DataContext.CancelRecommendedDownloadCommand}">
+                                                    <TextBlock Text="Cancel"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <ProgressBar Value="{Binding RecommendedDownloadProgress}" Maximum="100" Height="8" IsVisible="{Binding IsRecommendedDownloadRunning}"/>
+                        <TextBlock Text="{Binding RecommendedDownloadStatus}" FontSize="12" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
+
+                        <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsRecommendedDownloadRunning}">
+                            <Button Classes="secondary" Command="{Binding PauseRecommendedDownloadCommand}" IsVisible="{Binding !IsRecommendedDownloadPaused}">
+                                <TextBlock Text="Pause"/>
+                            </Button>
+                            <Button Classes="primary" Command="{Binding ResumeRecommendedDownloadCommand}" IsVisible="{Binding IsRecommendedDownloadPaused}">
+                                <TextBlock Text="Resume"/>
+                            </Button>
+                            <Button Classes="ghost" Command="{Binding CancelRecommendedDownloadCommand}">
+                                <TextBlock Text="Cancel"/>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
 
             <!-- Detail panel -->
             <Border Grid.Column="2" Classes="card"

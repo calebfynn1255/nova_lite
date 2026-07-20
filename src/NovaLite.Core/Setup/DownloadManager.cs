@@ -13,7 +13,7 @@ public class DownloadManager
         _http.DefaultRequestHeaders.UserAgent.ParseAdd("NovaLite/1.0 (Windows; User)");
     }
 
-    public async Task DownloadModelAsync(IReadOnlyList<string> urls, string expectedSha256, string destinationPath, Action<double> progressCallback, CancellationToken ct = default)
+    public async Task<long> DownloadModelAsync(IReadOnlyList<string> urls, string expectedSha256, string destinationPath, Action<double> progressCallback, CancellationToken ct = default)
     {
         Exception? lastException = null;
 
@@ -22,22 +22,27 @@ public class DownloadManager
             try
             {
                 await TryDownloadWithResumeAsync(url, destinationPath, progressCallback, ct);
-                
+
                 progressCallback(100);
-                
-                // Verify SHA256
+
+                // Verify SHA256 against the final destination file
                 if (!string.IsNullOrEmpty(expectedSha256))
                 {
                     progressCallback(101); // Magic number for "Verifying"
                     bool valid = await VerifySha256Async(destinationPath, expectedSha256, ct);
                     if (!valid)
                     {
-                        File.Delete(destinationPath);
+                        if (File.Exists(destinationPath))
+                            File.Delete(destinationPath);
                         throw new Exception("SHA-256 hash mismatch. File corrupted.");
                     }
                 }
-                
-                return; // Success
+
+                return new FileInfo(destinationPath).Length; // Success
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -51,8 +56,12 @@ public class DownloadManager
 
     private async Task TryDownloadWithResumeAsync(string url, string destinationPath, Action<double> progressCallback, CancellationToken ct)
     {
-        var fileInfo = new FileInfo(destinationPath);
-        long existingLength = fileInfo.Exists ? fileInfo.Length : 0;
+        // Use a temporary "partial" file while downloading so incomplete files are easy to detect
+        var tempPath = destinationPath + ".partial";
+        var finalInfo = new FileInfo(destinationPath);
+        long existingLength = 0;
+        if (File.Exists(tempPath)) existingLength = new FileInfo(tempPath).Length;
+        else if (finalInfo.Exists) existingLength = finalInfo.Length; // treat already-complete final file as existing
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         if (existingLength > 0)
@@ -71,21 +80,51 @@ public class DownloadManager
         response.EnsureSuccessStatusCode();
 
         long totalBytes = (response.Content.Headers.ContentLength ?? 0) + existingLength;
-        if (totalBytes == existingLength) return;
+        if (totalBytes == existingLength)
+        {
+            // Already fully downloaded — ensure final file exists
+            if (File.Exists(destinationPath)) return;
+            if (File.Exists(tempPath))
+            {
+                File.Move(tempPath, destinationPath, true);
+                return;
+            }
+        }
 
         using var contentStream = await response.Content.ReadAsStreamAsync(ct);
-        using var fileStream = new FileStream(destinationPath, existingLength > 0 ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+        using var fileStream = new FileStream(tempPath, existingLength > 0 ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
 
         var buffer = new byte[81920];
         long totalRead = existingLength;
         int bytesRead;
+        double lastReportedProgress = -1;
+        DateTimeOffset lastUpdateAt = DateTimeOffset.MinValue;
 
         while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, ct)) > 0)
         {
             await fileStream.WriteAsync(buffer, 0, bytesRead, ct);
             totalRead += bytesRead;
-            progressCallback((double)totalRead / totalBytes * 100);
+
+            double progressPercent = (double)totalRead / totalBytes * 100;
+            var now = DateTimeOffset.UtcNow;
+            bool shouldReport = progressPercent - lastReportedProgress >= 0.5 ||
+                                (now - lastUpdateAt).TotalMilliseconds >= 250;
+
+            if (shouldReport)
+            {
+                lastReportedProgress = progressPercent;
+                lastUpdateAt = now;
+                progressCallback(progressPercent);
+            }
         }
+
+        // Move partial to final destination
+        try
+        {
+            if (File.Exists(tempPath))
+                File.Move(tempPath, destinationPath, true);
+        }
+        catch { /* best-effort */ }
     }
 
     private async Task<bool> VerifySha256Async(string filePath, string expectedHash, CancellationToken ct)

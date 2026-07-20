@@ -13,4 +13,8 @@ public class ChatMessageEntity
     public string Content { get; set; } = string.Empty;
     
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+    public string? AttachedFileName { get; set; }
+    public string? AttachedFileSizeDisplay { get; set; }
+    public string? AttachedFileContent { get; set; }
 }

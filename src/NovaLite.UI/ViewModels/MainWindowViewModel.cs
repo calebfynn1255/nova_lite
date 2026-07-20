@@ -46,6 +46,7 @@ public partial class MainWindowViewModel : ObservableObject
         // is synchronous CPU-bound work that blocks the calling thread. Task.Run ensures
         // it NEVER touches the Avalonia UI event loop.
         Task.Run(InitializeAsync);
+        AutoLoadModelBackground();
     }
 
     private async Task InitializeAsync()
@@ -70,9 +71,8 @@ public partial class MainWindowViewModel : ObservableObject
             System.Diagnostics.Debug.WriteLine($"Session load error: {ex}");
         }
 
-        // Auto-load model: GgufLoader.LoadAsync already wraps in Task.Run,
-        // so awaiting it on the background thread is safe
-        AutoLoadModelBackground();
+        // Avoid eager model loading on startup. The model is loaded only when the user
+        // explicitly chooses to use it from the models page or chat flow.
     }
 
     private void AutoLoadModelBackground()
@@ -80,18 +80,7 @@ public partial class MainWindowViewModel : ObservableObject
         Task.Run(async () =>
         {
             var settings = AppSettings.Load();
-            string? pathToLoad = null;
-
-            if (!string.IsNullOrEmpty(settings.LastModelPath) && File.Exists(settings.LastModelPath))
-            {
-                pathToLoad = settings.LastModelPath;
-            }
-            else if (!string.IsNullOrEmpty(settings.ModelDirectory) && Directory.Exists(settings.ModelDirectory))
-            {
-                var ggufFiles = Directory.GetFiles(settings.ModelDirectory, "*.gguf", SearchOption.TopDirectoryOnly);
-                if (ggufFiles.Length > 0)
-                    pathToLoad = ggufFiles[0]; 
-            }
+            var pathToLoad = settings.GetAutoLoadModelPath();
 
             if (pathToLoad == null) return;
 

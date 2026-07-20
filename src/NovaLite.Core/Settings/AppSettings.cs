@@ -45,6 +45,21 @@ public sealed class AppSettings
         return new();
     }
 
+    public string? GetAutoLoadModelPath()
+    {
+        if (!string.IsNullOrWhiteSpace(LastModelPath) && File.Exists(LastModelPath))
+            return LastModelPath;
+
+        if (string.IsNullOrWhiteSpace(ModelDirectory) || !Directory.Exists(ModelDirectory))
+            return null;
+
+        var ggufFiles = Directory.GetFiles(ModelDirectory, "*.gguf", SearchOption.TopDirectoryOnly)
+            .OrderBy(p => p, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        return ggufFiles.Length > 0 ? ggufFiles[0] : null;
+    }
+
     public void Save()
     {
         try

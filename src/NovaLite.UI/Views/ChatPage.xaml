@@ -84,14 +84,89 @@
             </StackPanel>
         </ScrollViewer>
 
+        <!-- Scroll-to-bottom quick button (appears when user scrolls up) -->
+        <Button Name="ScrollToBottomButton"
+                Grid.Row="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="16"
+                IsVisible="False"
+                Classes="ghost"
+                Click="ScrollToBottomButton_Click">
+            <PathIcon Width="16" Height="16" Data="M7 10l5 5 5-5H7z"/>
+        </Button>
+
         <!-- ── Input bar ── -->
         <Border Grid.Row="2"
                 Background="{DynamicResource BgSurfaceBrush}"
                 BorderThickness="0,1,0,0"
                 BorderBrush="{DynamicResource BorderBrush}"
                 Padding="16,12">
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBox Grid.Column="0"
+            <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="Auto,*,Auto">
+                
+                <!-- Error banner -->
+                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                        IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Background="#26EF4444"
+                        BorderBrush="#EF4444"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="10,6"
+                        Margin="0,0,0,8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0" Text="{Binding ErrorMessage}"
+                                   Foreground="#FFF8F8"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Classes="ghost" Command="{Binding ClearErrorCommand}" Padding="2" Margin="6,0,0,0" VerticalAlignment="Center">
+                            <PathIcon Width="10" Height="10" Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" Foreground="#FFF8F8"/>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Attached File preview banner -->
+                <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                        IsVisible="{Binding IsFileAttached}"
+                        Background="{DynamicResource BgSurfaceVariantBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="10,6"
+                        Margin="0,0,0,8"
+                        HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Width="14" Height="14"
+                                  Data="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.66 1.34 3 3 3s3-1.34 3-3V5c0-2.21-1.79-4-4-4S8 2.79 8 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
+                                  Foreground="{DynamicResource AccentBrush}"/>
+                        <TextBlock Text="{Binding AttachedFileName}"
+                                   FontWeight="SemiBold"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Text="{Binding AttachedFileSizeDisplay}"
+                                   FontSize="11"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <Button Classes="ghost" Command="{Binding ClearAttachmentCommand}" Padding="2" Margin="6,0,0,0" VerticalAlignment="Center">
+                            <PathIcon Width="10" Height="10" Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <!-- Attachment Action Button -->
+                <Button Grid.Row="2" Grid.Column="0"
+                        Classes="ghost"
+                        Click="AttachFile_Click"
+                        ToolTip.Tip="Attach file"
+                        Margin="0,0,8,0"
+                        Width="40" Height="44"
+                        VerticalAlignment="Bottom">
+                    <PathIcon Width="18" Height="18"
+                              Data="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.66 1.34 3 3 3s3-1.34 3-3V5c0-2.21-1.79-4-4-4S8 2.79 8 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
+                              Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </Button>
+
+                <TextBox Grid.Row="2" Grid.Column="1"
                          Text="{Binding InputText}"
                          Watermark="Message NovaLite… (Enter to send, Shift+Enter for newline)"
                          AcceptsReturn="True"
@@ -100,7 +175,8 @@
                          VerticalContentAlignment="Center"
                          Name="InputBox"
                          KeyDown="InputBox_KeyDown"/>
-                <Button Grid.Column="1"
+                
+                <Button Grid.Row="2" Grid.Column="2"
                         Classes="send"
                         Command="{Binding SendCommand}"
                         Margin="8,0,0,0"

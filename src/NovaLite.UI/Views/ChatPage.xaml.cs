@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Avalonia.Platform.Storage;
 using NovaLite.UI.ViewModels;
 using System;
 using System.Collections.Specialized;
@@ -20,7 +21,9 @@ public partial class ChatPage : UserControl
         base.OnDataContextChanged(e);
         if (DataContext is ChatPageViewModel vm)
         {
-            vm.Messages.CollectionChanged += (_, _) => ScrollToBottom();
+            // Auto-scroll only when user is near the bottom; otherwise show a quick-jump button.
+            vm.Messages.CollectionChanged += (_, _) => OnMessagesChanged();
+            vm.ChatUpdated += () => ForceScrollToBottom();
             // Attach Enter key binding to the input box so Enter reliably sends
             try
             {
@@ -65,6 +68,47 @@ public partial class ChatPage : UserControl
         scroll?.ScrollToEnd();
     }
 
+    private void ForceScrollToBottom()
+    {
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => ScrollToBottom());
+    }
+
+    private void OnMessagesChanged()
+    {
+        var scroll = this.FindControl<ScrollViewer>("MessagesScroll");
+        var btn = this.FindControl<Button>("ScrollToBottomButton");
+        if (scroll == null) return;
+
+        // Determine how far from the bottom we are
+        try
+        {
+            var offset = scroll.Offset.Y;
+            var viewport = scroll.Viewport.Height;
+            var extent = scroll.Extent.Height;
+            var distanceFromBottom = extent - (offset + viewport);
+
+            // If near bottom (within 48px), auto-scroll; otherwise show the jump button
+            if (distanceFromBottom <= 48)
+            {
+                ScrollToBottom();
+                if (btn != null) btn.IsVisible = false;
+            }
+            else
+            {
+                if (btn != null) btn.IsVisible = true;
+            }
+        }
+        catch { /* best-effort UI handling */ }
+    }
+
+    private void ScrollToBottomButton_Click(object? sender, RoutedEventArgs e)
+    {
+        var scroll = this.FindControl<ScrollViewer>("MessagesScroll");
+        var btn = this.FindControl<Button>("ScrollToBottomButton");
+        scroll?.ScrollToEnd();
+        if (btn != null) btn.IsVisible = false;
+    }
+
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
@@ -75,6 +119,30 @@ public partial class ChatPage : UserControl
             {
                 vm.SendCommand.Execute(null);
                 e.Handled = true;
+            }
+        }
+    }
+
+    public async void AttachFile_Click(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ChatPageViewModel vm) return;
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null) return;
+
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(
+            new FilePickerOpenOptions
+            {
+                Title = "Select a file to upload",
+                AllowMultiple = false
+            });
+
+        if (files.Count > 0)
+        {
+            var file = files[0];
+            var path = file.TryGetLocalPath();
+            if (!string.IsNullOrEmpty(path))
+            {
+                await vm.AttachFileAsync(path, file.Name);
             }
         }
     }

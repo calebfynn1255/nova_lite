@@ -7,6 +7,15 @@ using System.Collections.ObjectModel;
 using NovaLite.Core.Models;
 using NovaLite.Database.Entities;
 using System.Linq;
+using System.IO;
+using System.IO.Compression;
+using System.Xml.Linq;
+using System.Text;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.Storage.Streams;
+using Windows.Graphics.Imaging;
+using Windows.Media.Ocr;
+using UglyToad.PdfPig;
 
 namespace NovaLite.UI.ViewModels;
 
@@ -19,6 +28,17 @@ public partial class ChatPageViewModel : ObservableObject
     [ObservableProperty] private string _inputText = string.Empty;
     [ObservableProperty] private bool _isGenerating;
     [ObservableProperty] private bool _hasMessages;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFileAttached))]
+    private string? _attachedFileName;
+
+    [ObservableProperty] private string? _attachedFilePath;
+    [ObservableProperty] private string? _attachedFileContent;
+    [ObservableProperty] private string? _attachedFileSizeDisplay;
+    [ObservableProperty] private string? _errorMessage;
+
+    public bool IsFileAttached => !string.IsNullOrEmpty(AttachedFileName);
 
     public ObservableCollection<ChatMessageViewModel> Messages { get; } = [];
     public ObservableCollection<ChatSessionEntity> ChatSessions { get; } = [];
@@ -33,6 +53,259 @@ public partial class ChatPageViewModel : ObservableObject
     {
         _conversationService = conversationService;
         _chatRepo = App.ChatRepository;
+    }
+
+    [RelayCommand]
+    private void ClearAttachment()
+    {
+        AttachedFileName = null;
+        AttachedFilePath = null;
+        AttachedFileContent = null;
+        AttachedFileSizeDisplay = null;
+    }
+
+    [RelayCommand]
+    private void ClearError()
+    {
+        ErrorMessage = null;
+    }
+
+    public async Task AttachFileAsync(string path, string fileName)
+    {
+        if (!System.IO.File.Exists(path))
+        {
+            ErrorMessage = "File does not exist.";
+            return;
+        }
+
+        try
+        {
+            var fileInfo = new System.IO.FileInfo(path);
+            if (fileInfo.Length > 1024 * 1024) // 1MB limit
+            {
+                ErrorMessage = "File is too large. Maximum size is 1MB.";
+                return;
+            }
+
+            var ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
+            string content;
+
+            if (ext == ".pdf")
+            {
+                content = await Task.Run(() => ExtractTextFromPdf(path));
+            }
+            else if (ext == ".docx")
+            {
+                content = await Task.Run(() => ExtractTextFromDocx(path));
+            }
+            else if (ext == ".xlsx" || ext == ".xlxs")
+            {
+                content = await Task.Run(() => ExtractTextFromXlsx(path));
+            }
+            else if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
+            {
+                content = await ExtractTextFromImageAsync(path);
+            }
+            else if (IsTextFile(path))
+            {
+                content = await System.IO.File.ReadAllTextAsync(path);
+            }
+            else
+            {
+                ErrorMessage = "Unsupported file type. Supported: text files, PDF, DOCX, XLSX, images (JPG, PNG).";
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                content = "[No text content could be extracted from this file]";
+            }
+
+            AttachedFilePath = path;
+            AttachedFileName = fileName;
+            AttachedFileContent = content;
+            AttachedFileSizeDisplay = FormatFileSize(fileInfo.Length);
+            ErrorMessage = null;
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Failed to read file: {ex.Message}";
+        }
+    }
+
+    private static string ExtractTextFromPdf(string path)
+    {
+        var sb = new StringBuilder();
+        using (var document = PdfDocument.Open(path))
+        {
+            foreach (var page in document.GetPages())
+            {
+                sb.AppendLine(page.Text);
+            }
+        }
+        return sb.ToString();
+    }
+
+    private static string ExtractTextFromDocx(string path)
+    {
+        using (var archive = ZipFile.OpenRead(path))
+        {
+            var entry = archive.GetEntry("word/document.xml");
+            if (entry == null) return string.Empty;
+
+            using (var stream = entry.Open())
+            {
+                var doc = XDocument.Load(stream);
+                XNamespace w = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+                var sb = new StringBuilder();
+
+                foreach (var paragraph in doc.Descendants(w + "p"))
+                {
+                    var text = string.Concat(paragraph.Descendants(w + "t").Select(t => t.Value));
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        sb.AppendLine(text);
+                    }
+                }
+                return sb.ToString();
+            }
+        }
+    }
+
+    private static string ExtractTextFromXlsx(string path)
+    {
+        using (var archive = ZipFile.OpenRead(path))
+        {
+            var sharedStrings = new List<string>();
+            var sharedStringsEntry = archive.GetEntry("xl/sharedStrings.xml");
+            if (sharedStringsEntry != null)
+            {
+                using (var stream = sharedStringsEntry.Open())
+                {
+                    var doc = XDocument.Load(stream);
+                    XNamespace s = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+                    sharedStrings.AddRange(doc.Descendants(s + "t").Select(t => t.Value));
+                }
+            }
+
+            var sb = new StringBuilder();
+            XNamespace ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+            var worksheetEntries = archive.Entries
+                .Where(e => e.FullName.StartsWith("xl/worksheets/sheet", StringComparison.OrdinalIgnoreCase) && e.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(e => e.FullName);
+
+            int sheetNum = 1;
+            foreach (var sheetEntry in worksheetEntries)
+            {
+                sb.AppendLine($"--- Sheet {sheetNum++} ---");
+                using (var stream = sheetEntry.Open())
+                {
+                    var doc = XDocument.Load(stream);
+                    var rows = doc.Descendants(ns + "row").OrderBy(r => (int?)r.Attribute("r") ?? 0);
+                    foreach (var row in rows)
+                    {
+                        var cells = row.Descendants(ns + "c");
+                        var rowValues = new List<string>();
+                        foreach (var cell in cells)
+                        {
+                            var valEl = cell.Element(ns + "v");
+                            if (valEl == null) continue;
+                            var val = valEl.Value;
+                            var typeAttr = cell.Attribute("t");
+                            if (typeAttr != null && typeAttr.Value == "s")
+                            {
+                                if (int.TryParse(val, out int idx) && idx >= 0 && idx < sharedStrings.Count)
+                                {
+                                    val = sharedStrings[idx];
+                                }
+                            }
+                            rowValues.Add(val);
+                        }
+                        if (rowValues.Count > 0)
+                        {
+                            sb.AppendLine(string.Join("\t", rowValues));
+                        }
+                    }
+                }
+                sb.AppendLine();
+            }
+            return sb.ToString();
+        }
+    }
+
+    private static async Task<string> ExtractTextFromImageAsync(string path)
+    {
+        try
+        {
+            using (var fileStream = System.IO.File.OpenRead(path))
+            using (var memStream = new MemoryStream())
+            {
+                await fileStream.CopyToAsync(memStream);
+                var bytes = memStream.ToArray();
+                using (var stream = new InMemoryRandomAccessStream())
+                {
+                    await stream.WriteAsync(bytes.AsBuffer());
+                    stream.Seek(0);
+                    var decoder = await BitmapDecoder.CreateAsync(stream);
+                    using (var softwareBitmap = await decoder.GetSoftwareBitmapAsync())
+                    {
+                        var ocrEngine = OcrEngine.TryCreateFromUserProfileLanguages();
+                        if (ocrEngine == null)
+                        {
+                            return "[Failed to initialize Windows OCR engine. Ensure a Windows display language pack with OCR is installed.]";
+                        }
+                        var ocrResult = await ocrEngine.RecognizeAsync(softwareBitmap);
+                        return ocrResult.Text;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            return $"[OCR Extraction Error: {ex.Message}]";
+        }
+    }
+
+    private static bool IsTextFile(string path)
+    {
+        var ext = System.IO.Path.GetExtension(path).ToLowerInvariant();
+        var textExtensions = new System.Collections.Generic.HashSet<string>
+        {
+            ".txt", ".md", ".cs", ".json", ".xml", ".yaml", ".yml", ".csv",
+            ".py", ".js", ".ts", ".html", ".css", ".ini", ".cfg", ".log",
+            ".bat", ".sh", ".csproj", ".sln", ".sql", ".rs", ".go",
+            ".cpp", ".h", ".c", ".java", ".kt", ".swift", ".fs", ".axaml", ".xaml"
+        };
+        if (textExtensions.Contains(ext)) return true;
+
+        try
+        {
+            using var stream = System.IO.File.OpenRead(path);
+            byte[] buffer = new byte[1024];
+            int read = stream.Read(buffer, 0, buffer.Length);
+            for (int i = 0; i < read; i++)
+            {
+                if (buffer[i] == 0) return false;
+            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static string FormatFileSize(long bytes)
+    {
+        string[] suffixes = { "B", "KB", "MB", "GB" };
+        int counter = 0;
+        decimal number = bytes;
+        while (Math.Round(number / 1024) >= 1)
+        {
+            number /= 1024;
+            counter++;
+        }
+        return $"{number:n1} {suffixes[counter]}";
     }
     
     public void SyncSessions(System.Collections.Generic.IEnumerable<ChatSessionEntity> sessions)
@@ -67,7 +340,10 @@ public partial class ChatPageViewModel : ObservableObject
                 {
                     Content = msg.Content,
                     IsUser = msg.Role == ChatRole.User,
-                    Timestamp = msg.Timestamp // Used msg.Timestamp instead of DateTime.Now
+                    Timestamp = msg.Timestamp, // Used msg.Timestamp instead of DateTime.Now
+                    AttachedFileName = msg.AttachedFileName,
+                    AttachedFileSizeDisplay = msg.AttachedFileSizeDisplay,
+                    AttachedFileContent = msg.AttachedFileContent
                 });
             }
             HasMessages = Messages.Any();
@@ -114,12 +390,21 @@ public partial class ChatPageViewModel : ObservableObject
             });
         }
 
+        var fileName = AttachedFileName;
+        var fileSize = AttachedFileSizeDisplay;
+        var fileContent = AttachedFileContent;
+
+        ClearAttachment();
+
         // Add user message immediately so the UI feels responsive
         Messages.Add(new ChatMessageViewModel
         {
             Content = userText,
             IsUser = true,
-            Timestamp = now
+            Timestamp = now,
+            AttachedFileName = fileName,
+            AttachedFileSizeDisplay = fileSize,
+            AttachedFileContent = fileContent
         });
         HasMessages = true;
         ChatUpdated?.Invoke(); // scroll to bottom
@@ -136,38 +421,49 @@ public partial class ChatPageViewModel : ObservableObject
             // before the heavy CPU work (tokenization/decode) begins on the background thread.
             await Task.Yield();
 
-            await foreach (var token in _conversationService.SendAsync(userText, null, _cts.Token))
+            await Task.Run(async () =>
             {
-                if (aiMsg == null)
+                await foreach (var token in _conversationService.SendAsync(userText, fileName, fileSize, fileContent, null, _cts.Token))
                 {
-                    // First token — swap typing indicator for real bubble
-                    aiMsg = new ChatMessageViewModel
+                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        Content = token,
-                        IsUser = false,
-                        IsStreaming = true,
-                        Timestamp = DateTime.Now
-                    };
-                    Messages.Add(aiMsg);
-                    IsGenerating = false;
+                        if (aiMsg == null)
+                        {
+                            // First token — swap typing indicator for real bubble
+                            aiMsg = new ChatMessageViewModel
+                            {
+                                Content = token,
+                                IsUser = false,
+                                IsStreaming = true,
+                                Timestamp = DateTime.Now
+                            };
+                            Messages.Add(aiMsg);
+                            IsGenerating = false;
+                        }
+                        else
+                        {
+                            aiMsg.Content += token;
+                        }
+
+                        ChatUpdated?.Invoke();
+                    });
                 }
+            });
+
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (aiMsg != null)
+                    aiMsg.IsStreaming = false;
                 else
                 {
-                    aiMsg.Content += token;
+                    Messages.Add(new ChatMessageViewModel
+                    {
+                        Content = "*(no response)*",
+                        IsUser = false,
+                        Timestamp = DateTime.Now
+                    });
                 }
-            }
-
-            if (aiMsg != null)
-                aiMsg.IsStreaming = false;
-            else
-            {
-                Messages.Add(new ChatMessageViewModel
-                {
-                    Content = "*(no response)*",
-                    IsUser = false,
-                    Timestamp = DateTime.Now
-                });
-            }
+            });
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("No model loaded"))
         {
@@ -227,6 +523,15 @@ public partial class ChatMessageViewModel : ObservableObject
     public bool IsUserMessage => IsUser && !IsSeparator;
     public bool IsAiMessage => !IsUser && !IsSeparator;
     public string SeparatorText { get; init; } = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasAttachment))]
+    private string? _attachedFileName;
+
+    [ObservableProperty] private string? _attachedFileSizeDisplay;
+    [ObservableProperty] private string? _attachedFileContent;
+
+    public bool HasAttachment => !string.IsNullOrEmpty(AttachedFileName);
 
     [RelayCommand]
     private async Task CopyText()

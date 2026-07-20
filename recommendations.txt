@@ -1,0 +1,16 @@
+=== Recommendations for Total RAM 4 GB (4096 MB) ===
+5★ - Qwen 2.5 0.5B - Tier 1 - Size: 644 MB - CPU-friendly: True - GPU: False
+4★ - Llama 3.2 1B - Tier 1 - Size: 770 MB - CPU-friendly: True - GPU: False
+
+=== Recommendations for Total RAM 8 GB (8192 MB) ===
+5★ - Qwen 2.5 1.5B - Tier 2 - Size: 1065 MB - CPU-friendly: True - GPU: False
+
+=== Recommendations for Total RAM 16 GB (16384 MB) ===
+5★ - Qwen 2.5 1.5B - Tier 2 - Size: 1065 MB - CPU-friendly: True - GPU: False
+3★ - Llama 3.1 8B - Tier 3 - Size: 4692 MB - CPU-friendly: False - GPU: False
+
+=== Recommendations for Total RAM 32 GB (32768 MB) ===
+3★ - Codestral 22B - Tier 5 - Size: 12723 MB - CPU-friendly: False - GPU: False
+3★ - Mistral Nemo 12B - Tier 4 - Size: 7130 MB - CPU-friendly: False - GPU: False
+3★ - Llama 3.1 8B - Tier 3 - Size: 4692 MB - CPU-friendly: False - GPU: False
+

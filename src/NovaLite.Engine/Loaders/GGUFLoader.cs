@@ -40,15 +40,18 @@ public sealed class GGUFLoader : IModelLoader
             // Model params
             var modelParams = LlamaCppBindings.llama_model_default_params();
             
-            // Read from settings (Force 0 for Milestone 1 since included llama.dll is CPU-only)
             var settings = NovaLite.Core.Settings.AppSettings.Load();
-            modelParams.n_gpu_layers = 0; // CPU-only
-            // CPU tensor repacking improves throughput but needs hundreds of additional MB.
-            // Keep the setup model load viable on low-memory machines.
+            var configuredGpuLayers = Math.Max(0, settings.GpuLayers);
+            modelParams.n_gpu_layers = configuredGpuLayers;
+            modelParams.main_gpu = 0;
             modelParams.use_extra_bufts = 0;
+            modelParams.use_mmap = 1;
+            modelParams.use_mlock = 0;
+            modelParams.no_alloc = 0;
+            modelParams.split_mode = 0;
             
-            _logger.LogInformation("LlamaModelParams: devices={devices}, kv={kv}, mmap={mmap}",
-                modelParams.devices, modelParams.kv_overrides, modelParams.use_mmap);
+            _logger.LogInformation("LlamaModelParams: gpuLayers={GpuLayers}, mainGpu={MainGpu}, devices={Devices}, mmap={Mmap}, useMlock={UseMlock}",
+                modelParams.n_gpu_layers, modelParams.main_gpu, modelParams.devices, modelParams.use_mmap, modelParams.use_mlock);
 
             // Load model — 2.24.0 API: llama_model_load_from_file takes byte* path
             IntPtr model;

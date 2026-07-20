@@ -1,0 +1,86 @@
+[
+  {
+    "Name": "Qwen 2.5 0.5B",
+    "Description": "Tiny, ultra-fast model for very low-end hardware.",
+    "MinRamMB": 512,
+    "RecommendedRamMB": 1024,
+    "TargetTier": 1,
+    "CpuFriendly": true,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q8_0.gguf"
+    ],
+    "ExpectedSha256": "",
+    "DownloadSizeBytes": 675710816
+  },
+  {
+    "Name": "Llama 3.2 1B",
+    "Description": "Meta\u0027s extremely lightweight model. Excellent for smaller devices and laptops.",
+    "MinRamMB": 1024,
+    "RecommendedRamMB": 2048,
+    "TargetTier": 1,
+    "CpuFriendly": true,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf"
+    ],
+    "ExpectedSha256": "",
+    "DownloadSizeBytes": 807694464
+  },
+  {
+    "Name": "Qwen 2.5 1.5B",
+    "Description": "A lightweight but smart model from Alibaba. Great balance of speed and logic.",
+    "MinRamMB": 2048,
+    "RecommendedRamMB": 4096,
+    "TargetTier": 2,
+    "CpuFriendly": true,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+    ],
+    "ExpectedSha256": "",
+    "DownloadSizeBytes": 1117320736
+  },
+  {
+    "Name": "Llama 3.1 8B",
+    "Description": "Meta\u0027s flagship medium model. Highly capable for general tasks, chatting, and coding.",
+    "MinRamMB": 8192,
+    "RecommendedRamMB": 12288,
+    "TargetTier": 3,
+    "CpuFriendly": false,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+    ],
+    "ExpectedSha256": "",
+    "DownloadSizeBytes": 4920739232
+  },
+  {
+    "Name": "Mistral Nemo 12B",
+    "Description": "A fantastic all-rounder 12B model with huge context. Great for creative writing and summarizing.",
+    "MinRamMB": 12288,
+    "RecommendedRamMB": 16384,
+    "TargetTier": 4,
+    "CpuFriendly": false,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF/resolve/main/Mistral-Nemo-Instruct-2407-Q4_K_M.gguf"
+    ],
+    "ExpectedSha256": "",
+    "DownloadSizeBytes": 7477208192
+  },
+  {
+    "Name": "Codestral 22B",
+    "Description": "Heavyweight coding model. Extremely powerful for software development and debugging.",
+    "MinRamMB": 16384,
+    "RecommendedRamMB": 32768,
+    "TargetTier": 5,
+    "CpuFriendly": false,
+    "SupportsVision": false,
+    "DownloadUrls": [
+      "https://huggingface.co/bartowski/Codestral-22B-v0.1-GGUF/resolve/main/Codestral-22B-v0.1-Q4_K_M.gguf"
+    ],
+    "ExpectedSha256": "",
+    "DownloadSizeBytes": 13341237600
+  }
+]

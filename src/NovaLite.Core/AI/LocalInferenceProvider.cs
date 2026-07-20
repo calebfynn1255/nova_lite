@@ -11,6 +11,10 @@ namespace NovaLite.Core.AI;
 /// </summary>
 public sealed class LocalInferenceProvider : IInferenceProvider
 {
+    private const int MaxPromptChars = 14000;
+    private const int MaxAttachedFileChars = 8000;
+    private const int MaxMessageChars = 2000;
+
     private readonly IModelLoader _loader;
     private readonly ILogger<LocalInferenceProvider> _logger;
     private LoadedModel? _model;
@@ -41,6 +45,30 @@ public sealed class LocalInferenceProvider : IInferenceProvider
         await Task.CompletedTask;
     }
 
+    public static string PreparePromptText(string? text, int maxChars = MaxMessageChars)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return string.Empty;
+
+        var trimmed = text.Trim();
+        if (trimmed.Length <= maxChars)
+            return trimmed;
+
+        return trimmed[..maxChars] + Environment.NewLine + Environment.NewLine +
+               $"[Content truncated to {maxChars} characters to stay within the model context window.]";
+    }
+
+    private static string TrimPromptToBudget(string prompt)
+    {
+        if (prompt.Length <= MaxPromptChars)
+            return prompt;
+
+        var startIndex = prompt.Length - MaxPromptChars;
+        return "[Earlier prompt context omitted to stay within the model context window.]" +
+               Environment.NewLine +
+               prompt[startIndex..];
+    }
+
     public async IAsyncEnumerable<string> InferStreamAsync(
         IReadOnlyList<ChatMessage> messages,
         InferenceOptions options,
@@ -67,14 +95,25 @@ public sealed class LocalInferenceProvider : IInferenceProvider
 
             sb.Append("<|im_start|>");
             sb.AppendLine(role);
-            sb.AppendLine(msg.Content);
+            
+            if (msg.Role == ChatRole.User && !string.IsNullOrEmpty(msg.AttachedFileName) && !string.IsNullOrEmpty(msg.AttachedFileContent))
+            {
+                var attachedContent = PreparePromptText(msg.AttachedFileContent, MaxAttachedFileChars);
+                sb.AppendLine($"[Attached File: {msg.AttachedFileName}]");
+                sb.AppendLine("```");
+                sb.AppendLine(attachedContent);
+                sb.AppendLine("```");
+                sb.AppendLine();
+            }
+
+            sb.AppendLine(PreparePromptText(msg.Content, MaxMessageChars));
             sb.AppendLine("<|im_end|>");
         }
 
         // Add the assistant turn starter so the model knows to reply
         sb.Append("<|im_start|>assistant\n");
 
-        var prompt = sb.ToString();
+        var prompt = TrimPromptToBudget(sb.ToString());
 
         if (_model.State is NovaLite.Core.Interfaces.IInferenceSession session)
         {

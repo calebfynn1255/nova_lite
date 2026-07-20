@@ -196,20 +196,31 @@ public partial class SetupWindowViewModel : ObservableObject
                 var destPath = Path.Combine(InstallPath, $"{sm.Model.Name.Replace(" ", "_")}.gguf");
                 var s2 = AppSettings.Load();
                 s2.PendingDownloadModelName = sm.Model.Name;
-                s2.PendingDownloadFilePath = destPath;
+                s2.PendingDownloadFilePath = destPath + ".partial";
                 s2.PendingDownloadProgress = 0;
                 s2.Save();
+
+                double lastReportedProgress = -1;
+                DateTimeOffset lastUiUpdateAt = DateTimeOffset.MinValue;
 
                 await _setup.DownloadAndBenchmarkAsync(
                     sm,
                     p =>
                     {
+                        var now = DateTimeOffset.UtcNow;
+                        bool shouldPost = p >= 100 || p - lastReportedProgress >= 0.5 || (now - lastUiUpdateAt).TotalMilliseconds >= 250;
+                        if (!shouldPost)
+                            return;
+
+                        lastReportedProgress = p;
+                        lastUiUpdateAt = now;
+
                         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                         {
-                            if (p > 100)
+                            if (p >= 100)
                             {
-                                DownloadStatus = $"Benchmarking {sm.Model.Name}…";
-                                IsBenchmarking = true;
+                                DownloadProgress = 100;
+                                IsBenchmarking = false;
                             }
                             else
                             {
@@ -268,9 +279,8 @@ public partial class SetupWindowViewModel : ObservableObject
 
             sf.Save();
 
-            DownloadStatus = "Setup complete. Opening chat…";
-            await Task.Delay(1000);
-            CloseAction?.Invoke();
+            DownloadStatus = "Setup complete. You can now continue in the app and use your model.";
+            await Task.Delay(750);
         }
         catch (OperationCanceledException)
         {
@@ -281,38 +291,14 @@ public partial class SetupWindowViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            if (DownloadProgress >= 100 || ex.Message.Contains("llama.cpp") || ex.Message.Contains("benchmark"))
-            {
-                // Download finished, but benchmarking failed (e.g. missing AVX, C++ redistributable, or out of memory).
-                // Show the error, but don't trap them in a paused network error state.
-                DownloadStatus = $"Downloaded successfully, but benchmark failed: {ex.Message}";
-                
-                // Complete the setup anyway so they aren't stuck
-                var sf = AppSettings.Load();
-                sf.IsDownloadComplete = true;
-                sf.PendingDownloadModelName = string.Empty;
-                sf.PendingDownloadFilePath = string.Empty;
-                sf.PendingDownloadProgress = 0;
-                
-                // (GPU offloading disabled for Milestone 1)
-
-                sf.Save();
-
-                // Wait a few seconds so the user can read the error before the window closes
-                await Task.Delay(3500);
-                CloseAction?.Invoke();
-            }
-            else
-            {
-                DownloadStatus = $"Network error (Paused): {ex.Message}";
-                IsPaused = true;
-                var se = AppSettings.Load();
-                se.PendingDownloadProgress = DownloadProgress;
-                se.Save();
-            }
+            DownloadStatus = $"Setup interrupted: {ex.Message}";
+            var se = AppSettings.Load();
+            se.PendingDownloadProgress = DownloadProgress;
+            se.Save();
         }
         finally
         {
+            IsBenchmarking = false;
             IsDownloading = false;
         }
     }
@@ -422,7 +408,7 @@ public partial class SetupWindowViewModel : ObservableObject
 /// Wraps a <see cref="RecommendedModel"/> to add UI-only state like whether
 /// a partial download exists for this model.
 /// </summary>
-public sealed class RecommendedModelViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
+public sealed partial class RecommendedModelViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableObject
 {
     public RecommendedModel Source { get; }
 
@@ -434,6 +420,15 @@ public sealed class RecommendedModelViewModel : CommunityToolkit.Mvvm.ComponentM
 
     public bool   IsPendingResume  { get; }
     public double ResumeProgress   { get; }
+
+    [CommunityToolkit.Mvvm.ComponentModel.ObservableProperty]
+    private bool _isActiveDownload;
+
+    [CommunityToolkit.Mvvm.ComponentModel.ObservableProperty]
+    private bool _isPaused;
+
+    public string PauseLabel => IsPaused ? $"Paused • {Math.Round(ResumeProgress, 0)}%" : string.Empty;
+    public string PrimaryActionText => IsPaused ? "Resume" : "Download & Load";
 
     public RecommendedModelViewModel(RecommendedModel source, bool isPendingResume, double resumeProgress)
     {

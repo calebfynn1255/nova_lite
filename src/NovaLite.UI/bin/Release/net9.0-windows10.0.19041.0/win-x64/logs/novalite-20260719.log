@@ -1,0 +1,392 @@
+2026-07-19 10:49:12.025 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 10:52:04.983 [ERR]  Chat inference failed
+System.Exception: llama_decode (prompt batch) returned 1
+   at NovaLite.Engine.LlamaSession.DecodePrompt(Int32[] tokens) in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 167
+   at NovaLite.Engine.LlamaSession.<>c__DisplayClass8_0.<InferAsync>b__1() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 51
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Engine\LlamaSession.cs:line 51
+   at NovaLite.Engine.LlamaSession.InferAsync(String prompt, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 91
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\AI\LocalInferenceProvider.cs:line 91
+   at NovaLite.Core.AI.LocalInferenceProvider.InferStreamAsync(IReadOnlyList`1 messages, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, String attachedFileName, String attachedFileSizeDisplay, String attachedFileContent, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 118
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, String attachedFileName, String attachedFileSizeDisplay, String attachedFileContent, InferenceOptions options, CancellationToken ct)+MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.Core\Services\ConversationService.cs:line 118
+   at NovaLite.Core.Services.ConversationService.SendAsync(String userText, String attachedFileName, String attachedFileSizeDisplay, String attachedFileContent, InferenceOptions options, CancellationToken ct)+System.Threading.Tasks.Sources.IValueTaskSource<System.Boolean>.GetResult()
+   at NovaLite.UI.ViewModels.ChatPageViewModel.<>c__DisplayClass38_0.<<Send>b__1>d.MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 426
+--- End of stack trace from previous location ---
+   at NovaLite.UI.ViewModels.ChatPageViewModel.<>c__DisplayClass38_0.<<Send>b__1>d.MoveNext() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 426
+--- End of stack trace from previous location ---
+   at NovaLite.UI.ViewModels.ChatPageViewModel.Send() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\ChatPageViewModel.cs:line 424
+2026-07-19 10:54:26.661 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 10:54:40.990 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 10:54:43.085 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 11:10:57.364 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 11:11:36.659 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 11:11:58.808 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 11:12:34.006 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 12:47:46.245 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 12:58:48.838 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 12:59:12.000 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 12:59:15.155 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 13:33:21.821 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 13:33:41.043 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 13:33:42.744 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 13:53:21.433 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 13:53:49.793 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 20:37:52.035 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 20:39:04.706 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 20:39:28.279 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 20:40:10.172 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 20:59:03.791 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 20:59:16.609 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 20:59:19.223 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 20:59:52.531 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:06:52.581 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:07:15.187 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 21:07:18.232 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:13:13.642 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:16:40.486 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:17:14.041 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 21:17:17.484 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:25:01.559 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:28:33.078 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 21:28:35.324 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:29:01.597 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:37:17.917 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:37:42.391 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 21:37:44.621 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:44:47.492 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:45:38.470 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 21:45:41.496 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:47:26.510 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:59:17.825 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 21:59:33.595 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 21:59:41.938 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 22:28:13.864 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 22:28:36.639 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 22:28:39.006 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:07:20.712 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:07:32.115 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 23:07:34.372 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:08:35.361 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:08:51.702 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:22:53.473 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:23:07.310 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 23:23:09.709 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:23:28.138 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:24:15.622 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:29:44.705 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:30:27.183 [FTL]  NovaLite terminated unexpectedly
+System.EntryPointNotFoundException: Unable to find an entry point named 'ShellNotifyIcon' in DLL 'shell32.dll'.
+   at NovaLite.UI.Services.WindowsToastService.ShellNotifyIcon(UInt32 message, NotifyIconData& data)
+   at NovaLite.UI.Services.WindowsToastService.Show(String title, String message) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Services\WindowsToastService.cs:line 33
+   at NovaLite.UI.ViewModels.SetupWindowViewModel.<>c__DisplayClass53_3.<StartDownload>b__3() in C:\Users\Fynn\nova_lite\src\NovaLite.UI\ViewModels\SetupWindowViewModel.cs:line 241
+   at Avalonia.Threading.DispatcherOperation.InvokeCore()
+   at Avalonia.Threading.DispatcherOperation.Execute()
+   at Avalonia.Threading.Dispatcher.ExecuteJob(DispatcherOperation job)
+   at Avalonia.Threading.Dispatcher.ExecuteJobsCore(Boolean fromExplicitBackgroundProcessingCallback)
+   at Avalonia.Threading.Dispatcher.Signaled()
+   at Avalonia.Win32.Win32Platform.WndProc(IntPtr hWnd, UInt32 msg, IntPtr wParam, IntPtr lParam)
+   at Avalonia.Win32.Interop.UnmanagedMethods.DispatchMessage(MSG& lpmsg)
+   at Avalonia.Win32.Win32DispatcherImpl.RunLoop(CancellationToken cancellationToken)
+   at Avalonia.Threading.DispatcherFrame.Run(IControlledDispatcherImpl impl)
+   at Avalonia.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at Avalonia.Threading.Dispatcher.MainLoop(CancellationToken cancellationToken)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.StartCore(String[] args)
+   at Avalonia.Controls.ApplicationLifetimes.ClassicDesktopStyleApplicationLifetime.Start(String[] args)
+   at Avalonia.ClassicDesktopStyleApplicationLifetimeExtensions.StartWithClassicDesktopLifetime(AppBuilder builder, String[] args, Action`1 lifetimeBuilder)
+   at NovaLite.UI.Program.Main(String[] args) in C:\Users\Fynn\nova_lite\src\NovaLite.UI\Program.cs:line 27
+2026-07-19 23:30:35.343 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:30:56.840 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:40:54.275 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:53:42.781 [INF]  NovaLite starting — version 1.0.0.0
+2026-07-19 23:58:52.536 [INF]  NovaLite starting — version 1.0.0.0

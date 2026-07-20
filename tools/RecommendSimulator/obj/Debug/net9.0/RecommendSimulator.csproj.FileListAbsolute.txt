@@ -1,0 +1,15 @@
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\bin\Debug\net9.0\RecommendSimulator.exe
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\bin\Debug\net9.0\RecommendSimulator.deps.json
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\bin\Debug\net9.0\RecommendSimulator.runtimeconfig.json
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\bin\Debug\net9.0\RecommendSimulator.dll
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\bin\Debug\net9.0\RecommendSimulator.pdb
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.AssemblyInfoInputs.cache
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.AssemblyInfo.cs
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.csproj.CoreCompileInputs.cache
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.sourcelink.json
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.dll
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\refint\RecommendSimulator.dll
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.pdb
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\RecommendSimulator.genruntimeconfig.cache
+C:\Users\Fynn\nova_lite\tools\RecommendSimulator\obj\Debug\net9.0\ref\RecommendSimulator.dll

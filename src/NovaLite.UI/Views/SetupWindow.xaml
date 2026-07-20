@@ -90,9 +90,10 @@
                                     <StackPanel Spacing="4">
                                         <Grid ColumnDefinitions="*,Auto,Auto">
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" FontSize="16" Grid.Column="0"/>
-                                            <TextBlock Text="{Binding Model.RecommendedRamMB, StringFormat={}{0} MB}" 
-                                                       FontSize="11" Foreground="{DynamicResource TextMutedBrush}" 
-                                                       VerticalAlignment="Center" Grid.Column="1" Margin="0,0,12,0"/>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" Margin="0,0,12,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Model.DownloadSizeDisplay}" 
+                                                           FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                                            </StackPanel>
                                             <TextBlock Text="{Binding StarRating, StringFormat={}{0} &#x2605;}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Grid.Column="2"/>
                                         </Grid>
                                         <TextBlock Text="{Binding Model.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>

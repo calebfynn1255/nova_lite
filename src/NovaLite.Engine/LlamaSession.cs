@@ -155,10 +155,19 @@ public sealed class LlamaSession : IInferenceSession
 
     private unsafe void DecodePrompt(int[] tokens)
     {
+        const int maxPromptTokens = 1800;
         const int maxBatchTokens = 512;
-        for (int offset = 0; offset < tokens.Length; offset += maxBatchTokens)
+
+        int tokenCount = tokens.Length;
+        if (tokenCount > maxPromptTokens)
         {
-            int count = Math.Min(maxBatchTokens, tokens.Length - offset);
+            _logger.LogWarning("Prompt exceeds safe decode budget ({TokenCount} tokens); truncating to {Limit} tokens", tokenCount, maxPromptTokens);
+            tokenCount = maxPromptTokens;
+        }
+
+        for (int offset = 0; offset < tokenCount; offset += maxBatchTokens)
+        {
+            int count = Math.Min(maxBatchTokens, tokenCount - offset);
             fixed (int* pTok = &tokens[offset])
             {
                 LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, count);

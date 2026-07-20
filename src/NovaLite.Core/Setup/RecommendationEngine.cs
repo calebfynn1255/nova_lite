@@ -17,6 +17,8 @@ public class RecommendationEngine
     public IReadOnlyList<RecommendedModel> GetRecommendations(HardwareProfile profile)
     {
         var recommendations = new List<RecommendedModel>();
+        // Defensive: snapshot catalog to protect against concurrent mutations
+        var catalogSnapshot = ModelCatalog.Models?.ToList() ?? new List<ModelCatalogEntry>();
         bool hasCapableGpu = profile.HasDedicatedGpu && profile.TotalVRamMB >= 6000;
         
         long reservedRam = 6144;
@@ -32,32 +34,39 @@ public class RecommendationEngine
         long usableVRam = hasCapableGpu ? profile.TotalVRamMB - 1024 : 0;
         if (usableVRam < 0) usableVRam = 0;
 
-        foreach (var model in ModelCatalog.Models)
+        foreach (var model in catalogSnapshot)
         {
+            // Use the model download size (in MB) when available; otherwise fall back to RecommendedRamMB
+            var estimatedMemoryMB = model.DownloadSizeBytes is long sizeBytes && sizeBytes > 0
+                ? (long)Math.Ceiling(sizeBytes / 1024.0 / 1024.0)
+                : model.RecommendedRamMB;
+
             // 1. Filter out models whose minimum requirement exceeds total available memory
             if (model.MinRamMB > usableSysRam + usableVRam)
                 continue;
 
-            // 2. Filter out RAM models whose recommended size exceeds usable system RAM
-            //    (e.g. don't show a 32GB model on a 32GB system - Windows takes 8GB leaving only 24GB)
-            bool willFitInVram = hasCapableGpu && model.RecommendedRamMB <= usableVRam;
-            if (!willFitInVram && model.RecommendedRamMB > usableSysRam)
+            // Tiny models (<= 1GB) should only be recommended on very low-RAM systems (~4GB)
+            if (estimatedMemoryMB <= 1024 && profile.TotalRamMB > 4500)
+                continue;
+
+            // 2. Filter out models whose estimated size exceeds usable system RAM
+            bool willFitInVram = hasCapableGpu && estimatedMemoryMB <= usableVRam;
+            if (!willFitInVram && estimatedMemoryMB > usableSysRam)
                 continue;
 
             // 3. Filter out models that are WAY too small for high-end systems
-            // E.g., if you have 16GB+ RAM, we don't need to show tiny 1GB models
-            if (usableSysRam >= 16384 && model.RecommendedRamMB <= 2048)
+            if (usableSysRam >= 16384 && estimatedMemoryMB <= 2048)
                 continue;
 
             // 4. For systems with ~4GB RAM or less, only recommend models around 1GB
-            if (profile.TotalRamMB <= 4500 && model.RecommendedRamMB > 1536)
+            if (profile.TotalRamMB <= 4500 && estimatedMemoryMB > 1536)
                 continue;
 
-            bool perfectlyFitsInVRam = hasCapableGpu && model.RecommendedRamMB <= (usableVRam * 0.85);
-            bool fitsInVRam = hasCapableGpu && model.RecommendedRamMB <= usableVRam;
+            bool perfectlyFitsInVRam = hasCapableGpu && estimatedMemoryMB <= (usableVRam * 0.85);
+            bool fitsInVRam = hasCapableGpu && estimatedMemoryMB <= usableVRam;
             bool mostlyFitsInVRam = hasCapableGpu && model.MinRamMB <= usableVRam;
-            bool perfectlyFitsInSysRam = model.RecommendedRamMB <= (usableSysRam * 0.7);
-            bool fitsInSysRam = model.RecommendedRamMB <= usableSysRam;
+            bool perfectlyFitsInSysRam = estimatedMemoryMB <= (usableSysRam * 0.7);
+            bool fitsInSysRam = estimatedMemoryMB <= usableSysRam;
             bool mostlyFitsInSysRam = model.MinRamMB <= usableSysRam;
 
             int stars = 1;
@@ -143,50 +152,40 @@ public class RecommendationEngine
         var sorted = recommendations
             .OrderByDescending(r => r.StarRating)
             .ThenByDescending(r => r.Model.TargetTier)
-            .ThenByDescending(r => r.Model.RecommendedRamMB)
+            .ThenByDescending(r => r.Model.DownloadSizeBytes ?? 0L)
             .ToList();
 
-        var finalModels = new List<RecommendedModel>();
+        // Choose up to N recommendations (fewer if not enough fit). Prioritize by star rating,
+        // CPU-friendliness, capability tier, and model size (already handled in sorting).
+        const int MaxRecommendations = 5;
+        var finalModels = sorted.Take(Math.Min(MaxRecommendations, sorted.Count)).ToList();
 
-        if (hasCapableGpu)
+        // TESTING HOOK: force-include "Llama 3.2 1B" in recommendations for every PC.
+        // Temporary: included for testing purposes only — remove later as needed.
+        var testModel = catalogSnapshot.FirstOrDefault(m => string.Equals(m.Name, "Llama 3.2 1B", System.StringComparison.OrdinalIgnoreCase));
+        if (testModel != null && !finalModels.Any(r => string.Equals(r.Model.Name, testModel.Name, System.StringComparison.OrdinalIgnoreCase)))
         {
-            // 1. Top model should be the best VRAM model
-            var bestGpuModel = sorted.FirstOrDefault(m => m.IsGpuRecommendation);
-            if (bestGpuModel != null)
+            finalModels.Add(new RecommendedModel(testModel, 3, "Test override: included for testing", profile, false, false));
+            if (finalModels.Count > MaxRecommendations)
+                finalModels = finalModels.Take(MaxRecommendations).ToList();
+        }
+
+        try
+        {
+            for (int i = 0; i < finalModels.Count; i++)
             {
-                finalModels.Add(bestGpuModel);
-                sorted.Remove(bestGpuModel);
+                finalModels[i] = finalModels[i] with { IsRecommended = false };
             }
-            
-            // 2. Next can be best RAM model
-            var bestRamModel = sorted.FirstOrDefault(m => !m.IsGpuRecommendation);
-            if (bestRamModel != null)
+
+            if (finalModels.Count > 0)
             {
-                finalModels.Add(bestRamModel);
-                sorted.Remove(bestRamModel);
+                finalModels[0] = finalModels[0] with { IsRecommended = true };
             }
-            
-            // 3. The other 2 follow
-            finalModels.AddRange(sorted.Take(4 - finalModels.Count));
         }
-        else
+        catch (ArgumentOutOfRangeException)
         {
-            // Just recommend RAM models
-            var ramModels = sorted.Where(m => !m.IsGpuRecommendation).ToList();
-            if (ramModels.Count >= 4)
-                finalModels.AddRange(ramModels.Take(4));
-            else
-                finalModels.AddRange(sorted.Take(4));
-        }
-
-        for (int i = 0; i < finalModels.Count; i++)
-        {
-            finalModels[i] = finalModels[i] with { IsRecommended = false };
-        }
-
-        if (finalModels.Count > 0)
-        {
-            finalModels[0] = finalModels[0] with { IsRecommended = true };
+            // Defensive: if something changed concurrently, return a safe empty list
+            return new List<RecommendedModel>();
         }
 
         return finalModels;

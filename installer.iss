@@ -26,7 +26,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 ; IMPORTANT: Run `dotnet publish -c Release -r win-x64 --self-contained` in src\NovaLite.UI before compiling this script!
-Source: "src\NovaLite.UI\bin\Release\net9.0\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 ; Creates the start menu shortcut

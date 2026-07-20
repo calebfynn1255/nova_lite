@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "FH6Lx5dQpP8=",
+  "dgSpecHash": "aLQt7ABkisM=",
   "success": true,
   "projectFilePath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.UI\\NovaLite.UI.csproj",
   "expectedPackageFiles": [
@@ -56,6 +56,7 @@
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.ml.onnxruntime\\1.20.1\\microsoft.ml.onnxruntime.1.20.1.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.ml.onnxruntime.managed\\1.20.1\\microsoft.ml.onnxruntime.managed.1.20.1.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\pdfpig\\0.1.9\\pdfpig.0.1.9.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\reactiveui\\20.1.1\\reactiveui.20.1.1.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\serilog\\4.1.0\\serilog.4.1.0.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\serilog.extensions.logging\\8.0.0\\serilog.extensions.logging.8.0.0.nupkg.sha512",
@@ -93,7 +94,8 @@
     "C:\\Users\\Fynn\\.nuget\\packages\\tmds.dbus.protocol\\0.20.0\\tmds.dbus.protocol.0.20.0.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.17\\microsoft.netcore.app.runtime.win-x64.9.0.17.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.17\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.17.nupkg.sha512",
-    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.17\\microsoft.aspnetcore.app.runtime.win-x64.9.0.17.nupkg.sha512"
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.17\\microsoft.aspnetcore.app.runtime.win-x64.9.0.17.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
   ],
   "logs": []
 }

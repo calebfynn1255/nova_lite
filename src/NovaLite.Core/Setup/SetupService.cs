@@ -1,18 +1,18 @@
 using System.Collections.ObjectModel;
+using NovaLite.Core.Helpers;
 
 namespace NovaLite.Setup;
 
 public class SetupService
 {
+    private readonly System.Threading.SemaphoreSlim _scanLock = new(1, 1);
     private readonly HardwareScanner _scanner = new();
     private readonly RecommendationEngine _recommender = new();
     private readonly DownloadManager _downloader = new();
-    private readonly BenchmarkRunner _benchmark;
     private readonly PerformanceConfigurator _configurator = new();
 
     public SetupService(NovaLite.Core.Interfaces.IModelLoader? loader = null)
     {
-        _benchmark = new BenchmarkRunner(loader);
     }
 
     public event Action<int>? StepChanged;
@@ -22,13 +22,57 @@ public class SetupService
 
     public async Task ScanHardwareAsync()
     {
-        Hardware = await _scanner.ScanAsync();
-        
-        var recs = _recommender.GetRecommendations(Hardware);
-        Recommendations.Clear();
-        foreach (var r in recs) Recommendations.Add(r);
-        
-        StepChanged?.Invoke(1);
+        await _scanLock.WaitAsync();
+        try
+        {
+            var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NovaLite");
+            Directory.CreateDirectory(appData);
+            var logPath = Path.Combine(appData, "startup.log");
+            try { File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] ScanHardwareAsync start\n"); } catch { }
+
+            try
+            {
+                Hardware = await _scanner.ScanAsync();
+            }
+            catch (Exception ex)
+            {
+                try { File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] ScanHardwareAsync scanner failed: {ex}\n"); } catch { }
+                throw;
+            }
+
+            List<RecommendedModel> recs;
+            try
+            {
+                // Ensure catalog is refreshed so RecommendationEngine has up-to-date models
+                try { await ModelCatalog.RefreshAsync(); } catch { }
+                recs = _recommender.GetRecommendations(Hardware).ToList();
+            }
+            catch (Exception ex)
+            {
+                try { File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] ScanHardwareAsync recommender failed: {ex}\n"); } catch { }
+                recs = new List<RecommendedModel>();
+            }
+
+            Recommendations.Clear();
+            foreach (var r in recs) Recommendations.Add(r);
+
+            // Diagnostic logging to help UI debug when recommendations are populated
+            try
+            {
+                File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] ScanHardwareAsync completed. Recommendations={recs.Count}\n");
+                foreach (var r in recs)
+                {
+                    File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] - {r.Model.Name} ({r.StarRating} stars)\n");
+                }
+            }
+            catch { }
+
+            StepChanged?.Invoke(1);
+        }
+        finally
+        {
+            _scanLock.Release();
+        }
     }
 
     public async Task DownloadAndBenchmarkAsync(
@@ -51,20 +95,10 @@ public class SetupService
 
         var destPath = Path.Combine(dir, $"{selectedModel.Model.Name.Replace(" ", "_")}.gguf");
 
-        await _downloader.DownloadModelAsync(selectedModel.Model.DownloadUrls, selectedModel.Model.ExpectedSha256, destPath, progressCallback, ct);
+        var actualSizeBytes = await _downloader.DownloadModelAsync(selectedModel.Model.DownloadUrls, selectedModel.Model.ExpectedSha256, destPath, progressCallback, ct);
 
-        statusCallback?.Invoke($"Download complete. Loading {selectedModel.Model.Name} for a quick performance check…");
-        StepChanged?.Invoke(3); // Benchmark step
-
-        // Apply configuration based on hardware
-        var options = _configurator.Configure(selectedModel);
-
-        var result = await _benchmark.RunAsync(destPath, selectedModel.Model.Name, options);
-        
-        // Save benchmark result to DB
-        statusCallback?.Invoke("Saving performance results…");
-        var db = await DatabaseManager.GetConnectionAsync();
-        await db.InsertAsync(result);
+        StepChanged?.Invoke(3); // Finalize step
+        statusCallback?.Invoke($"Download complete. Model ready to use. Size: {actualSizeBytes.ToFileSizeString()}");
 
         return; // Complete
     }

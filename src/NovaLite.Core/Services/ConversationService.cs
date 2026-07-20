@@ -58,6 +58,9 @@ public sealed class ConversationService : IAsyncDisposable
 
     public async IAsyncEnumerable<string> SendAsync(
         string userText,
+        string? attachedFileName = null,
+        string? attachedFileSizeDisplay = null,
+        string? attachedFileContent = null,
         InferenceOptions? options = null,
         [System.Runtime.CompilerServices.EnumeratorCancellation] System.Threading.CancellationToken ct = default)
     {
@@ -67,6 +70,9 @@ public sealed class ConversationService : IAsyncDisposable
         }
 
         var userMsg = ChatMessage.FromUser(userText);
+        userMsg.AttachedFileName = attachedFileName;
+        userMsg.AttachedFileSizeDisplay = attachedFileSizeDisplay;
+        userMsg.AttachedFileContent = attachedFileContent;
         Session.AddMessage(userMsg);
         
         // Persist user message
@@ -85,6 +91,8 @@ public sealed class ConversationService : IAsyncDisposable
         // Inject any stored facts about the user so the model can reference them.
         var systemPrompt = new System.Text.StringBuilder();
         systemPrompt.AppendLine("You are Nova, a helpful AI assistant. Your name is Nova — this is YOUR name, not the user's name.");
+        systemPrompt.AppendLine("Answer directly and naturally. Give clear, useful responses without defaulting to canned disclaimers.");
+        systemPrompt.AppendLine("When the user asks for your view or opinion, provide a thoughtful, balanced take and explain the reasoning briefly.");
         systemPrompt.AppendLine("You do NOT know the user's personal details (such as their name, age, or preferences) unless they are listed below.");
         systemPrompt.AppendLine("If the user asks about their own personal details and you have no stored information about it, honestly say you don't know and ask them to tell you.");
         systemPrompt.AppendLine("When the user tells you personal information (like their name), remember and use it.");

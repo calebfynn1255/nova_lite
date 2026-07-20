@@ -77,7 +77,10 @@ public class ChatRepository : IChatRepository
         {
             Role = Enum.Parse<ChatRole>(e.Role),
             Content = e.Content,
-            Timestamp = e.Timestamp
+            Timestamp = e.Timestamp,
+            AttachedFileName = e.AttachedFileName,
+            AttachedFileSizeDisplay = e.AttachedFileSizeDisplay,
+            AttachedFileContent = e.AttachedFileContent
         }).ToList();
     }
 
@@ -111,7 +114,10 @@ public class ChatRepository : IChatRepository
             SessionId = sessionId,
             Role = message.Role.ToString(),
             Content = message.Content,
-            Timestamp = DateTime.UtcNow
+            Timestamp = DateTime.UtcNow,
+            AttachedFileName = message.AttachedFileName,
+            AttachedFileSizeDisplay = message.AttachedFileSizeDisplay,
+            AttachedFileContent = message.AttachedFileContent
         };
         
         context.Messages.Add(entity);

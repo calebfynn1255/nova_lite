@@ -94,6 +94,19 @@ public partial class App : Application
 
         SetupManager = new Setup.SetupService(GgufLoader);
         File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] SetupService created{Environment.NewLine}");
+        // Kick off a background hardware scan so recommendations are available for UI pages
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await SetupManager.ScanHardwareAsync();
+                File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] Background ScanHardwareAsync started by App.Initialize{Environment.NewLine}");
+            }
+            catch (Exception ex)
+            {
+                try { File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] Background ScanHardwareAsync failed: {ex.Message}{Environment.NewLine}"); } catch {}
+            }
+        });
 
             File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] Initialize complete{Environment.NewLine}");
         }
@@ -147,11 +160,12 @@ public partial class App : Application
                     if (!fresh.IsFirstRun && fresh.IsDownloadComplete)
                     {
                         var mainVm = new MainWindowViewModel();
-                        desktop.MainWindow = new MainWindow { DataContext = mainVm };
-                        desktop.MainWindow.Show();
+                        var mainWindow = new MainWindow { DataContext = mainVm };
+                        desktop.MainWindow = mainWindow;
+                        mainWindow.Show();
                         try { File.AppendAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NovaLite", "startup.log"), $"[{DateTime.UtcNow:O}] MainWindow shown after setup{Environment.NewLine}"); } catch {}
                     }
-                    else
+                    else if (desktop.MainWindow == setupWindow)
                     {
                         // Setup was aborted or still incomplete
                         desktop.Shutdown();

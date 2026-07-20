@@ -14,6 +14,10 @@ public sealed class ChatMessage
     /// <summary>Number of tokens in this message (set after tokenisation).</summary>
     public int TokenCount { get; set; }
 
+    public string? AttachedFileName { get; set; }
+    public string? AttachedFileSizeDisplay { get; set; }
+    public string? AttachedFileContent { get; set; }
+
     public static ChatMessage FromUser(string content) =>
         new() { Role = ChatRole.User, Content = content };
 

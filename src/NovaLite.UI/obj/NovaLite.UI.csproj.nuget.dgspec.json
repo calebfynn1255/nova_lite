@@ -17,14 +17,14 @@
           "C:\\Users\\Fynn\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows10.0.19041.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows10.0.19041": {
+            "targetAlias": "net9.0-windows10.0.19041.0",
             "projectReferences": {
               "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Database\\NovaLite.Database.csproj": {
                 "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Database\\NovaLite.Database.csproj"
@@ -45,8 +45,8 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows10.0.19041": {
+          "targetAlias": "net9.0-windows10.0.19041.0",
           "dependencies": {
             "CommunityToolkit.Mvvm": {
               "target": "Package",
@@ -55,6 +55,10 @@
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
               "version": "[9.0.0, )"
+            },
+            "PdfPig": {
+              "target": "Package",
+              "version": "[0.1.9, )"
             },
             "System.Management": {
               "target": "Package",
@@ -86,12 +90,19 @@
               "version": "[9.0.17, 9.0.17]"
             },
             {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.19041.57, 10.0.19041.57]"
+            },
+            {
               "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[9.0.17, 9.0.17]"
             }
           ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
               "privateAssets": "all"
             }
           },
@@ -205,14 +216,14 @@
           "C:\\Users\\Fynn\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows10.0.19041.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows10.0.19041": {
+            "targetAlias": "net9.0-windows10.0.19041.0",
             "projectReferences": {
               "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj": {
                 "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj"
@@ -236,8 +247,8 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows10.0.19041": {
+          "targetAlias": "net9.0-windows10.0.19041.0",
           "dependencies": {
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
@@ -269,12 +280,19 @@
               "version": "[9.0.17, 9.0.17]"
             },
             {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.19041.57, 10.0.19041.57]"
+            },
+            {
               "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[9.0.17, 9.0.17]"
             }
           ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
               "privateAssets": "all"
             }
           },
@@ -384,14 +402,14 @@
           "C:\\Users\\Fynn\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows10.0.19041.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows10.0.19041": {
+            "targetAlias": "net9.0-windows10.0.19041.0",
             "projectReferences": {
               "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj": {
                 "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj"
@@ -418,8 +436,8 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows10.0.19041": {
+          "targetAlias": "net9.0-windows10.0.19041.0",
           "dependencies": {
             "Avalonia": {
               "target": "Package",
@@ -487,12 +505,19 @@
               "version": "[9.0.17, 9.0.17]"
             },
             {
+              "name": "Microsoft.Windows.SDK.NET.Ref",
+              "version": "[10.0.19041.57, 10.0.19041.57]"
+            },
+            {
               "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[9.0.17, 9.0.17]"
             }
           ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.Windows.SDK.NET.Ref.Windows": {
               "privateAssets": "all"
             }
           },
