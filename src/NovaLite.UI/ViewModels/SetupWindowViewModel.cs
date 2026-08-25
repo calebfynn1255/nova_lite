@@ -22,9 +22,9 @@ public partial class SetupWindowViewModel : ObservableObject
     
     private CancellationTokenSource? _downloadCts;
 
-    // Steps: 0=Scan, 1=Catalog, 2=Path, 3=Download
+    // Steps: 0=Scan, 1=Recommend, 2=Path, 3=Download
     [ObservableProperty] private int _currentStep = 0; 
-    
+
     public bool IsStepScan     => CurrentStep == 0;
     public bool IsStepRecommend=> CurrentStep == 1;
     public bool IsStepPath     => CurrentStep == 2;
@@ -54,6 +54,9 @@ public partial class SetupWindowViewModel : ObservableObject
     [ObservableProperty] private bool _isDownloading;
     [ObservableProperty] private bool _isPaused;
     [ObservableProperty] private bool _isBenchmarking;
+    [ObservableProperty] private bool _isDownloadReady;
+    [ObservableProperty] private string? _downloadedModelPath;
+    [ObservableProperty] private string? _downloadedModelName;
 
     // Resume-step display info
     [ObservableProperty] private string _resumeModelName = string.Empty;
@@ -90,7 +93,7 @@ public partial class SetupWindowViewModel : ObservableObject
             {
                 Hardware = _setup.Hardware;
                 PopulateRecommendations();
-                CurrentStep = 1;
+                CurrentStep = 0;
             });
         }
         catch { /* best-effort — user can hit Scan manually */ }
@@ -123,7 +126,13 @@ public partial class SetupWindowViewModel : ObservableObject
     {
         Recommendations.Clear();
         var pending = AppSettings.Load();
-        foreach (var r in _setup.Recommendations)
+
+        var filtered = _setup.Recommendations;
+
+        // Sort by whether it fits the PC (IsRecommended)
+        var ordered = filtered.OrderByDescending(r => r.IsRecommended).Take(5).ToList();
+
+        foreach (var r in ordered)
         {
             bool isResumable = !string.IsNullOrEmpty(pending.PendingDownloadModelName) &&
                                !pending.IsDownloadComplete &&
@@ -193,17 +202,17 @@ public partial class SetupWindowViewModel : ObservableObject
                 DownloadProgress = 0;
 
                 // Track pending state so resume is possible after restart
-                var destPath = Path.Combine(InstallPath, $"{sm.Model.Name.Replace(" ", "_")}.gguf");
+                var plannedDestPath = Path.Combine(InstallPath, $"{sm.Model.Name.Replace(" ", "_")}.gguf");
                 var s2 = AppSettings.Load();
                 s2.PendingDownloadModelName = sm.Model.Name;
-                s2.PendingDownloadFilePath = destPath + ".partial";
+                s2.PendingDownloadFilePath = plannedDestPath + ".partial";
                 s2.PendingDownloadProgress = 0;
                 s2.Save();
 
                 double lastReportedProgress = -1;
                 DateTimeOffset lastUiUpdateAt = DateTimeOffset.MinValue;
 
-                await _setup.DownloadAndBenchmarkAsync(
+                var destPath = await _setup.DownloadAndBenchmarkAsync(
                     sm,
                     p =>
                     {
@@ -265,22 +274,25 @@ public partial class SetupWindowViewModel : ObservableObject
                         }
                     }),
                     _downloadCts.Token);
+
+                // Save downloaded model info
+                DownloadedModelPath = destPath;
+                DownloadedModelName = sm.Model.Name;
             }
 
             IsBenchmarking = false;
-            // All done — mark as complete
+            IsDownloadReady = true;
+            DownloadProgress = 100;
+
+            // Mark download complete in settings
             var sf = AppSettings.Load();
             sf.IsDownloadComplete = true;
             sf.PendingDownloadModelName = string.Empty;
             sf.PendingDownloadFilePath = string.Empty;
             sf.PendingDownloadProgress = 0;
-            
-            // (GPU offloading disabled for Milestone 1 as included DLL is CPU-only)
-
             sf.Save();
 
-            DownloadStatus = "Setup complete. You can now continue in the app and use your model.";
-            await Task.Delay(750);
+            DownloadStatus = $"{DownloadedModelName ?? "Model"} downloaded successfully! Click Continue to load your model and proceed.";
         }
         catch (OperationCanceledException)
         {
@@ -292,6 +304,7 @@ public partial class SetupWindowViewModel : ObservableObject
         catch (Exception ex)
         {
             DownloadStatus = $"Setup interrupted: {ex.Message}";
+            IsDownloadReady = false;
             var se = AppSettings.Load();
             se.PendingDownloadProgress = DownloadProgress;
             se.Save();
@@ -300,6 +313,56 @@ public partial class SetupWindowViewModel : ObservableObject
         {
             IsBenchmarking = false;
             IsDownloading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ProceedToChat()
+    {
+        if (string.IsNullOrEmpty(DownloadedModelPath) || !File.Exists(DownloadedModelPath))
+        {
+            // Fallback: try finding any downloaded model in InstallPath
+            if (!string.IsNullOrEmpty(InstallPath) && Directory.Exists(InstallPath))
+            {
+                var files = Directory.GetFiles(InstallPath, "*.gguf");
+                if (files.Length > 0)
+                    DownloadedModelPath = files[0];
+            }
+        }
+
+        if (string.IsNullOrEmpty(DownloadedModelPath) || !File.Exists(DownloadedModelPath))
+        {
+            DownloadStatus = "Model file not found. Please try re-downloading.";
+            return;
+        }
+
+        try
+        {
+            DownloadStatus = $"Loading {DownloadedModelName ?? Path.GetFileName(DownloadedModelPath)} into memory…";
+            IsBenchmarking = true;
+
+            var loadedModel = await App.GgufLoader.LoadAsync(DownloadedModelPath);
+            await App.Provider.LoadAsync(loadedModel);
+
+            var s = AppSettings.Load();
+            s.LastModelPath = DownloadedModelPath;
+            s.ModelDirectory = InstallPath;
+            s.IsFirstRun = false;
+            s.IsDownloadComplete = true;
+            s.PendingDownloadModelName = string.Empty;
+            s.PendingDownloadFilePath = string.Empty;
+            s.PendingDownloadProgress = 0;
+            s.Save();
+
+            CloseAction?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            DownloadStatus = $"Failed to load model: {ex.Message}";
+        }
+        finally
+        {
+            IsBenchmarking = false;
         }
     }
 
@@ -376,7 +439,7 @@ public partial class SetupWindowViewModel : ObservableObject
             {
                 // Fallback: go back to recommendations
                 DownloadStatus = "Model not found in catalog. Please re-select.";
-                CurrentStep = 1;
+                CurrentStep = 0;
                 return;
             }
         }

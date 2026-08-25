@@ -3,183 +3,373 @@
              xmlns:vm="using:NovaLite.UI.ViewModels"
              x:Class="NovaLite.UI.Views.ModelManagerPage"
              x:DataType="vm:ModelManagerViewModel"
-             Background="{DynamicResource BgPrimaryBrush}">
+             Background="Transparent">
 
-    <DockPanel Margin="24,20">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="28,24,28,32" Spacing="20" HorizontalAlignment="Stretch" MaxWidth="1000">
 
-        <!-- Header -->
-        <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,20">
-            <TextBlock Text="Models" Classes="h2"/>
-            <TextBlock Text="Load GGUF, ONNX, Safetensors, or MLX models from your disk."
-                       Classes="secondary" FontSize="13"/>
-        </StackPanel>
-
-        <!-- Directory row -->
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,8,Auto,8,Auto" Margin="0,0,0,16">
-            <TextBox Grid.Column="0"
-                     Text="{Binding ScanDirectory}"
-                     Watermark="Model directory path…"/>
-            <Button Grid.Column="2" Classes="ghost"
-                    Command="{Binding BrowseDirectoryCommand}"
-                    ToolTip.Tip="Browse folder">
-                <PathIcon Width="16" Height="16"
-                          Data="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
-                          Foreground="{DynamicResource TextSecondaryBrush}"/>
-            </Button>
-            <Button Grid.Column="4" Classes="primary"
-                    Command="{Binding ScanCommand}"
-                    IsEnabled="{Binding !IsScanning}">
-                <StackPanel Orientation="Horizontal" Spacing="6">
-                    <PathIcon Width="14" Height="14"
-                              Data="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                              Foreground="White"/>
-                    <TextBlock Text="Scan" Foreground="White"/>
-                </StackPanel>
-            </Button>
-        </Grid>
-
-        <!-- Status -->
-        <TextBlock DockPanel.Dock="Top"
-                   Text="{Binding StatusMessage}"
-                   Classes="caption"
-                   Margin="0,0,0,12"
-                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-
-        <!-- Model list + detail split -->
-        <Grid ColumnDefinitions="*,16,280">
-
-            <!-- List -->
-            <StackPanel Grid.Column="0" Spacing="16">
-                <Border Classes="card" Padding="0">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <ListBox ItemsSource="{Binding Models}"
-                             SelectedItem="{Binding SelectedModel}"
-                             Background="Transparent">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type vm:ModelInfoViewModel}">
-                            <Grid ColumnDefinitions="*,Auto" Margin="12,10">
-                                <StackPanel Grid.Column="0" Spacing="2">
-                                    <TextBlock Text="{Binding FileName}"
-                                               FontWeight="Medium"
-                                               FontSize="13"
-                                               TextTrimming="CharacterEllipsis"/>
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <Border Classes="badge" Padding="4,2" Background="{DynamicResource BgSurfaceVariantBrush}" CornerRadius="4">
-                                            <TextBlock Text="{Binding Format}"
-                                                       FontSize="10"
-                                                       FontWeight="Bold"
-                                                       Foreground="{DynamicResource AccentBrush}"/>
-                                        </Border>
-                                        <TextBlock Text="{Binding SizeDisplay}"
-                                                   FontSize="11"
-                                                   Foreground="{DynamicResource TextMutedBrush}"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-
-                    <!-- Empty state -->
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel/>
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    </ListBox>
-                    </ScrollViewer>
-                </Border>
-
-                <Border Classes="card" Padding="16">
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="Recommended models" Classes="h3"/>
-                        <TextBlock Text="Download and load models from the same screen without leaving the app." Classes="secondary" FontSize="12" TextWrapping="Wrap"/>
-                        <ItemsControl ItemsSource="{Binding RecommendedDownloads}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:RecommendedModelViewModel">
-                                    <Border Margin="0,0,0,8" Padding="12" BorderThickness="2" CornerRadius="8" Background="{DynamicResource BgSurfaceVariantBrush}">
-                                        <Border.BorderBrush>
-                                            <DynamicResource ResourceKey="AccentBrush"/>
-                                        </Border.BorderBrush>
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <StackPanel Grid.Column="0" Spacing="4" Margin="0,0,12,0">
-                                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <TextBlock Text="{Binding DisplayName}" FontWeight="Medium"/>
-                                                    <Border IsVisible="{Binding IsPaused}" Padding="6,2" CornerRadius="999" Background="{DynamicResource AccentBrush}">
-                                                        <TextBlock Text="{Binding PauseLabel}" FontSize="10" FontWeight="Bold" Foreground="White"/>
-                                                    </Border>
-                                                </StackPanel>
-                                                <TextBlock Text="{Binding Model.Description}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="1" Spacing="8">
-                                                <Button Classes="primary"
-                                                        IsVisible="{Binding !IsPaused}"
-                                                        Command="{Binding $parent[ItemsControl].DataContext.DownloadRecommendedCommand}"
-                                                        CommandParameter="{Binding}">
-                                                    <TextBlock Text="Download &amp; Load" Foreground="White"/>
-                                                </Button>
-                                                <Button Classes="primary"
-                                                        IsVisible="{Binding IsPaused}"
-                                                        Command="{Binding $parent[ItemsControl].DataContext.ResumeRecommendedDownloadCommand}">
-                                                    <TextBlock Text="Resume" Foreground="White"/>
-                                                </Button>
-                                                <Button Classes="ghost"
-                                                        IsVisible="{Binding IsPaused}"
-                                                        Command="{Binding $parent[ItemsControl].DataContext.CancelRecommendedDownloadCommand}">
-                                                    <TextBlock Text="Cancel"/>
-                                                </Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <ProgressBar Value="{Binding RecommendedDownloadProgress}" Maximum="100" Height="8" IsVisible="{Binding IsRecommendedDownloadRunning}"/>
-                        <TextBlock Text="{Binding RecommendedDownloadStatus}" FontSize="12" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap"/>
-
-                        <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsRecommendedDownloadRunning}">
-                            <Button Classes="secondary" Command="{Binding PauseRecommendedDownloadCommand}" IsVisible="{Binding !IsRecommendedDownloadPaused}">
-                                <TextBlock Text="Pause"/>
-                            </Button>
-                            <Button Classes="primary" Command="{Binding ResumeRecommendedDownloadCommand}" IsVisible="{Binding IsRecommendedDownloadPaused}">
-                                <TextBlock Text="Resume"/>
-                            </Button>
-                            <Button Classes="ghost" Command="{Binding CancelRecommendedDownloadCommand}">
-                                <TextBlock Text="Cancel"/>
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+            <!-- ═══════ Header ═══════ -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Models" Classes="h2"/>
+                <TextBlock Text="Load GGUF, ONNX, Safetensors, or MLX models from your disk."
+                           Classes="secondary" FontSize="13" TextWrapping="Wrap"/>
             </StackPanel>
 
-            <!-- Detail panel -->
-            <Border Grid.Column="2" Classes="card"
-                    IsVisible="{Binding SelectedModel, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <!-- ═══════ Directory / Scan Bar ═══════ -->
+            <Border Background="{DynamicResource BgSurfaceBrush}"
+                    CornerRadius="12" Padding="16" BorderThickness="1"
+                    BorderBrush="{DynamicResource BorderSubtleBrush}">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="{Binding SelectedModel.FileName}"
-                               Classes="h3"
-                               TextWrapping="Wrap"/>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="FORMAT" Classes="section-header"/>
-                        <TextBlock Text="{Binding SelectedModel.Format}" FontSize="13"/>
+                    <TextBlock Text="SCAN LOCATION" Classes="section-header" FontSize="10"/>
+                    <Grid ColumnDefinitions="*,8,Auto" VerticalAlignment="Center">
+                        <TextBox Grid.Column="0"
+                                 Text="{Binding ScanDirectory}"
+                                 Watermark="Model directory path…"
+                                 VerticalAlignment="Center"/>
+                        <Button Grid.Column="2" Classes="ghost"
+                                Click="BrowseFolder"
+                                ToolTip.Tip="Browse folder"
+                                VerticalAlignment="Center">
+                            <PathIcon Width="16" Height="16"
+                                      Data="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"
+                                      Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Button>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Classes="primary"
+                                Command="{Binding ScanCommand}"
+                                IsEnabled="{Binding !IsScanning}"
+                                MinWidth="100">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Width="14" Height="14"
+                                          Data="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                                          Foreground="White"/>
+                                <TextBlock Text="Scan Folder" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="ghost"
+                                Command="{Binding ScanWholePcCommand}"
+                                IsEnabled="{Binding !IsScanning}"
+                                MinWidth="100">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <PathIcon Width="14" Height="14"
+                                          Data="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"
+                                          Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                <TextBlock Text="Scan Whole PC" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock Text="SIZE" Classes="section-header"/>
-                        <TextBlock Text="{Binding SelectedModel.SizeDisplay}" FontSize="13"/>
-                    </StackPanel>
-
-                    <Button Classes="primary"
-                            Command="{Binding LoadSelectedCommand}"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Center">
-                        <TextBlock Text="{Binding LoadButtonText}"
-                                   Foreground="White"/>
-                    </Button>
                 </StackPanel>
             </Border>
-        </Grid>
-    </DockPanel>
+
+            <!-- ═══════ Status ═══════ -->
+            <TextBlock Text="{Binding StatusMessage}"
+                       Classes="caption"
+                       IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                       Foreground="{DynamicResource AccentBrush}"
+                       FontWeight="Medium"/>
+
+            <!-- ═══════ Found Models (Advanced) ═══════ -->
+            <StackPanel Spacing="8" Margin="0,15,0,0"
+                        IsVisible="{Binding AdvancedModels.Count}">
+                <TextBlock Text="ADVANCED MODELS" Classes="section-header" FontSize="10"/>
+                <ItemsControl ItemsSource="{Binding AdvancedModels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ModelInfoViewModel}">
+                            <Border Margin="0,0,12,12" Padding="14,12"
+                                    CornerRadius="10"
+                                    Background="{DynamicResource BgSurfaceBrush}"
+                                    BorderThickness="1"
+                                    Width="320"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}">
+                                <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                    <!-- Model info -->
+                                    <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FileName}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="13"
+                                                   ToolTip.Tip="{Binding FileName}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Border Padding="6,2" CornerRadius="6"
+                                                    Background="{DynamicResource BgSurfaceVariantBrush}">
+                                                <TextBlock Text="{Binding Format}"
+                                                           FontSize="10" FontWeight="Bold"
+                                                           Foreground="{DynamicResource AccentBrush}"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding SizeDisplay}"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource TextMutedBrush}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Load button inline -->
+                                    <Button Grid.Column="1"
+                                            Classes="primary"
+                                            Command="{Binding $parent[ItemsControl].DataContext.LoadSelectedCommand}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding !$parent[ItemsControl].DataContext.IsLoading}"
+                                            VerticalAlignment="Center"
+                                            MinWidth="80"
+                                            Margin="12,0,0,0"
+                                            IsVisible="{Binding !IsLoaded}">
+                                        <TextBlock Text="Load" Foreground="White" FontSize="12"/>
+                                    </Button>
+                                    <Border Grid.Column="1"
+                                            IsVisible="{Binding IsLoaded}"
+                                            Padding="10,6" CornerRadius="6"
+                                            Background="#2022C55E"
+                                            BorderBrush="#22C55E" BorderThickness="1"
+                                            VerticalAlignment="Center"
+                                            Margin="12,0,0,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <PathIcon Width="12" Height="12"
+                                                      Data="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+                                                      Foreground="#22C55E"/>
+                                            <TextBlock Text="Loaded" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#22C55E"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- ═══════ Found Models (General) ═══════ -->
+            <StackPanel Spacing="8"
+                        IsVisible="{Binding GeneralModels.Count}">
+                <TextBlock Text="GENERAL AI MODELS" Classes="section-header" FontSize="10"/>
+                <ItemsControl ItemsSource="{Binding GeneralModels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:ModelInfoViewModel}">
+                            <Border Margin="0,0,12,12" Padding="14,12"
+                                    CornerRadius="10"
+                                    Background="{DynamicResource BgSurfaceBrush}"
+                                    BorderThickness="1"
+                                    Width="320"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}">
+                                <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                                    <!-- Model info -->
+                                    <StackPanel Grid.Column="0" Spacing="4" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FileName}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="13"
+                                                   ToolTip.Tip="{Binding FileName}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Border Padding="6,2" CornerRadius="6"
+                                                    Background="{DynamicResource BgSurfaceVariantBrush}">
+                                                <TextBlock Text="{Binding Format}"
+                                                           FontSize="10" FontWeight="Bold"
+                                                           Foreground="{DynamicResource AccentBrush}"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding SizeDisplay}"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource TextMutedBrush}"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Load button inline -->
+                                    <Button Grid.Column="1"
+                                            Classes="primary"
+                                            Command="{Binding $parent[ItemsControl].DataContext.LoadSelectedCommand}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding !$parent[ItemsControl].DataContext.IsLoading}"
+                                            VerticalAlignment="Center"
+                                            MinWidth="80"
+                                            Margin="12,0,0,0"
+                                            IsVisible="{Binding !IsLoaded}">
+                                        <TextBlock Text="Load" Foreground="White" FontSize="12"/>
+                                    </Button>
+                                    <Border Grid.Column="1"
+                                            IsVisible="{Binding IsLoaded}"
+                                            Padding="10,6" CornerRadius="6"
+                                            Background="#2022C55E"
+                                            BorderBrush="#22C55E" BorderThickness="1"
+                                            VerticalAlignment="Center"
+                                            Margin="12,0,0,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <PathIcon Width="12" Height="12"
+                                                      Data="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"
+                                                      Foreground="#22C55E"/>
+                                            <TextBlock Text="Loaded" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#22C55E"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- ═══════ Empty state (no models found) ═══════ -->
+            <Border IsVisible="{Binding !Models.Count}"
+                    Background="{DynamicResource BgSurfaceBrush}"
+                    CornerRadius="12" Padding="32"
+                    BorderThickness="1" BorderBrush="{DynamicResource BorderSubtleBrush}"
+                    HorizontalAlignment="Stretch">
+                <StackPanel HorizontalAlignment="Center" Spacing="8">
+                    <PathIcon Width="32" Height="32"
+                              Data="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-3-7h-2V9h-2v4H9l3 3 3-3z"
+                              Foreground="{DynamicResource TextMutedBrush}"
+                              HorizontalAlignment="Center"/>
+                    <TextBlock Text="No models found"
+                               FontWeight="SemiBold" FontSize="14"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Scan a directory or download a recommended model below."
+                               FontSize="12"
+                               Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap" TextAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════ Recommended Models ═══════ -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="RECOMMENDED MODELS" Classes="section-header" FontSize="10"/>
+                <TextBlock Text="Download and load models without leaving the app."
+                           Classes="secondary" FontSize="12" TextWrapping="Wrap"
+                           Margin="0,0,0,4"/>
+                <ItemsControl ItemsSource="{Binding RecommendedDownloads}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RecommendedModelViewModel">
+                            <Border Margin="0,0,12,12" Padding="16" CornerRadius="10"
+                                    Background="{DynamicResource BgSurfaceBrush}"
+                                    BorderThickness="1"
+                                    Width="320" MinHeight="140"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}">
+                                <Grid RowDefinitions="*,Auto">
+                                    <!-- Model info -->
+                                    <StackPanel Grid.Row="0" Spacing="4" Margin="0,0,0,12">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <TextBlock Text="{Binding DisplayName}"
+                                                       FontWeight="SemiBold" FontSize="13"/>
+                                            <Border IsVisible="{Binding IsPaused}"
+                                                    Padding="8,2" CornerRadius="999"
+                                                    Background="{DynamicResource AccentBrush}">
+                                                <TextBlock Text="{Binding PauseLabel}"
+                                                           FontSize="10" FontWeight="Bold"
+                                                           Foreground="White"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Model.Description}"
+                                                   FontSize="11"
+                                                   Foreground="{DynamicResource TextMutedBrush}"
+                                                   TextWrapping="Wrap"/>
+                                    </StackPanel>
+
+                                    <!-- Action buttons -->
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                                Spacing="6" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                                        <Button Classes="primary"
+                                                IsVisible="{Binding !IsPaused}"
+                                                Command="{Binding $parent[ItemsControl].DataContext.DownloadRecommendedCommand}"
+                                                CommandParameter="{Binding}"
+                                                MinWidth="90">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <PathIcon Width="12" Height="12"
+                                                          Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                                          Foreground="White"/>
+                                                <TextBlock Text="Download" Foreground="White" FontSize="12"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Classes="primary"
+                                                IsVisible="{Binding IsPaused}"
+                                                Command="{Binding $parent[ItemsControl].DataContext.ResumeRecommendedDownloadCommand}"
+                                                MinWidth="80">
+                                            <TextBlock Text="Resume" Foreground="White" FontSize="12"/>
+                                        </Button>
+                                        <Button Classes="ghost"
+                                                IsVisible="{Binding IsPaused}"
+                                                Command="{Binding $parent[ItemsControl].DataContext.CancelRecommendedDownloadCommand}"
+                                                MinWidth="60">
+                                            <TextBlock Text="Cancel" FontSize="12"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- ═══════ Download Progress ═══════ -->
+            <Border IsVisible="{Binding IsRecommendedDownloadRunning}"
+                    Background="{DynamicResource BgSurfaceBrush}"
+                    CornerRadius="10" Padding="16"
+                    BorderThickness="1" BorderBrush="{DynamicResource AccentBrush}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="DOWNLOADING" Classes="section-header" FontSize="10"
+                               Foreground="{DynamicResource AccentBrush}"/>
+                    <ProgressBar Value="{Binding RecommendedDownloadProgress}"
+                                 Maximum="100" Height="6"
+                                 Foreground="{DynamicResource AccentBrush}"/>
+                    <TextBlock Text="{Binding RecommendedDownloadStatus}"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}"
+                               TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Classes="secondary"
+                                Command="{Binding PauseRecommendedDownloadCommand}"
+                                IsVisible="{Binding !IsRecommendedDownloadPaused}"
+                                MinWidth="70">
+                            <TextBlock Text="Pause" FontSize="12"/>
+                        </Button>
+                        <Button Classes="primary"
+                                Command="{Binding ResumeRecommendedDownloadCommand}"
+                                IsVisible="{Binding IsRecommendedDownloadPaused}"
+                                MinWidth="70">
+                            <TextBlock Text="Resume" Foreground="White" FontSize="12"/>
+                        </Button>
+                        <Button Classes="ghost"
+                                Command="{Binding CancelRecommendedDownloadCommand}"
+                                MinWidth="70">
+                            <TextBlock Text="Cancel" FontSize="12"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- ═══════ Proceed to Chat ═══════ -->
+            <Button Classes="primary"
+                    IsVisible="{Binding IsDownloadReady}"
+                    Command="{Binding ProceedToChatCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="16,12"
+                    MinHeight="44">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Width="16" Height="16"
+                              Data="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"
+                              Foreground="White"/>
+                    <TextBlock Text="Proceed to Chat" Foreground="White"
+                               FontWeight="SemiBold" FontSize="14"/>
+                </StackPanel>
+            </Button>
+
+        </StackPanel>
+    </ScrollViewer>
+
 </UserControl>

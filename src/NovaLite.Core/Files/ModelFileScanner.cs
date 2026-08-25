@@ -22,9 +22,7 @@ public sealed class ModelFileScanner
     {
         if (!Directory.Exists(directory)) yield break;
 
-        var searchOption = recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-
-        foreach (var file in Directory.EnumerateFiles(directory, "*", searchOption))
+        foreach (var file in SafeEnumerateFiles(directory, "*", recursive))
         {
             var ext = Path.GetExtension(file);
             if (ExtensionFormats.TryGetValue(ext, out var format))
@@ -34,12 +32,12 @@ public sealed class ModelFileScanner
         }
 
         // Detect MLX model directories
-        foreach (var dir in Directory.EnumerateDirectories(directory, "*", searchOption))
+        foreach (var dir in SafeEnumerateDirectories(directory, "*", recursive))
         {
             if (File.Exists(Path.Combine(dir, "config.json")) &&
-                Directory.GetFiles(dir, "*.safetensors").Length > 0)
+                SafeEnumerateFiles(dir, "*.safetensors", false).Any())
             {
-                var size = Directory.GetFiles(dir, "*", SearchOption.AllDirectories)
+                var size = SafeEnumerateFiles(dir, "*", true)
                     .Sum(f => new FileInfo(f).Length);
                 yield return new ModelInfo
                 {
@@ -47,6 +45,77 @@ public sealed class ModelFileScanner
                     Format = "MLX",
                     FileSizeBytes = size
                 };
+            }
+        }
+    }
+
+    private static IEnumerable<string> SafeEnumerateFiles(string root, string searchPattern, bool recursive)
+    {
+        var directories = new Stack<string>();
+        directories.Push(root);
+
+        while (directories.Count > 0)
+        {
+            var current = directories.Pop();
+            string[] files = Array.Empty<string>();
+            try
+            {
+                files = Directory.GetFiles(current, searchPattern, SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var file in files)
+            {
+                yield return file;
+            }
+
+            if (!recursive) continue;
+
+            string[] subdirs = Array.Empty<string>();
+            try
+            {
+                subdirs = Directory.GetDirectories(current, "*", SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var dir in subdirs)
+            {
+                directories.Push(dir);
+            }
+        }
+    }
+
+    private static IEnumerable<string> SafeEnumerateDirectories(string root, string searchPattern, bool recursive)
+    {
+        var directories = new Stack<string>();
+        directories.Push(root);
+
+        while (directories.Count > 0)
+        {
+            var current = directories.Pop();
+            string[] subdirs = Array.Empty<string>();
+            try
+            {
+                subdirs = Directory.GetDirectories(current, searchPattern, SearchOption.TopDirectoryOnly);
+            }
+            catch
+            {
+                continue;
+            }
+
+            foreach (var dir in subdirs)
+            {
+                yield return dir;
+                if (recursive)
+                {
+                    directories.Push(dir);
+                }
             }
         }
     }

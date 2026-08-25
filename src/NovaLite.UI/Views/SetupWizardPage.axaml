@@ -70,21 +70,21 @@
             <ProgressBar Value="{Binding DownloadProgress}" Maximum="100" Width="300" Height="12"/>
         </StackPanel>
 
-        <!-- Step 3: Benchmark & Finish -->
+        <!-- Step 3: Finish -->
         <StackPanel IsVisible="{Binding IsStepFinish}"
                     VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20">
             <TextBlock Text="Setup Complete!" Classes="h1" TextAlignment="Center"/>
-            
-            <Border Classes="card" Padding="20">
+
+            <Border Classes="card" Padding="20" IsVisible="{Binding IsDownloadReady}">
                 <StackPanel Spacing="10">
-                    <TextBlock Text="Benchmark Results" Classes="h2" TextAlignment="Center"/>
-                    <TextBlock Text="{Binding BenchmarkTokensPerSec, StringFormat={}{0:F1} tokens/sec}" 
-                               FontSize="32" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding DownloadStatus}" Classes="h2" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding DownloadedModelName}" FontSize="14" TextAlignment="Center"/>
                 </StackPanel>
             </Border>
 
-            <Button Classes="primary" Content="Start Chatting" 
-                    Command="{Binding FinishCommand}"
+            <Button Classes="primary" Content="Proceed to Chat"
+                    Command="{Binding ProceedToChatCommand}"
+                    IsVisible="{Binding IsDownloadReady}"
                     HorizontalAlignment="Center" Width="200" HorizontalContentAlignment="Center"/>
         </StackPanel>
     </Grid>

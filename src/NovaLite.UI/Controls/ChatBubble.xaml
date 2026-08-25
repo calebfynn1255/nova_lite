@@ -111,11 +111,7 @@
 
             <Border Classes="ai-bubble">
                 <Grid ColumnDefinitions="*,Auto">
-                    <SelectableTextBlock Grid.Column="0" Text="{Binding Content}"
-                                         Foreground="{DynamicResource AiBubbleTextBrush}"
-                                         FontSize="14"
-                                         LineHeight="22"
-                                         TextWrapping="Wrap"/>
+                    <StackPanel Grid.Column="0" Name="AiMessageContent" Orientation="Vertical" Spacing="2" MaxWidth="550"/>
                     <Button Grid.Column="1" Classes="ghost" Command="{Binding CopyTextCommand}" ToolTip.Tip="Copy" Margin="8,0,0,0" Padding="4" VerticalAlignment="Top" HorizontalAlignment="Right">
                         <PathIcon Width="12" Height="12" Data="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" Foreground="{DynamicResource AiBubbleTextBrush}" Opacity="0.6"/>
                     </Button>

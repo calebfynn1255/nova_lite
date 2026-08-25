@@ -35,6 +35,9 @@ public partial class SetupWizardViewModel : ObservableObject
     [ObservableProperty] private double _downloadProgress;
     [ObservableProperty] private string _downloadStatus = string.Empty;
     [ObservableProperty] private bool _isDownloading;
+    [ObservableProperty] private bool _isDownloadReady;
+    [ObservableProperty] private string? _downloadedModelPath;
+    [ObservableProperty] private string? _downloadedModelName;
     
     [ObservableProperty] private double _benchmarkTokensPerSec;
 
@@ -69,12 +72,15 @@ public partial class SetupWizardViewModel : ObservableObject
     {
         if (SelectedModel is null) return;
         
+        IsDownloadReady = false;
+        DownloadedModelPath = null;
+        DownloadedModelName = null;
         IsDownloading = true;
         DownloadStatus = $"Downloading {SelectedModel.Model.Name}…";
 
         try
         {
-            await _setup.DownloadAndBenchmarkAsync(SelectedModel, p =>
+            var destPath = await _setup.DownloadAndBenchmarkAsync(SelectedModel, p =>
             {
                 Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                 {
@@ -83,21 +89,47 @@ public partial class SetupWizardViewModel : ObservableObject
                 });
             });
 
-            DownloadStatus = "Setup complete!";
-            
-            var result = await _setup.GetLatestBenchmarkAsync();
-            if (result != null)
-            {
-                BenchmarkTokensPerSec = result.AverageTokensPerSecond;
-            }
+            // Do not auto-benchmark or auto-load. Mark ready and show Proceed button.
+            DownloadStatus = "Download complete. Model ready.";
+            IsDownloadReady = true;
+            DownloadedModelPath = destPath;
+            DownloadedModelName = SelectedModel.Model.Name;
         }
         catch (Exception ex)
         {
             DownloadStatus = $"Error: {ex.Message}";
+            IsDownloadReady = false;
+            DownloadedModelPath = null;
+            DownloadedModelName = null;
         }
         finally
         {
             IsDownloading = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ProceedToChat()
+    {
+        if (string.IsNullOrEmpty(DownloadedModelPath)) return;
+
+        try
+        {
+            var loadedModel = await App.GgufLoader.LoadAsync(DownloadedModelPath);
+            await App.Provider.LoadAsync(loadedModel);
+
+            var s = AppSettings.Load();
+            s.LastModelPath = DownloadedModelPath;
+            s.ModelDirectory = Path.GetDirectoryName(DownloadedModelPath) ?? s.ModelDirectory;
+            s.IsFirstRun = false;
+            s.IsDownloadComplete = true;
+            s.Save();
+
+            _mainVm.NavigateChat();
+        }
+        catch (Exception ex)
+        {
+            DownloadStatus = $"Load failed: {ex.Message}";
         }
     }
 

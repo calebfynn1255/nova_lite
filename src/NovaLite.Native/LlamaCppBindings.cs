@@ -93,6 +93,9 @@ public static unsafe partial class LlamaCppBindings
         public int* n_seq_id;
         public int** seq_id;
         public sbyte* logits;
+        public int all_pos_0;
+        public int all_pos_1;
+        public int all_seq_id;
     }
 
     // ── Backend ───────────────────────────────────────────────────────────────
@@ -175,7 +178,7 @@ public static unsafe partial class LlamaCppBindings
 
     [LibraryImport(LibName, EntryPoint = "llama_batch_get_one")]
     [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-    public static partial LlamaBatch llama_batch_get_one(int* tokens, int n_tokens);
+    public static partial LlamaBatch llama_batch_get_one(int* tokens, int n_tokens, int pos_0, int seq_id);
 
     // ── New Sampler Chain API (2.24.0) ────────────────────────────────────────
     [LibraryImport(LibName, EntryPoint = "llama_sampler_chain_default_params")]

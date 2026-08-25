@@ -23,9 +23,9 @@ public class RecommendationEngine
         
         long reservedRam = 6144;
         if (profile.TotalRamMB <= 8500)
-            reservedRam = 4096;
+            reservedRam = 3072;
         else if (profile.TotalRamMB >= 16000)
-            reservedRam = 8192; // Leave 8GB for Windows and apps
+            reservedRam = 6144; // Leave 6GB for Windows and background apps
 
         long usableSysRam = profile.TotalRamMB - reservedRam;
         if (usableSysRam < 1024) usableSysRam = 1024;
@@ -36,17 +36,19 @@ public class RecommendationEngine
 
         foreach (var model in catalogSnapshot)
         {
-            // Use the model download size (in MB) when available; otherwise fall back to RecommendedRamMB
-            var estimatedMemoryMB = model.DownloadSizeBytes is long sizeBytes && sizeBytes > 0
-                ? (long)Math.Ceiling(sizeBytes / 1024.0 / 1024.0)
-                : model.RecommendedRamMB;
+            // Always estimate memory based on actual runtime operational requirement (RecommendedRamMB)
+            var estimatedMemoryMB = model.RecommendedRamMB > 0
+                ? model.RecommendedRamMB
+                : (model.DownloadSizeBytes is long sizeBytes && sizeBytes > 0
+                    ? (long)Math.Ceiling(sizeBytes / 1024.0 / 1024.0 * 1.5)
+                    : 4096);
 
             // 1. Filter out models whose minimum requirement exceeds total available memory
             if (model.MinRamMB > usableSysRam + usableVRam)
                 continue;
 
-            // Tiny models (<= 1GB) should only be recommended on very low-RAM systems (~4GB)
-            if (estimatedMemoryMB <= 1024 && profile.TotalRamMB > 4500)
+            // Tiny models (<= 1GB RAM) should only be recommended on low-RAM systems (~4GB) unless GPU-accelerated
+            if (estimatedMemoryMB <= 1024 && profile.TotalRamMB > 8500 && !hasCapableGpu)
                 continue;
 
             // 2. Filter out models whose estimated size exceeds usable system RAM
@@ -54,19 +56,15 @@ public class RecommendationEngine
             if (!willFitInVram && estimatedMemoryMB > usableSysRam)
                 continue;
 
-            // 3. Filter out models that are WAY too small for high-end systems
-            if (usableSysRam >= 16384 && estimatedMemoryMB <= 2048)
-                continue;
-
-            // 4. For systems with ~4GB RAM or less, only recommend models around 1GB
+            // 3. For systems with ~4GB RAM or less, only recommend models around 1.5GB
             if (profile.TotalRamMB <= 4500 && estimatedMemoryMB > 1536)
                 continue;
 
             bool perfectlyFitsInVRam = hasCapableGpu && estimatedMemoryMB <= (usableVRam * 0.85);
             bool fitsInVRam = hasCapableGpu && estimatedMemoryMB <= usableVRam;
             bool mostlyFitsInVRam = hasCapableGpu && model.MinRamMB <= usableVRam;
-            bool perfectlyFitsInSysRam = estimatedMemoryMB <= (usableSysRam * 0.7);
-            bool fitsInSysRam = estimatedMemoryMB <= usableSysRam;
+            bool perfectlyFitsInSysRam = estimatedMemoryMB <= (usableSysRam * 0.5); // Uses <= 50% usable RAM (plenty of headroom)
+            bool fitsInSysRam = estimatedMemoryMB <= (usableSysRam * 0.8);
             bool mostlyFitsInSysRam = model.MinRamMB <= usableSysRam;
 
             int stars = 1;
@@ -90,48 +88,23 @@ public class RecommendationEngine
             }
             else if (perfectlyFitsInSysRam)
             {
-                stars = 4;
-                reason = "Good performance. Runs reliably using your system's memory with plenty of headroom for other applications.";
-                if (!profile.HasDedicatedGpu && model.CpuFriendly)
-                {
-                    stars = 5;
-                    reason = "Optimal performance. CPU-friendly model tailored for systems without dedicated graphics.";
-                }
-                else if (hasCapableGpu)
-                {
-                    stars = 2; // Penalize so it sorts below models that fit in VRAM
-                    reason = "Adequate performance. Runs entirely in your system's memory (too large for graphics card).";
-                }
+                stars = 5;
+                reason = "Optimal performance. Ultra-lightweight model that runs fast with minimal memory footprint (leaves plenty of RAM free).";
             }
             else if (fitsInSysRam)
             {
-                stars = 3;
-                reason = "Adequate performance. Runs in your system's memory but leaves less headroom for other applications.";
-                if (!profile.HasDedicatedGpu && model.CpuFriendly)
-                {
-                    stars = 4;
-                    reason = "Great performance. CPU-friendly model but uses most of your usable memory.";
-                }
-                else if (hasCapableGpu)
-                {
-                    stars = 2; // Penalize so it sorts below models that fit in VRAM
-                    reason = "Basic performance. Runs entirely in your system's memory (too large for graphics card).";
-                }
+                stars = 4;
+                reason = "Great performance. Runs reliably using system memory with comfortable headroom for other applications.";
             }
             else if (mostlyFitsInSysRam)
             {
                 stars = 2;
-                reason = "Basic performance. Uses a significant portion of your system's memory and may run slowly.";
-                if (hasCapableGpu)
-                {
-                    stars = 1; // Heavy penalty
-                    reason = "Basic performance. Uses a significant portion of system memory (too large for graphics card).";
-                }
+                reason = "Basic performance. Uses a significant portion of system RAM (6-9GB), which may leave less headroom for other applications.";
             }
             else
             {
-                stars = 2;
-                reason = "Basic performance. Heavily relies on available memory across your system, which may result in slower generation times.";
+                stars = 1;
+                reason = "Heavy memory footprint. High RAM usage across system memory.";
             }
 
             // Penalty for CPU-heavy models on CPU-only machines
@@ -155,20 +128,7 @@ public class RecommendationEngine
             .ThenByDescending(r => r.Model.DownloadSizeBytes ?? 0L)
             .ToList();
 
-        // Choose up to N recommendations (fewer if not enough fit). Prioritize by star rating,
-        // CPU-friendliness, capability tier, and model size (already handled in sorting).
-        const int MaxRecommendations = 5;
-        var finalModels = sorted.Take(Math.Min(MaxRecommendations, sorted.Count)).ToList();
-
-        // TESTING HOOK: force-include "Llama 3.2 1B" in recommendations for every PC.
-        // Temporary: included for testing purposes only — remove later as needed.
-        var testModel = catalogSnapshot.FirstOrDefault(m => string.Equals(m.Name, "Llama 3.2 1B", System.StringComparison.OrdinalIgnoreCase));
-        if (testModel != null && !finalModels.Any(r => string.Equals(r.Model.Name, testModel.Name, System.StringComparison.OrdinalIgnoreCase)))
-        {
-            finalModels.Add(new RecommendedModel(testModel, 3, "Test override: included for testing", profile, false, false));
-            if (finalModels.Count > MaxRecommendations)
-                finalModels = finalModels.Take(MaxRecommendations).ToList();
-        }
+        var finalModels = sorted;
 
         try
         {

@@ -24,7 +24,7 @@ public partial class ChatPage : UserControl
             // Auto-scroll only when user is near the bottom; otherwise show a quick-jump button.
             vm.Messages.CollectionChanged += (_, _) => OnMessagesChanged();
             vm.ChatUpdated += () => ForceScrollToBottom();
-            // Attach Enter key binding to the input box so Enter reliably sends
+
             try
             {
                 var input = this.FindControl<TextBox>("InputBox");
@@ -44,14 +44,8 @@ public partial class ChatPage : UserControl
 
     private void InputBox_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
+        if (e.Key == Key.Enter && !e.KeyModifiers.HasFlag(KeyModifiers.Shift))
         {
-            if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
-            {
-                // Shift+Enter: let the TextBox handle it (insert newline)
-                return;
-            }
-            
             // Enter without Shift: Send message
             e.Handled = true; // Prevent newline
             
@@ -143,6 +137,30 @@ public partial class ChatPage : UserControl
             if (!string.IsNullOrEmpty(path))
             {
                 await vm.AttachFileAsync(path, file.Name);
+            }
+        }
+    }
+
+    public async void LinkWorkspace_Click(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ChatPageViewModel vm) return;
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null) return;
+
+        var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(
+            new FolderPickerOpenOptions
+            {
+                Title = "Select a project context folder to link",
+                AllowMultiple = false
+            });
+
+        if (folders.Count > 0)
+        {
+            var folder = folders[0];
+            var path = folder.TryGetLocalPath();
+            if (!string.IsNullOrEmpty(path))
+            {
+                vm.SetWorkspace(path);
             }
         }
     }

@@ -3,10 +3,10 @@
 
     <!-- ── Backgrounds (true black for OLED efficiency) ──────────── -->
     <Color x:Key="BgPrimaryColor">#000000</Color>
-    <Color x:Key="BgSurfaceColor">#050508</Color>
-    <Color x:Key="BgSurfaceVariantColor">#0D0D12</Color>
-    <Color x:Key="BgSidebarColor">#030306</Color>
-    <Color x:Key="BgInputColor">#080810</Color>
+    <Color x:Key="BgSurfaceColor">#05020D</Color>
+    <Color x:Key="BgSurfaceVariantColor">#0A0314</Color>
+    <Color x:Key="BgSidebarColor">#020108</Color>
+    <Color x:Key="BgInputColor">#06020F</Color>
     <Color x:Key="BgOverlayColor">#99000000</Color>
 
     <SolidColorBrush x:Key="BgPrimaryBrush"        Color="{StaticResource BgPrimaryColor}"/>
@@ -16,16 +16,16 @@
     <SolidColorBrush x:Key="BgInputBrush"          Color="{StaticResource BgInputColor}"/>
 
     <!-- ── Borders ────────────────────────────────────────────────── -->
-    <Color x:Key="BorderColor">#14141A</Color>
+    <Color x:Key="BorderColor">#120524</Color>
     <SolidColorBrush x:Key="BorderBrush"       Color="{StaticResource BorderColor}"/>
-    <SolidColorBrush x:Key="BorderSubtleBrush" Color="#0D0D12"/>
+    <SolidColorBrush x:Key="BorderSubtleBrush" Color="#0A0314"/>
 
     <!-- ── Accent (brighter violet for pure-black contrast) ──────── -->
-    <Color x:Key="AccentColor">#C4B5FD</Color>
+    <Color x:Key="AccentColor">#A855F7</Color>
     <SolidColorBrush x:Key="AccentBrush"        Color="{StaticResource AccentColor}"/>
-    <SolidColorBrush x:Key="AccentHoverBrush"   Color="#A78BFA"/>
-    <SolidColorBrush x:Key="AccentPressedBrush" Color="#8B5CF6"/>
-    <SolidColorBrush x:Key="AccentGlowBrush"    Color="#26C4B5FD"/>
+    <SolidColorBrush x:Key="AccentHoverBrush"   Color="#F472B6"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#6A00FF"/>
+    <SolidColorBrush x:Key="AccentGlowBrush"    Color="#26A855F7"/>
 
     <!-- ── Text ───────────────────────────────────────────────────── -->
     <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#FAFAFA"/>
@@ -34,14 +34,14 @@
     <SolidColorBrush x:Key="TextOnAccentBrush"  Color="#000000"/>
 
     <!-- ── Chat bubbles ───────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="UserBubbleBrush"     Color="#3B1F6E"/>
+    <SolidColorBrush x:Key="UserBubbleBrush"     Color="#6A00FF"/>
     <SolidColorBrush x:Key="UserBubbleTextBrush" Color="#F5F0FF"/>
-    <SolidColorBrush x:Key="AiBubbleBrush"       Color="#080810"/>
+    <SolidColorBrush x:Key="AiBubbleBrush"       Color="#06020F"/>
     <SolidColorBrush x:Key="AiBubbleTextBrush"   Color="#E4E4E7"/>
 
     <!-- ── Sidebar interactive ────────────────────────────────────── -->
-    <SolidColorBrush x:Key="SidebarButtonHoverBrush"  Color="#15C4B5FD"/>
-    <SolidColorBrush x:Key="SidebarButtonActiveBrush" Color="#25C4B5FD"/>
+    <SolidColorBrush x:Key="SidebarButtonHoverBrush"  Color="#15A855F7"/>
+    <SolidColorBrush x:Key="SidebarButtonActiveBrush" Color="#25A855F7"/>
 
     <!-- ── Scrollbar ─────────────────────────────────────────────── -->
     <SolidColorBrush x:Key="ScrollbarThumbBrush" Color="#1C1C22"/>

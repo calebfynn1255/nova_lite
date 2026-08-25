@@ -75,6 +75,8 @@ public partial class SidebarButton : UserControl
 
             var icon = this.FindControl<PathIcon>("IconPath");
             var lbl  = this.FindControl<TextBlock>("LabelText");
+            var activeRail = this.FindControl<Border>("ActiveRail");
+            if (activeRail is not null) activeRail.Opacity = IsActive ? 1 : 0;
             if (accent is not null)
             {
                 if (icon is not null) icon.Foreground = accent;

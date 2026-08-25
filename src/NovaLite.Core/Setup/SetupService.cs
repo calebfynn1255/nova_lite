@@ -75,7 +75,7 @@ public class SetupService
         }
     }
 
-    public async Task DownloadAndBenchmarkAsync(
+    public async Task<string> DownloadAndBenchmarkAsync(
         RecommendedModel selectedModel,
         Action<double> progressCallback,
         Action<string>? statusCallback = null,
@@ -100,7 +100,7 @@ public class SetupService
         StepChanged?.Invoke(3); // Finalize step
         statusCallback?.Invoke($"Download complete. Model ready to use. Size: {actualSizeBytes.ToFileSizeString()}");
 
-        return; // Complete
+        return destPath;
     }
 
     public async Task<BenchmarkResult?> GetLatestBenchmarkAsync()

@@ -8,8 +8,8 @@ public partial class ModelManagerPage : UserControl
 {
     public ModelManagerPage() => InitializeComponent();
 
-    // Called from the Browse button command — opens a folder picker dialog
-    public async void BrowseFolder()
+    // Called from the Browse button — opens a folder picker dialog in the view.
+    private async void BrowseFolder(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         if (DataContext is not ModelManagerViewModel vm) return;
         var topLevel = TopLevel.GetTopLevel(this);

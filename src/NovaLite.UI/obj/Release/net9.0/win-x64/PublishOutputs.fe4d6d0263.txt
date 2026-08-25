@@ -1,8 +1,0 @@
-c:\Users\Fynn\nova_lite\Release\NovaLite.pdb
-c:\Users\Fynn\nova_lite\Release\onnxruntime.lib
-c:\Users\Fynn\nova_lite\Release\onnxruntime_providers_shared.lib
-c:\Users\Fynn\nova_lite\Release\NovaLite.Core.pdb
-c:\Users\Fynn\nova_lite\Release\NovaLite.Core.xml
-c:\Users\Fynn\nova_lite\Release\NovaLite.Engine.pdb
-c:\Users\Fynn\nova_lite\Release\NovaLite.Native.pdb
-c:\Users\Fynn\nova_lite\Release\NovaLite.exe

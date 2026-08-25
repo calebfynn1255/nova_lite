@@ -15,4 +15,5 @@ public interface IChatRepository
     
     Task<List<ChatMessage>> GetMessagesForSessionAsync(Guid sessionId);
     Task AddMessageAsync(Guid sessionId, ChatMessage message);
+    Task UpdateMessageAsync(Guid sessionId, ChatMessage message);
 }

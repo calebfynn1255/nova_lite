@@ -5,6 +5,7 @@ using NovaLite.Core.Files;
 using NovaLite.Core.Models;
 using NovaLite.Core.Settings;
 using NovaLite.Setup;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,16 +25,22 @@ public partial class ModelManagerViewModel : ObservableObject
     [ObservableProperty] private double _recommendedDownloadProgress;
     [ObservableProperty] private string _recommendedDownloadStatus = string.Empty;
     [ObservableProperty] private RecommendedModel? _activeRecommendedModel;
+    [ObservableProperty] private bool _isDownloadReady;
+    [ObservableProperty] private string? _downloadedModelPath;
+    [ObservableProperty] private string? _downloadedModelName;
     [ObservableProperty] 
     [NotifyCanExecuteChangedFor(nameof(LoadSelectedCommand))]
     [NotifyPropertyChangedFor(nameof(LoadButtonText))]
     private ModelInfoViewModel? _selectedModel;
 
     public ObservableCollection<ModelInfoViewModel> Models { get; } = [];
+    public ObservableCollection<ModelInfoViewModel> AdvancedModels { get; } = [];
+    public ObservableCollection<ModelInfoViewModel> GeneralModels { get; } = [];
     public ObservableCollection<RecommendedModelViewModel> RecommendedDownloads { get; } = [];
 
     /// <summary>Called after a model is successfully loaded. UI can hook this to update the header label.</summary>
     public Action<string>? OnModelLoaded { get; set; }
+    public Action? OnProceedToChatRequested { get; set; }
 
     private readonly ModelFileScanner _scanner = new();
 
@@ -91,16 +98,52 @@ public partial class ModelManagerViewModel : ObservableObject
     [RelayCommand]
     private async Task Scan() => await ScanAsync();
 
+    [RelayCommand]
+    private async Task ScanWholePc() => await ScanPathsAsync(
+        DriveInfo.GetDrives()
+            .Where(d => d.IsReady && d.DriveType == DriveType.Fixed)
+            .Select(d => d.RootDirectory.FullName),
+        "Scanning entire PC…");
+
     private async Task ScanAsync()
     {
         if (string.IsNullOrWhiteSpace(ScanDirectory)) return;
+        await ScanPathsAsync(new[] { ScanDirectory }, "Scanning…");
+    }
+
+    private async Task ScanPathsAsync(IEnumerable<string> paths, string statusMessage)
+    {
+        var rootPaths = paths?.Where(p => !string.IsNullOrWhiteSpace(p) && Directory.Exists(p)).ToArray() ?? Array.Empty<string>();
+        if (rootPaths.Length == 0)
+        {
+            StatusMessage = "No valid directory selected.";
+            return;
+        }
+
         IsScanning = true;
-        StatusMessage = "Scanning…";
+        StatusMessage = statusMessage;
         Models.Clear();
+        AdvancedModels.Clear();
+        GeneralModels.Clear();
+
         try
         {
             var found = await Task.Run(() =>
-                _scanner.Scan(ScanDirectory).ToList());
+            {
+                var results = new List<ModelInfo>();
+                foreach (var path in rootPaths)
+                {
+                    try
+                    {
+                        results.AddRange(_scanner.Scan(path));
+                    }
+                    catch
+                    {
+                        // Some drive roots or folders may be inaccessible; skip them.
+                    }
+                }
+                return results;
+            });
 
             var lastLoaded = AppSettings.Load().LastModelPath;
 
@@ -109,7 +152,15 @@ public partial class ModelManagerViewModel : ObservableObject
                 ? Path.GetFullPath(pending.PendingDownloadFilePath)
                 : null;
 
-            foreach (var m in found)
+            var distinctFound = found
+                .GroupBy(m => Path.GetFullPath(m.FilePath), StringComparer.OrdinalIgnoreCase)
+                .Select(g => g.First())
+                .ToList();
+
+            var advancedKeywords = new[] { "coder", "code", "qwen", "deepseek", "codellama", "starcoder", "phi" };
+            var lastLoadedPath = !string.IsNullOrEmpty(lastLoaded) ? Path.GetFullPath(lastLoaded) : null;
+
+            foreach (var m in distinctFound)
             {
                 if (!string.IsNullOrWhiteSpace(pendingFilePath) &&
                     string.Equals(Path.GetFullPath(m.FilePath), pendingFilePath, StringComparison.OrdinalIgnoreCase))
@@ -118,12 +169,19 @@ public partial class ModelManagerViewModel : ObservableObject
                 }
 
                 var vm = new ModelInfoViewModel(m);
-                if (App.Provider.IsReady && !string.IsNullOrEmpty(lastLoaded) &&
-                    string.Equals(m.FilePath, lastLoaded, StringComparison.OrdinalIgnoreCase))
+                if (lastLoadedPath != null &&
+                    string.Equals(Path.GetFullPath(m.FilePath), lastLoadedPath, StringComparison.OrdinalIgnoreCase))
                 {
                     vm.IsLoaded = true;
                 }
+                
                 Models.Add(vm);
+                
+                var name = m.FileName.ToLowerInvariant();
+                if (advancedKeywords.Any(k => name.Contains(k)))
+                    AdvancedModels.Add(vm);
+                else
+                    GeneralModels.Add(vm);
             }
 
             if (App.SetupManager.Recommendations.Count == 0)
@@ -131,7 +189,7 @@ public partial class ModelManagerViewModel : ObservableObject
 
             await RefreshRecommendedDownloadsAsync();
 
-            StatusMessage = $"{found.Count} model{(found.Count == 1 ? "" : "s")} found";
+            StatusMessage = $"{Models.Count} model{(Models.Count == 1 ? "" : "s")} found";
         }
         catch (Exception ex)
         {
@@ -197,38 +255,40 @@ public partial class ModelManagerViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(CanLoad))]
-    private async Task LoadSelected()
+    private async Task LoadSelected(object? parameter)
     {
-        if (SelectedModel is null) return;
+        var target = parameter as ModelInfoViewModel ?? SelectedModel;
+        if (target is null) return;
+        SelectedModel = target;
         IsLoading = true;
-        StatusMessage = $"Loading {SelectedModel.FileName}…";
+        StatusMessage = $"Loading {target.FileName}…";
         try
         {
             // Unload existing
             await App.Provider.UnloadAsync();
 
             // Load via loader (hardcoding GGUF loader for Milestone 1)
-            var loadedModel = await App.GgufLoader.LoadAsync(SelectedModel.FilePath);
+            var loadedModel = await App.GgufLoader.LoadAsync(target.FilePath);
             
             // Set as active model in provider
             await App.Provider.LoadAsync(loadedModel);
             
             foreach (var m in Models) m.IsLoaded = false;
-            SelectedModel.IsLoaded = true;
+            target.IsLoaded = true;
             OnPropertyChanged(nameof(LoadButtonText));
             LoadSelectedCommand.NotifyCanExecuteChanged();
             
-            StatusMessage = $"Loaded: {SelectedModel.FileName}";
+            StatusMessage = $"Loaded: {target.FileName}";
             
             // Persist last model path for auto-load on next startup
             var s = AppSettings.Load();
-            s.LastModelPath = SelectedModel.FilePath;
+            s.LastModelPath = target.FilePath;
             s.ModelDirectory = ScanDirectory;
             s.IsFirstRun = false;
             s.IsDownloadComplete = true;
             s.Save();
             
-            OnModelLoaded?.Invoke(SelectedModel.FileName);
+            OnModelLoaded?.Invoke(target.FileName);
         }
         catch (Exception ex)
         {
@@ -267,13 +327,13 @@ public partial class ModelManagerViewModel : ObservableObject
         IsRecommendedDownloadPaused = false;
         RecommendedDownloadProgress = 0;
         RefreshRecommendedDownloadStates();
-        var destPath = settings.PendingDownloadFilePath;
+        var pendingFilePath = settings.PendingDownloadFilePath;
         RecommendedDownloadStatus = $"Downloading {model.Source.Model.Name}…";
         _downloadCts = new CancellationTokenSource();
 
         try
         {
-            await App.SetupManager.DownloadAndBenchmarkAsync(
+            var destPath = await App.SetupManager.DownloadAndBenchmarkAsync(
                 model.Source,
                 progress => Avalonia.Threading.Dispatcher.UIThread.Post(() =>
                 {
@@ -285,8 +345,10 @@ public partial class ModelManagerViewModel : ObservableObject
                 status => Avalonia.Threading.Dispatcher.UIThread.Post(() => RecommendedDownloadStatus = status),
                 _downloadCts.Token);
 
-            var loadedModel = await App.GgufLoader.LoadAsync(destPath);
-            await App.Provider.LoadAsync(loadedModel);
+            // Do not auto-load the model. Leave it ready and show a Proceed button.
+            DownloadedModelPath = destPath;
+            DownloadedModelName = model.Source.Model.Name;
+            IsDownloadReady = true;
 
             var store = AppSettings.Load();
             store.LastModelPath = destPath;
@@ -299,8 +361,7 @@ public partial class ModelManagerViewModel : ObservableObject
             store.Save();
 
             await ScanAsync();
-            RecommendedDownloadStatus = $"Loaded {Path.GetFileName(destPath)}";
-            OnModelLoaded?.Invoke(Path.GetFileName(destPath));
+            RecommendedDownloadStatus = $"Downloaded {Path.GetFileName(destPath)} (ready)";
         }
             catch (OperationCanceledException)
         {
@@ -324,6 +385,12 @@ public partial class ModelManagerViewModel : ObservableObject
             if (!IsRecommendedDownloadPaused)
             {
                 ActiveRecommendedModel = null;
+            }
+
+            // If download finished and is ready, expose Proceed action in UI
+            if (IsDownloadReady && !IsRecommendedDownloadPaused)
+            {
+                // UI may show a button bound to ProceedToChatCommand
             }
 
             RefreshRecommendedDownloadStates();
@@ -354,6 +421,34 @@ public partial class ModelManagerViewModel : ObservableObject
 
         var vm = new RecommendedModelViewModel(matchingModel, true, settings.PendingDownloadProgress);
         await DownloadRecommended(vm);
+    }
+
+    [RelayCommand]
+    private async Task ProceedToChat()
+    {
+        if (string.IsNullOrEmpty(DownloadedModelPath)) return;
+
+        try
+        {
+            var loadedModel = await App.GgufLoader.LoadAsync(DownloadedModelPath);
+            await App.Provider.LoadAsync(loadedModel);
+
+            var store = AppSettings.Load();
+            store.LastModelPath = DownloadedModelPath;
+            store.ModelDirectory = ScanDirectory;
+            store.IsFirstRun = false;
+            store.IsDownloadComplete = true;
+            store.Save();
+
+            OnModelLoaded?.Invoke(Path.GetFileName(DownloadedModelPath));
+
+            // Let MainWindow navigate to chat if it wants
+            OnProceedToChatRequested?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            RecommendedDownloadStatus = $"Load failed: {ex.Message}";
+        }
     }
 
     [RelayCommand]
@@ -411,7 +506,8 @@ public partial class ModelManagerViewModel : ObservableObject
         }
     }
 
-    private bool CanLoad() => SelectedModel is not null && !IsLoading && !SelectedModel.IsLoaded;
+    // CanLoad no longer gates on list selection — each card passes its item via CommandParameter
+    private bool CanLoad() => !IsLoading;
 
     public string LoadButtonText
     {

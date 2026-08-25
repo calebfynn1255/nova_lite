@@ -11,9 +11,13 @@ namespace NovaLite.Core.AI;
 /// </summary>
 public sealed class LocalInferenceProvider : IInferenceProvider
 {
-    private const int MaxPromptChars = 14000;
-    private const int MaxAttachedFileChars = 8000;
-    private const int MaxMessageChars = 2000;
+    private const int MaxPromptChars = 64000;
+    private const int MaxAttachedFileChars = 16000;
+    // DeepSeek-Coder chat templates use these full-width pipes. Keep the delimiter in
+    // conversation history, but never expose it in a generated reply (the session
+    // treats it as a stop sequence).
+    private const string DeepSeekBeginOfSentence = "<\uFF5Cbegin of sentence\uFF5C>";
+    private const string DeepSeekEndOfSentence = "<\uFF5Cend of sentence\uFF5C>";
 
     private readonly IModelLoader _loader;
     private readonly ILogger<LocalInferenceProvider> _logger;
@@ -45,7 +49,7 @@ public sealed class LocalInferenceProvider : IInferenceProvider
         await Task.CompletedTask;
     }
 
-    public static string PreparePromptText(string? text, int maxChars = MaxMessageChars)
+    public static string PreparePromptText(string? text, int maxChars = MaxAttachedFileChars)
     {
         if (string.IsNullOrWhiteSpace(text))
             return string.Empty;
@@ -56,6 +60,25 @@ public sealed class LocalInferenceProvider : IInferenceProvider
 
         return trimmed[..maxChars] + Environment.NewLine + Environment.NewLine +
                $"[Content truncated to {maxChars} characters to stay within the model context window.]";
+    }
+
+    /// <summary>
+    /// Replaces literal ChatML / Llama-3 control-token strings in user-supplied content
+    /// so the model cannot mistake them for real conversation boundaries.
+    /// </summary>
+    private static string SanitizeContent(string? text)
+    {
+        if (string.IsNullOrEmpty(text)) return string.Empty;
+        // Replace the pipe characters inside known control tokens so they survive
+        // tokenization as plain text rather than being treated as delimiters.
+        return text
+            .Replace("<|im_start|>",   "<‖im_start‖>")
+            .Replace("<|im_end|>",     "<‖im_end‖>")
+            .Replace("<|eot_id|>",     "<‖eot_id‖>")
+            .Replace("<|end_of_text|>","<‖end_of_text‖>")
+            .Replace("<|begin_of_text|>","<‖begin_of_text‖>")
+            .Replace("<|start_header_id|>","<‖start_header_id‖>")
+            .Replace("<|end_header_id|>",  "<‖end_header_id‖>");
     }
 
     private static string TrimPromptToBudget(string prompt)
@@ -83,8 +106,35 @@ public sealed class LocalInferenceProvider : IInferenceProvider
         // This gives the model memory of previous exchanges.
         var sb = new System.Text.StringBuilder();
 
+        bool isLlama3 = _model != null && (
+            _model.FilePath.Contains("llama_3", StringComparison.OrdinalIgnoreCase) ||
+            _model.FilePath.Contains("llama-3", StringComparison.OrdinalIgnoreCase) ||
+            _model.FilePath.Contains("llama3", StringComparison.OrdinalIgnoreCase) ||
+            _model.DisplayName.Contains("llama 3", StringComparison.OrdinalIgnoreCase) ||
+            _model.DisplayName.Contains("llama-3", StringComparison.OrdinalIgnoreCase) ||
+            _model.DisplayName.Contains("llama_3", StringComparison.OrdinalIgnoreCase)
+        );
+
+        bool isDeepSeek = _model != null && (
+            _model.FilePath.Contains("deepseek", StringComparison.OrdinalIgnoreCase) ||
+            _model.DisplayName.Contains("deepseek", StringComparison.OrdinalIgnoreCase)
+        );
+
+        if (isLlama3)
+        {
+            sb.Append("<|begin_of_text|>");
+        }
+        else if (isDeepSeek)
+        {
+            sb.Append(DeepSeekBeginOfSentence);
+        }
+
         foreach (var msg in messages)
         {
+            // Skip the trailing empty assistant placeholder message — we append the manual turn starter below
+            if (msg.Role == ChatRole.Assistant && string.IsNullOrWhiteSpace(msg.Content))
+                continue;
+
             string role = msg.Role switch
             {
                 ChatRole.System => "system",
@@ -93,25 +143,90 @@ public sealed class LocalInferenceProvider : IInferenceProvider
                 _ => "user"
             };
 
-            sb.Append("<|im_start|>");
-            sb.AppendLine(role);
-            
-            if (msg.Role == ChatRole.User && !string.IsNullOrEmpty(msg.AttachedFileName) && !string.IsNullOrEmpty(msg.AttachedFileContent))
-            {
-                var attachedContent = PreparePromptText(msg.AttachedFileContent, MaxAttachedFileChars);
-                sb.AppendLine($"[Attached File: {msg.AttachedFileName}]");
-                sb.AppendLine("```");
-                sb.AppendLine(attachedContent);
-                sb.AppendLine("```");
-                sb.AppendLine();
-            }
+            string content = SanitizeContent(msg.Content?.Trim()) ?? "";
 
-            sb.AppendLine(PreparePromptText(msg.Content, MaxMessageChars));
-            sb.AppendLine("<|im_end|>");
+            if (isLlama3)
+            {
+                sb.Append($"<|start_header_id|>{role}<|end_header_id|>\n\n");
+                
+                if (msg.Role == ChatRole.User && !string.IsNullOrEmpty(msg.AttachedFileName) && !string.IsNullOrEmpty(msg.AttachedFileContent))
+                {
+                    var attachedContent = PreparePromptText(SanitizeContent(msg.AttachedFileContent), MaxAttachedFileChars);
+                    bool isImage = IsImageFile(msg.AttachedFileName);
+                    sb.AppendLine(isImage ? $"[Image Analysis: {msg.AttachedFileName}]" : $"[Extracted Text from Attachment: {msg.AttachedFileName}]");
+                    sb.AppendLine("```");
+                    sb.AppendLine(attachedContent);
+                    sb.AppendLine("```");
+                    sb.AppendLine();
+                }
+
+                sb.AppendLine(content);
+                sb.Append("<|eot_id|>");
+            }
+            else if (isDeepSeek)
+            {
+                string attachedString = "";
+                if (msg.Role == ChatRole.User && !string.IsNullOrEmpty(msg.AttachedFileName) && !string.IsNullOrEmpty(msg.AttachedFileContent))
+                {
+                    var attachedContent = PreparePromptText(SanitizeContent(msg.AttachedFileContent), MaxAttachedFileChars);
+                    bool isImage = IsImageFile(msg.AttachedFileName);
+                    string prefix = isImage ? "[Image Analysis:" : "[Extracted Text from Attachment:";
+                    attachedString = $"{prefix} {msg.AttachedFileName}]\n```\n{attachedContent}\n```\n\n";
+                }
+
+                if (role == "user")
+                {
+                    sb.Append("User: ");
+                    sb.Append(attachedString);
+                    sb.Append(content);
+                    sb.Append("\n\n");
+                }
+                else if (role == "assistant")
+                {
+                    sb.Append("Assistant: ");
+                    sb.Append(content);
+                    sb.Append(DeepSeekEndOfSentence);
+                }
+                else // system
+                {
+                    sb.Append(content);
+                    sb.Append("\n\n");
+                }
+            }
+            else
+            {
+                sb.Append("<|im_start|>");
+                sb.AppendLine(role);
+                
+                if (msg.Role == ChatRole.User && !string.IsNullOrEmpty(msg.AttachedFileName) && !string.IsNullOrEmpty(msg.AttachedFileContent))
+                {
+                    var attachedContent = PreparePromptText(SanitizeContent(msg.AttachedFileContent), MaxAttachedFileChars);
+                    bool isImage = IsImageFile(msg.AttachedFileName);
+                    sb.AppendLine(isImage ? $"[Image Analysis: {msg.AttachedFileName}]" : $"[Extracted Text from Attachment: {msg.AttachedFileName}]");
+                    sb.AppendLine("```");
+                    sb.AppendLine(attachedContent);
+                    sb.AppendLine("```");
+                    sb.AppendLine();
+                }
+
+                sb.AppendLine(content);
+                sb.AppendLine("<|im_end|>");
+            }
         }
 
         // Add the assistant turn starter so the model knows to reply
-        sb.Append("<|im_start|>assistant\n");
+        if (isLlama3)
+        {
+            sb.Append("<|start_header_id|>assistant<|end_header_id|>\n\n");
+        }
+        else if (isDeepSeek)
+        {
+            sb.Append("Assistant:");
+        }
+        else
+        {
+            sb.Append("<|im_start|>assistant\n");
+        }
 
         var prompt = TrimPromptToBudget(sb.ToString());
 
@@ -131,5 +246,12 @@ public sealed class LocalInferenceProvider : IInferenceProvider
     public async ValueTask DisposeAsync()
     {
         await UnloadAsync();
+    }
+
+    private static bool IsImageFile(string fileName)
+    {
+        if (string.IsNullOrEmpty(fileName)) return false;
+        var ext = System.IO.Path.GetExtension(fileName).ToLowerInvariant();
+        return ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".bmp" || ext == ".gif" || ext == ".webp" || ext == ".tiff";
     }
 }

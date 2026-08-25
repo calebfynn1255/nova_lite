@@ -7,9 +7,9 @@ C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Databa
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.AssemblyInfoInputs.cache
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.AssemblyInfo.cs
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.csproj.CoreCompileInputs.cache
+C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.sourcelink.json
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\refint\NovaLite.Database.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.pdb
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.genruntimeconfig.cache
 C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\ref\NovaLite.Database.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.Database\obj\Release\net9.0\NovaLite.Database.sourcelink.json

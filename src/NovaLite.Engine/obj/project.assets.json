@@ -1,7 +1,7 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
-    "net9.0-windows10.0.19041": {
+    "net9.0-windows10.0.19041.0": {
       "CommunityToolkit.Mvvm/8.3.2": {
         "type": "package",
         "compile": {
@@ -1535,7 +1535,7 @@
         }
       }
     },
-    "net9.0-windows10.0.19041/win-x64": {
+    "net9.0-windows10.0.19041.0/win-x64": {
       "CommunityToolkit.Mvvm/8.3.2": {
         "type": "package",
         "compile": {
@@ -5104,7 +5104,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net9.0-windows10.0.19041": [
+    "net9.0-windows10.0.19041.0": [
       "Microsoft.Extensions.Logging.Abstractions >= 9.0.0",
       "Microsoft.ML.OnnxRuntime >= 1.20.1",
       "NovaLite.Core >= 1.0.0",
@@ -5117,11 +5117,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
+      "projectUniqueName": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
       "projectName": "NovaLite.Engine",
-      "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
+      "projectPath": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
       "packagesPath": "C:\\Users\\Fynn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\obj\\",
+      "outputPath": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Fynn\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -5133,7 +5133,8 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net9.0-windows10.0.19041": {
+        "net9.0-windows10.0.19041.0": {
+          "framework": "net9.0-windows10.0.19041",
           "targetAlias": "net9.0-windows10.0.19041.0",
           "projectReferences": {
             "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj": {
@@ -5155,10 +5156,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
-      "net9.0-windows10.0.19041": {
+      "net9.0-windows10.0.19041.0": {
+        "framework": "net9.0-windows10.0.19041",
         "targetAlias": "net9.0-windows10.0.19041.0",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": {
@@ -5183,20 +5185,32 @@
         "warn": true,
         "downloadDependencies": [
           {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
             "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[9.0.17, 9.0.17]"
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[9.0.19, 9.0.19]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[9.0.17, 9.0.17]"
+            "version": "[9.0.19, 9.0.19]"
           },
           {
             "name": "Microsoft.Windows.SDK.NET.Ref",
             "version": "[10.0.19041.57, 10.0.19041.57]"
           },
           {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
             "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[9.0.17, 9.0.17]"
+            "version": "[9.0.19, 9.0.19]"
           }
         ],
         "frameworkReferences": {
@@ -5207,7 +5221,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

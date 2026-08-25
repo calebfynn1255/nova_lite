@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "fYUQYt0cARU=",
+  "dgSpecHash": "aYP2Cha7VVc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Fynn\\nova_lite\\tools\\CatalogValidator\\CatalogValidator.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "c:\\Users\\Fynn\\nova_lite\\tools\\CatalogValidator\\CatalogValidator.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.19\\microsoft.netcore.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.19\\microsoft.windowsdesktop.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.19\\microsoft.aspnetcore.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.19\\microsoft.netcore.app.host.win-x64.9.0.19.nupkg.sha512"
+  ],
   "logs": []
 }

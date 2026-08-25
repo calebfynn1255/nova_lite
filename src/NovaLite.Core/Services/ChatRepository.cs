@@ -75,6 +75,7 @@ public class ChatRepository : IChatRepository
             
         return entities.Select(e => new ChatMessage
         {
+            Id = e.Id,
             Role = Enum.Parse<ChatRole>(e.Role),
             Content = e.Content,
             Timestamp = e.Timestamp,
@@ -110,7 +111,7 @@ public class ChatRepository : IChatRepository
 
         var entity = new ChatMessageEntity
         {
-            Id = Guid.NewGuid(),
+            Id = message.Id != Guid.Empty ? message.Id : Guid.NewGuid(),
             SessionId = sessionId,
             Role = message.Role.ToString(),
             Content = message.Content,
@@ -121,6 +122,26 @@ public class ChatRepository : IChatRepository
         };
         
         context.Messages.Add(entity);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task UpdateMessageAsync(Guid sessionId, ChatMessage message)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var entity = await context.Messages.FindAsync(message.Id);
+        if (entity == null)
+        {
+            // If the entity can't be found, fallback to adding as new
+            await AddMessageAsync(sessionId, message);
+            return;
+        }
+
+        entity.Content = message.Content;
+        entity.AttachedFileName = message.AttachedFileName;
+        entity.AttachedFileSizeDisplay = message.AttachedFileSizeDisplay;
+        entity.AttachedFileContent = message.AttachedFileContent;
+        entity.Timestamp = DateTime.UtcNow;
+
         await context.SaveChangesAsync();
     }
 }

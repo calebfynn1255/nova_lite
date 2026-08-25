@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using NovaLite.Core.Services;
 using NovaLite.Core.Settings;
 using System.IO;
 using NovaLite.UI.Themes;
@@ -84,12 +85,14 @@ public partial class App : Application
         var chatRepo = new Core.Services.ChatRepository(dbContextFactory);
         ChatRepository = chatRepo;
         var memoryService = new Core.Services.MemoryExtractionService(dbContextFactory, Microsoft.Extensions.Logging.Abstractions.NullLogger<Core.Services.MemoryExtractionService>.Instance);
+        var fileCommandService = new FileCommandService();
         
             Conversation = new Core.Services.ConversationService(
             Provider, 
             chatRepo, 
             memoryService, 
-            Microsoft.Extensions.Logging.Abstractions.NullLogger<Core.Services.ConversationService>.Instance);
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<Core.Services.ConversationService>.Instance,
+            fileCommandService);
         File.AppendAllText(logPath, $"[{DateTime.UtcNow:O}] ConversationService created{Environment.NewLine}");
 
         SetupManager = new Setup.SetupService(GgufLoader);

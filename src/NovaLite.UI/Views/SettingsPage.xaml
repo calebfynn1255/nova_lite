@@ -3,7 +3,7 @@
              xmlns:vm="using:NovaLite.UI.ViewModels"
              x:Class="NovaLite.UI.Views.SettingsPage"
              x:DataType="vm:SettingsViewModel"
-             Background="{DynamicResource BgPrimaryBrush}">
+             Background="Transparent">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="28" Margin="32,24,32,32" MaxWidth="640">

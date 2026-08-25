@@ -6,8 +6,8 @@
         <Style Selector="Button.nav-btn">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="CornerRadius" Value="9"/>
+            <Setter Property="Padding" Value="10,10"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -32,16 +32,18 @@
             Classes="nav-btn"
             Command="{Binding Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
             HorizontalAlignment="Stretch">
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <PathIcon Name="IconPath"
-                      Width="16" Height="16"
+        <Grid ColumnDefinitions="3,28,*">
+            <Border Name="ActiveRail" Grid.Column="0" CornerRadius="2" Width="3" Height="18"
+                    VerticalAlignment="Center" Background="{DynamicResource AccentBrush}" Opacity="0"/>
+            <PathIcon Name="IconPath" Grid.Column="1"
+                      Width="17" Height="17"
                       VerticalAlignment="Center"
                       Foreground="{DynamicResource TextSecondaryBrush}"/>
-            <TextBlock Name="LabelText"
+            <TextBlock Name="LabelText" Grid.Column="2"
                        VerticalAlignment="Center"
                        FontSize="13.5"
                        FontWeight="Medium"
                        Foreground="{DynamicResource TextSecondaryBrush}"/>
-        </StackPanel>
+        </Grid>
     </Button>
 </UserControl>

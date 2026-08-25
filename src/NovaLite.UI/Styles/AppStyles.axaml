@@ -2,6 +2,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ═══════════════════════════════════════════════════════════════
+         Global Resources (Gradients)
+    ════════════════════════════════════════════════════════════════════ -->
+    <Styles.Resources>
+        <LinearGradientBrush x:Key="NovaGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Color="#6A00FF" Offset="0.0"/>
+            <GradientStop Color="#A855F7" Offset="0.5"/>
+            <GradientStop Color="#F472B6" Offset="1.0"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="NovaGradient2Brush" StartPoint="0%,0%" EndPoint="100%,0%">
+            <GradientStop Color="#080F2A" Offset="0.0"/>
+            <GradientStop Color="#6A00FF" Offset="1.0"/>
+        </LinearGradientBrush>
+    </Styles.Resources>
+
+    <!-- ═══════════════════════════════════════════════════════════════
          Global font + typography
     ════════════════════════════════════════════════════════════════════ -->
     <Style Selector="TextBlock">
@@ -58,7 +73,7 @@
 
     <!-- Primary button (accent filled) -->
     <Style Selector="Button.primary">
-        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource NovaGradientBrush}"/>
         <Setter Property="Foreground" Value="{DynamicResource TextOnAccentBrush}"/>
         <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="16,10"/>
@@ -69,6 +84,21 @@
         <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
     </Style>
     <Style Selector="Button.primary:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
+    </Style>
+
+    <!-- Sidebar hero action: modern gradient fill with high contrast text -->
+    <Style Selector="Button.sidebar-primary">
+        <Setter Property="Background" Value="{DynamicResource NovaGradientBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    <Style Selector="Button.sidebar-primary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}"/>
+    </Style>
+    <Style Selector="Button.sidebar-primary:pressed /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
     </Style>
 
@@ -86,11 +116,11 @@
 
     <!-- Send button (round icon) -->
     <Style Selector="Button.send">
-        <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource NovaGradientBrush}"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Width" Value="40"/>
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="CornerRadius" Value="20"/>
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="CornerRadius" Value="8"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
@@ -102,6 +132,23 @@
     </Style>
     <Style Selector="Button.send:disabled /template/ ContentPresenter">
         <Setter Property="Background" Value="{DynamicResource TextMutedBrush}"/>
+    </Style>
+
+    <!-- Stop button (red icon) -->
+    <Style Selector="Button.stop">
+        <Setter Property="Background" Value="#EF4444"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    <Style Selector="Button.stop:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#FF5555"/>
+    </Style>
+    <Style Selector="Button.stop:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="#DD3333"/>
     </Style>
 
     <!-- ═══════════════════════════════════════════════════════════════

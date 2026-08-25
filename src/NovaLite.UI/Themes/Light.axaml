@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ── Backgrounds ───────────────────────────────────────────── -->
-    <Color x:Key="BgPrimaryColor">#F7F7F9</Color>
+    <Color x:Key="BgPrimaryColor">#FAFAFA</Color>
     <Color x:Key="BgSurfaceColor">#FFFFFF</Color>
-    <Color x:Key="BgSurfaceVariantColor">#EFEFF2</Color>
-    <Color x:Key="BgSidebarColor">#EAEAEE</Color>
+    <Color x:Key="BgSurfaceVariantColor">#F3F4F6</Color>
+    <Color x:Key="BgSidebarColor">#F8FAFC</Color>
     <Color x:Key="BgInputColor">#FFFFFF</Color>
-    <Color x:Key="BgOverlayColor">#33000000</Color>
+    <Color x:Key="BgOverlayColor">#20000000</Color>
 
     <SolidColorBrush x:Key="BgPrimaryBrush"        Color="{StaticResource BgPrimaryColor}"/>
     <SolidColorBrush x:Key="BgSurfaceBrush"        Color="{StaticResource BgSurfaceColor}"/>
@@ -16,34 +16,34 @@
     <SolidColorBrush x:Key="BgInputBrush"          Color="{StaticResource BgInputColor}"/>
 
     <!-- ── Borders ────────────────────────────────────────────────── -->
-    <Color x:Key="BorderColor">#D8D8DD</Color>
+    <Color x:Key="BorderColor">#E2E8F0</Color>
     <SolidColorBrush x:Key="BorderBrush"        Color="{StaticResource BorderColor}"/>
-    <SolidColorBrush x:Key="BorderSubtleBrush"  Color="#E8E8EC"/>
+    <SolidColorBrush x:Key="BorderSubtleBrush"  Color="#CBD5E1"/>
 
     <!-- ── Accent (violet) ───────────────────────────────────────── -->
-    <Color x:Key="AccentColor">#7C3AED</Color>
+    <Color x:Key="AccentColor">#6366F1</Color>
     <SolidColorBrush x:Key="AccentBrush"        Color="{StaticResource AccentColor}"/>
-    <SolidColorBrush x:Key="AccentHoverBrush"   Color="#6D28D9"/>
-    <SolidColorBrush x:Key="AccentPressedBrush" Color="#5B21B6"/>
-    <SolidColorBrush x:Key="AccentGlowBrush"    Color="#267C3AED"/>
+    <SolidColorBrush x:Key="AccentHoverBrush"   Color="#4F46E5"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#3730A3"/>
+    <SolidColorBrush x:Key="AccentGlowBrush"    Color="#1F6366F1"/>
 
     <!-- ── Text ───────────────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#18181B"/>
-    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#52525B"/>
-    <SolidColorBrush x:Key="TextMutedBrush"     Color="#A1A1AA"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush"   Color="#0F172A"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#475569"/>
+    <SolidColorBrush x:Key="TextMutedBrush"     Color="#64748B"/>
     <SolidColorBrush x:Key="TextOnAccentBrush"  Color="#FFFFFF"/>
 
     <!-- ── Chat bubbles ───────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="UserBubbleBrush"     Color="#7C3AED"/>
+    <SolidColorBrush x:Key="UserBubbleBrush"     Color="#6366F1"/>
     <SolidColorBrush x:Key="UserBubbleTextBrush" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="AiBubbleBrush"       Color="#EEECF5"/>
-    <SolidColorBrush x:Key="AiBubbleTextBrush"   Color="#18181B"/>
+    <SolidColorBrush x:Key="AiBubbleBrush"       Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="AiBubbleTextBrush"   Color="#0F172A"/>
 
     <!-- ── Sidebar interactive ────────────────────────────────────── -->
-    <SolidColorBrush x:Key="SidebarButtonHoverBrush"  Color="#1F7C3AED"/>
-    <SolidColorBrush x:Key="SidebarButtonActiveBrush" Color="#337C3AED"/>
+    <SolidColorBrush x:Key="SidebarButtonHoverBrush"  Color="#106366F1"/>
+    <SolidColorBrush x:Key="SidebarButtonActiveBrush" Color="#1F6366F1"/>
 
     <!-- ── Scrollbar ─────────────────────────────────────────────── -->
-    <SolidColorBrush x:Key="ScrollbarThumbBrush" Color="#C4C4CA"/>
+    <SolidColorBrush x:Key="ScrollbarThumbBrush" Color="#CBD5E1"/>
 
 </ResourceDictionary>

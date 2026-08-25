@@ -1,7 +1,7 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
-    "net9.0-windows10.0.19041": {
+    "net9.0-windows10.0.19041.0": {
       "Avalonia/11.2.3": {
         "type": "package",
         "dependencies": {
@@ -1128,7 +1128,8 @@
           "Microsoft.ML.OnnxRuntime.Managed": "1.20.1"
         },
         "build": {
-          "build/netstandard2.1/_._": {}
+          "build/netstandard2.1/Microsoft.ML.OnnxRuntime.props": {},
+          "build/netstandard2.1/Microsoft.ML.OnnxRuntime.targets": {}
         },
         "runtimeTargets": {
           "runtimes/android/native/onnxruntime.aar": {
@@ -1229,7 +1230,68 @@
           }
         },
         "build": {
-          "build/netstandard2.0/_._": {}
+          "build/netstandard2.0/Microsoft.ML.OnnxRuntime.Managed.targets": {}
+        }
+      },
+      "Microsoft.ML.OnnxRuntimeGenAI/0.5.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.ML.OnnxRuntime": "1.20.1",
+          "Microsoft.ML.OnnxRuntimeGenAI.Managed": "0.5.2"
+        },
+        "build": {
+          "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.props": {},
+          "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.targets": {}
+        },
+        "runtimeTargets": {
+          "runtimes/android/native/onnxruntime-genai.aar": {
+            "assetType": "native",
+            "rid": "android"
+          },
+          "runtimes/linux-x64/native/libonnxruntime-genai.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx-arm64/native/libonnxruntime-genai.dylib": {
+            "assetType": "native",
+            "rid": "osx-arm64"
+          },
+          "runtimes/osx-x64/native/libonnxruntime-genai.dylib": {
+            "assetType": "native",
+            "rid": "osx-x64"
+          },
+          "runtimes/win-arm64/native/onnxruntime-genai.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-arm64/native/onnxruntime-genai.lib": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-x64/native/onnxruntime-genai.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          },
+          "runtimes/win-x64/native/onnxruntime-genai.lib": {
+            "assetType": "native",
+            "rid": "win-x64"
+          }
+        }
+      },
+      "Microsoft.ML.OnnxRuntimeGenAI.Managed/0.5.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Microsoft.ML.OnnxRuntimeGenAI.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.ML.OnnxRuntimeGenAI.dll": {
+            "related": ".pdb"
+          }
+        },
+        "build": {
+          "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.Managed.targets": {}
         }
       },
       "Mono.TextTemplating/3.0.0": {
@@ -2192,7 +2254,7 @@
         }
       }
     },
-    "net9.0-windows10.0.19041/win-x64": {
+    "net9.0-windows10.0.19041.0/win-x64": {
       "Avalonia/11.2.3": {
         "type": "package",
         "dependencies": {
@@ -3273,7 +3335,8 @@
           "runtimes/win-x64/native/onnxruntime_providers_shared.lib": {}
         },
         "build": {
-          "build/netstandard2.1/_._": {}
+          "build/netstandard2.1/Microsoft.ML.OnnxRuntime.props": {},
+          "build/netstandard2.1/Microsoft.ML.OnnxRuntime.targets": {}
         }
       },
       "Microsoft.ML.OnnxRuntime.Managed/1.20.1": {
@@ -3292,7 +3355,38 @@
           }
         },
         "build": {
-          "build/netstandard2.0/_._": {}
+          "build/netstandard2.0/Microsoft.ML.OnnxRuntime.Managed.targets": {}
+        }
+      },
+      "Microsoft.ML.OnnxRuntimeGenAI/0.5.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.ML.OnnxRuntime": "1.20.1",
+          "Microsoft.ML.OnnxRuntimeGenAI.Managed": "0.5.2"
+        },
+        "native": {
+          "runtimes/win-x64/native/onnxruntime-genai.dll": {},
+          "runtimes/win-x64/native/onnxruntime-genai.lib": {}
+        },
+        "build": {
+          "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.props": {},
+          "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.targets": {}
+        }
+      },
+      "Microsoft.ML.OnnxRuntimeGenAI.Managed/0.5.2": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Microsoft.ML.OnnxRuntimeGenAI.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Microsoft.ML.OnnxRuntimeGenAI.dll": {
+            "related": ".pdb"
+          }
+        },
+        "build": {
+          "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.Managed.targets": {}
         }
       },
       "Mono.TextTemplating/3.0.0": {
@@ -6148,6 +6242,68 @@
         "microsoft.ml.onnxruntime.managed.nuspec"
       ]
     },
+    "Microsoft.ML.OnnxRuntimeGenAI/0.5.2": {
+      "sha512": "cWvxGavSkYmwMr60S67aWvAUmn3X9HpT2uchrNqqNaBZp7L05Cqvatqhzc7IE3gVV9FDuRflj90hNfLugiDZTQ==",
+      "type": "package",
+      "path": "microsoft.ml.onnxruntimegenai/0.5.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "PACKAGE.md",
+        "ThirdPartyNotices.txt",
+        "build/native/Microsoft.ML.OnnxRuntimeGenAI.props",
+        "build/native/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "build/native/include/ort_genai_c.h",
+        "build/net8.0-android31.0/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "build/net8.0-ios15.4/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "build/net8.0-maccatalyst14.0/_._",
+        "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.props",
+        "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "build/netstandard2.0/Microsoft.ML.OnnxRuntimeGenAI.props",
+        "build/netstandard2.0/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "buildTransitive/net8.0-android31.0/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "buildTransitive/net8.0-ios15.4/Microsoft.ML.OnnxRuntimeGenAI.targets",
+        "buildTransitive/net8.0-maccatalyst14.0/_._",
+        "microsoft.ml.onnxruntimegenai.0.5.2.nupkg.sha512",
+        "microsoft.ml.onnxruntimegenai.nuspec",
+        "runtimes/android/native/onnxruntime-genai.aar",
+        "runtimes/linux-x64/native/libonnxruntime-genai.so",
+        "runtimes/osx-arm64/native/libonnxruntime-genai.dylib",
+        "runtimes/osx-x64/native/libonnxruntime-genai.dylib",
+        "runtimes/win-arm64/native/onnxruntime-genai.dll",
+        "runtimes/win-arm64/native/onnxruntime-genai.lib",
+        "runtimes/win-x64/native/onnxruntime-genai.dll",
+        "runtimes/win-x64/native/onnxruntime-genai.lib"
+      ]
+    },
+    "Microsoft.ML.OnnxRuntimeGenAI.Managed/0.5.2": {
+      "sha512": "OI2hF5/BKjGSkoTkek3m0iKEOhYr9AqWVcwfOzvzXzIgEKfYKgTWmDHAO6JQWYD/GGycnSIxUuTLHbPCympz8A==",
+      "type": "package",
+      "path": "microsoft.ml.onnxruntimegenai.managed/0.5.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "ThirdPartyNotices.txt",
+        "build/net8.0/Microsoft.ML.OnnxRuntimeGenAI.Managed.targets",
+        "build/netstandard2.0/Microsoft.ML.OnnxRuntimeGenAI.Managed.targets",
+        "lib/net8.0-android31.0/Microsoft.ML.OnnxRuntimeGenAI.dll",
+        "lib/net8.0-android31.0/Microsoft.ML.OnnxRuntimeGenAI.pdb",
+        "lib/net8.0-android31.0/Microsoft.ML.OnnxRuntimeGenAI.xml",
+        "lib/net8.0-ios15.4/Microsoft.ML.OnnxRuntimeGenAI.dll",
+        "lib/net8.0-ios15.4/Microsoft.ML.OnnxRuntimeGenAI.pdb",
+        "lib/net8.0-maccatalyst14.0/Microsoft.ML.OnnxRuntimeGenAI.dll",
+        "lib/net8.0-maccatalyst14.0/Microsoft.ML.OnnxRuntimeGenAI.pdb",
+        "lib/net8.0/Microsoft.ML.OnnxRuntimeGenAI.dll",
+        "lib/net8.0/Microsoft.ML.OnnxRuntimeGenAI.pdb",
+        "lib/netstandard2.0/Microsoft.ML.OnnxRuntimeGenAI.dll",
+        "lib/netstandard2.0/Microsoft.ML.OnnxRuntimeGenAI.pdb",
+        "microsoft.ml.onnxruntimegenai.managed.0.5.2.nupkg.sha512",
+        "microsoft.ml.onnxruntimegenai.managed.nuspec"
+      ]
+    },
     "Mono.TextTemplating/3.0.0": {
       "sha512": "YqueG52R/Xej4VVbKuRIodjiAhV0HR/XVbLbNrJhCZnzjnSjgMJ/dCdV0akQQxavX6hp/LC6rqLGLcXeQYU7XA==",
       "type": "package",
@@ -7397,7 +7553,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net9.0-windows10.0.19041": [
+    "net9.0-windows10.0.19041.0": [
       "Avalonia >= 11.2.3",
       "Avalonia.Desktop >= 11.2.3",
       "Avalonia.Fonts.Inter >= 11.2.3",
@@ -7405,6 +7561,7 @@
       "Avalonia.Themes.Fluent >= 11.2.3",
       "CommunityToolkit.Mvvm >= 8.3.2",
       "Microsoft.Extensions.DependencyInjection >= 9.0.0",
+      "Microsoft.ML.OnnxRuntimeGenAI >= 0.5.2",
       "NovaLite.Core >= 1.0.0",
       "NovaLite.Database >= 1.0.0",
       "NovaLite.Engine >= 1.0.0",
@@ -7436,7 +7593,8 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net9.0-windows10.0.19041": {
+        "net9.0-windows10.0.19041.0": {
+          "framework": "net9.0-windows10.0.19041",
           "targetAlias": "net9.0-windows10.0.19041.0",
           "projectReferences": {
             "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj": {
@@ -7445,8 +7603,8 @@
             "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Database\\NovaLite.Database.csproj": {
               "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Database\\NovaLite.Database.csproj"
             },
-            "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj": {
-              "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj"
+            "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj": {
+              "projectPath": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj"
             }
           }
         }
@@ -7461,10 +7619,11 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
-      "net9.0-windows10.0.19041": {
+      "net9.0-windows10.0.19041.0": {
+        "framework": "net9.0-windows10.0.19041",
         "targetAlias": "net9.0-windows10.0.19041.0",
         "dependencies": {
           "Avalonia": {
@@ -7494,6 +7653,10 @@
           "Microsoft.Extensions.DependencyInjection": {
             "target": "Package",
             "version": "[9.0.0, )"
+          },
+          "Microsoft.ML.OnnxRuntimeGenAI": {
+            "target": "Package",
+            "version": "[0.5.2, )"
           },
           "Serilog": {
             "target": "Package",
@@ -7525,20 +7688,36 @@
         "warn": true,
         "downloadDependencies": [
           {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
             "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[9.0.17, 9.0.17]"
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[9.0.19, 9.0.19]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[9.0.17, 9.0.17]"
+            "version": "[9.0.19, 9.0.19]"
           },
           {
             "name": "Microsoft.Windows.SDK.NET.Ref",
             "version": "[10.0.19041.57, 10.0.19041.57]"
           },
           {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[9.0.19, 9.0.19]"
+          },
+          {
             "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[9.0.17, 9.0.17]"
+            "version": "[9.0.19, 9.0.19]"
           }
         ],
         "frameworkReferences": {
@@ -7549,7 +7728,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.315/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

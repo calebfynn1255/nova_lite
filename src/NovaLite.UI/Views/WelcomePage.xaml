@@ -3,18 +3,14 @@
              xmlns:vm="using:NovaLite.UI.ViewModels"
              x:Class="NovaLite.UI.Views.WelcomePage"
              x:DataType="vm:WelcomePageViewModel"
-             Background="{DynamicResource BgPrimaryBrush}">
+             Background="Transparent">
 
     <Grid RowDefinitions="*,Auto">
-
-        <!-- Centre hero content -->
         <StackPanel Grid.Row="0"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     Spacing="0"
                     MaxWidth="520">
-
-            <!-- Logo glow -->
             <Border Width="80" Height="80"
                     CornerRadius="20"
                     Background="{DynamicResource AccentGlowBrush}"
@@ -46,34 +42,8 @@
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        Margin="0,0,0,40"/>
-
-            <!-- Quick action cards -->
-            <Grid ColumnDefinitions="*,12,*" Margin="0,0,0,0">
-                <Border Grid.Column="0" Classes="card"
-                        Cursor="Hand">
-                    <StackPanel Spacing="8">
-                        <PathIcon Width="22" Height="22"
-                                  Data="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
-                                  Foreground="{DynamicResource AccentBrush}"/>
-                        <TextBlock Text="New Chat" FontWeight="SemiBold" FontSize="14"/>
-                        <TextBlock Text="Start a fresh conversation" Classes="caption" TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Grid.Column="2" Classes="card"
-                        Cursor="Hand">
-                    <StackPanel Spacing="8">
-                        <PathIcon Width="22" Height="22"
-                                  Data="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                                  Foreground="{DynamicResource AccentBrush}"/>
-                        <TextBlock Text="Load Model" FontWeight="SemiBold" FontSize="14"/>
-                        <TextBlock Text="Browse GGUF, ONNX or Safetensors" Classes="caption" TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
         </StackPanel>
 
-        <!-- Footer -->
         <TextBlock Grid.Row="1"
                    Text="NovaLite — Local AI, Your Hardware"
                    Classes="caption"

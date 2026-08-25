@@ -1,0 +1,13 @@
+# ADTC Model Weights & Profiler artifacts
+model/
+*.gguf
+submission.json
+
+# Build outputs
+bin/
+obj/
+Release/
+*.user
+*.suo
+.vs/
+.idea/

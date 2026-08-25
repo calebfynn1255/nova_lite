@@ -24,99 +24,102 @@ public class HardwareScanner
         long totalVram = 0;
         string winVer = RuntimeInformation.OSDescription;
 
-        // 1. Scan CPU and RAM via WMI
-        try
-        {
-            using var mcCpu = new ManagementClass("Win32_Processor");
-            foreach (var mo in mcCpu.GetInstances().Cast<ManagementObject>())
-            {
-                cpuName = mo["Name"]?.ToString()?.Trim() ?? cpuName;
-                break; // Just grab the first CPU
-            }
-
-            using var mcRam = new ManagementClass("Win32_ComputerSystem");
-            foreach (var mo in mcRam.GetInstances().Cast<ManagementObject>())
-            {
-                if (long.TryParse(mo["TotalPhysicalMemory"]?.ToString(), out var ramBytes))
-                {
-                    totalRam = ramBytes;
-                }
-                break;
-            }
-        }
-        catch
-        {
-            // Fallback for RAM if WMI fails (very unlikely on Windows)
-            var gcMemInfo = GC.GetGCMemoryInfo();
-            totalRam = gcMemInfo.TotalAvailableMemoryBytes;
-        }
-
         var gpus = new List<GpuInfo>();
         var drives = new List<DiskDriveInfo>();
 
-        // 2. Scan GPU via WMI (VideoController)
-        try
+        await Task.Run(() => 
         {
-            using var mcGpu = new ManagementClass("Win32_VideoController");
-            foreach (var mo in mcGpu.GetInstances().Cast<ManagementObject>())
+            // 1. Scan CPU and RAM via WMI
+            try
             {
-                var name = mo["Name"]?.ToString();
-                if (!string.IsNullOrEmpty(name))
+                using var mcCpu = new ManagementClass("Win32_Processor");
+                foreach (var mo in mcCpu.GetInstances().Cast<ManagementObject>())
                 {
-                    long vram = 0;
-                    if (long.TryParse(mo["AdapterRAM"]?.ToString(), out var ramVal))
-                    {
-                        vram = ramVal;
-                    }
+                    cpuName = mo["Name"]?.ToString()?.Trim() ?? cpuName;
+                    break; // Just grab the first CPU
+                }
 
-                    // WMI caps AdapterRAM at 4GB. We pull from Registry for accurate >4GB VRAM
-                    long regVRam = GetVRamFromRegistry(name);
-                    if (regVRam > 0)
+                using var mcRam = new ManagementClass("Win32_ComputerSystem");
+                foreach (var mo in mcRam.GetInstances().Cast<ManagementObject>())
+                {
+                    if (long.TryParse(mo["TotalPhysicalMemory"]?.ToString(), out var ramBytes))
                     {
-                        vram = regVRam;
+                        totalRam = ramBytes;
                     }
+                    break;
+                }
+            }
+            catch
+            {
+                // Fallback for RAM if WMI fails (very unlikely on Windows)
+                var gcMemInfo = GC.GetGCMemoryInfo();
+                totalRam = gcMemInfo.TotalAvailableMemoryBytes;
+            }
 
-                    // Intel integrated graphics often erroneously report 2047MB or 1GB via WMI/Registry
-                    // but their true dedicated VRAM is usually ~128MB. 
-                    if (name.Contains("Intel", StringComparison.OrdinalIgnoreCase) && !name.Contains("Arc", StringComparison.OrdinalIgnoreCase))
+            // 2. Scan GPU via WMI (VideoController)
+            try
+            {
+                using var mcGpu = new ManagementClass("Win32_VideoController");
+                foreach (var mo in mcGpu.GetInstances().Cast<ManagementObject>())
+                {
+                    var name = mo["Name"]?.ToString();
+                    if (!string.IsNullOrEmpty(name))
                     {
-                        vram = 128L * 1024 * 1024;
-                    }
+                        long vram = 0;
+                        if (long.TryParse(mo["AdapterRAM"]?.ToString(), out var ramVal))
+                        {
+                            vram = ramVal;
+                        }
 
-                    gpus.Add(new GpuInfo { Name = name, VRamBytes = vram });
-                    
-                    // Keep the "best" one as primary for legacy properties
-                    if (name.Contains("NVIDIA") || name.Contains("AMD") || name.Contains("Radeon") || gpuName == "Unknown GPU")
-                    {
-                        gpuName = name;
-                        totalVram = vram;
+                        // WMI caps AdapterRAM at 4GB. We pull from Registry for accurate >4GB VRAM
+                        long regVRam = GetVRamFromRegistry(name);
+                        if (regVRam > 0)
+                        {
+                            vram = regVRam;
+                        }
+
+                        // Intel integrated graphics often erroneously report 2047MB or 1GB via WMI/Registry
+                        // but their true dedicated VRAM is usually ~128MB. 
+                        if (name.Contains("Intel", StringComparison.OrdinalIgnoreCase) && !name.Contains("Arc", StringComparison.OrdinalIgnoreCase))
+                        {
+                            vram = 128L * 1024 * 1024;
+                        }
+
+                        gpus.Add(new GpuInfo { Name = name, VRamBytes = vram });
+                        
+                        // Keep the "best" one as primary for legacy properties
+                        if (name.Contains("NVIDIA") || name.Contains("AMD") || name.Contains("Radeon") || gpuName == "Unknown GPU")
+                        {
+                            gpuName = name;
+                            totalVram = vram;
+                        }
                     }
                 }
             }
-        }
-        catch
-        {
-            // Ignore WMI errors
-        }
-
-        // 3. Scan Drives
-        try
-        {
-            foreach (var d in DriveInfo.GetDrives())
+            catch
             {
-                if (d.IsReady && d.DriveType == DriveType.Fixed)
+                // Ignore WMI errors
+            }
+
+            // 3. Scan Drives
+            try
+            {
+                foreach (var d in DriveInfo.GetDrives())
                 {
-                    drives.Add(new DiskDriveInfo
+                    if (d.IsReady && d.DriveType == DriveType.Fixed)
                     {
-                        Name = d.Name,
-                        VolumeLabel = d.VolumeLabel,
-                        TotalFreeSpaceBytes = d.TotalFreeSpace,
-                        TotalSizeBytes = d.TotalSize
-                    });
+                        drives.Add(new DiskDriveInfo
+                        {
+                            Name = d.Name,
+                            VolumeLabel = d.VolumeLabel,
+                            TotalFreeSpaceBytes = d.TotalFreeSpace,
+                            TotalSizeBytes = d.TotalSize
+                        });
+                    }
                 }
             }
-        }
-        catch { }
+            catch { }
+        });
 
         var profile = new HardwareProfile
         {

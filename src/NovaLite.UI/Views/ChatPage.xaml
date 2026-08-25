@@ -4,7 +4,7 @@
              xmlns:controls="using:NovaLite.UI.Controls"
              x:Class="NovaLite.UI.Views.ChatPage"
              x:DataType="vm:ChatPageViewModel"
-             Background="{DynamicResource BgPrimaryBrush}">
+             Background="Transparent">
 
     <Grid RowDefinitions="Auto,*,Auto">
 
@@ -42,27 +42,79 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
-                <!-- Welcome state -->
+                <!-- Welcome state: Corporate & SME Knowledge-Work Hub -->
                 <StackPanel IsVisible="{Binding !HasMessages}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Spacing="8"
-                            Margin="40,80">
-                    <Border Width="60" Height="60" CornerRadius="16"
-                            Background="{DynamicResource AccentGlowBrush}"
-                            HorizontalAlignment="Center">
+                            Spacing="16"
+                            Margin="30,40"
+                            MaxWidth="650">
+                    <Border Width="56" Height="56" CornerRadius="16"
+                            Background="{DynamicResource NovaGradientBrush}"
+                            HorizontalAlignment="Center" Padding="14">
                         <PathIcon Width="28" Height="28"
-                                  Data="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"
-                                  Foreground="{DynamicResource AccentBrush}"/>
+                                  Data="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"
+                                  Foreground="White"/>
                     </Border>
-                    <TextBlock Text="Start a conversation"
-                               Classes="h2"
-                               HorizontalAlignment="Center"/>
-                    <TextBlock Text="Type a message below or load a model from the Models tab."
-                               Classes="secondary"
-                               FontSize="13"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"/>
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Enterprise Knowledge Workspace"
+                                   Classes="h2"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="100% offline, privacy-guaranteed intelligence for SMEs, financial analysis, contract review, and business operations."
+                                   Classes="secondary"
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Margin="0,0,0,10"/>
+                    </StackPanel>
+
+                    <!-- Quick Starter Grid -->
+                    <UniformGrid Columns="2" Rows="2">
+                        <Border Margin="6" Padding="14,12" Background="{DynamicResource BgSurfaceVariantBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                            <StackPanel Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Width="16" Height="16" Data="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" Foreground="{DynamicResource AccentBrush}"/>
+                                    <TextBlock Text="Financial &amp; Spreadsheets" FontWeight="SemiBold" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock Text="Analyze CSV, XLSX income statements, margins &amp; cash flow." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="6" Padding="14,12" Background="{DynamicResource BgSurfaceVariantBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                            <StackPanel Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Width="16" Height="16" Data="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" Foreground="{DynamicResource AccentBrush}"/>
+                                    <TextBlock Text="Contracts &amp; Legal PDFs" FontWeight="SemiBold" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock Text="Summarize agreements, NDAs, vendor clauses &amp; compliance." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="6" Padding="14,12" Background="{DynamicResource BgSurfaceVariantBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                            <StackPanel Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Width="16" Height="16" Data="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" Foreground="{DynamicResource AccentBrush}"/>
+                                    <TextBlock Text="Business Communications" FontWeight="SemiBold" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock Text="Draft executive emails, proposals &amp; formal client letters." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Margin="6" Padding="14,12" Background="{DynamicResource BgSurfaceVariantBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12">
+                            <StackPanel Spacing="4">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Width="16" Height="16" Data="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" Foreground="{DynamicResource AccentBrush}"/>
+                                    <TextBlock Text="Local Workspaces &amp; Tasks" FontWeight="SemiBold" FontSize="12"/>
+                                </StackPanel>
+                                <TextBlock Text="Link business directories, manage receipts &amp; run PC tasks." FontSize="11" Foreground="{DynamicResource TextMutedBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
                 </StackPanel>
 
                 <!-- Message list -->
@@ -102,7 +154,7 @@
                 BorderThickness="0,1,0,0"
                 BorderBrush="{DynamicResource BorderBrush}"
                 Padding="16,12">
-            <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="Auto,*,Auto">
+            <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="Auto,*,Auto,Auto">
                 
                 <!-- Error banner -->
                 <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
@@ -153,14 +205,16 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Attachment Action Button -->
+
+
+                <!-- Attachment Button -->
                 <Button Grid.Row="2" Grid.Column="0"
                         Classes="ghost"
                         Click="AttachFile_Click"
-                        ToolTip.Tip="Attach file"
-                        Margin="0,0,8,0"
+                        ToolTip.Tip="Attach file (PDF, DOCX, XLSX, image)"
                         Width="40" Height="44"
-                        VerticalAlignment="Bottom">
+                        VerticalAlignment="Bottom"
+                        Margin="0,0,8,0">
                     <PathIcon Width="18" Height="18"
                               Data="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.66 1.34 3 3 3s3-1.34 3-3V5c0-2.21-1.79-4-4-4S8 2.79 8 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"
                               Foreground="{DynamicResource TextSecondaryBrush}"/>
@@ -176,13 +230,45 @@
                          Name="InputBox"
                          KeyDown="InputBox_KeyDown"/>
                 
-                <Button Grid.Row="2" Grid.Column="2"
+                <!-- PC Access Toggle (styled) -->
+                <ToggleButton Grid.Row="2" Grid.Column="2"
+                              IsChecked="{Binding IsPcAccessEnabled, Mode=TwoWay}"
+                              Width="44" Height="44"
+                              Margin="8,0,0,0"
+                              VerticalAlignment="Bottom"
+                              CornerRadius="12"
+                              Background="{DynamicResource BgSurfaceVariantBrush}"
+                              BorderBrush="{DynamicResource BorderBrush}"
+                              BorderThickness="1"
+                              Padding="0"
+                              ToolTip.Tip="Toggle PC Access">
+                    <PathIcon Width="18" Height="18" Data="M6 2h12v2H6z M4 6h16v12H4z" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                </ToggleButton>
+
+                <!-- Send Button (hidden when generating) -->
+                <Button Grid.Row="2" Grid.Column="3"
+                        IsVisible="{Binding !IsGenerating}"
                         Classes="send"
                         Command="{Binding SendCommand}"
                         Margin="8,0,0,0"
-                        VerticalAlignment="Bottom">
+                        VerticalAlignment="Bottom"
+                        Width="44"
+                        Height="44">
                     <PathIcon Width="18" Height="18"
                               Data="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"
+                              Foreground="White"/>
+                </Button>
+
+                <!-- Stop Button (shown when generating) -->
+                <Button Grid.Row="2" Grid.Column="3"
+                        IsVisible="{Binding IsGenerating}"
+                        Command="{Binding StopGenerationCommand}"
+                        Classes="stop"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Bottom"
+                        ToolTip.Tip="Stop generation">
+                    <PathIcon Width="18" Height="18"
+                              Data="M6 6h12v12H6z"
                               Foreground="White"/>
                 </Button>
             </Grid>

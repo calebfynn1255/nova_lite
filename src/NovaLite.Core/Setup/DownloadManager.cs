@@ -26,7 +26,7 @@ public class DownloadManager
                 progressCallback(100);
 
                 // Verify SHA256 against the final destination file
-                if (!string.IsNullOrEmpty(expectedSha256))
+                if (!string.IsNullOrWhiteSpace(expectedSha256))
                 {
                     progressCallback(101); // Magic number for "Verifying"
                     bool valid = await VerifySha256Async(destinationPath, expectedSha256, ct);
@@ -74,13 +74,31 @@ public class DownloadManager
         if (response.StatusCode == System.Net.HttpStatusCode.RequestedRangeNotSatisfiable)
         {
             // Already fully downloaded
-            return;
+            if (File.Exists(destinationPath))
+                return;
+
+            if (File.Exists(tempPath))
+            {
+                File.Move(tempPath, destinationPath, true);
+                return;
+            }
+
+            throw new Exception("Download already marked complete but destination file is missing.");
         }
         
         response.EnsureSuccessStatusCode();
 
-        long totalBytes = (response.Content.Headers.ContentLength ?? 0) + existingLength;
-        if (totalBytes == existingLength)
+        bool shouldAppend = existingLength > 0 && response.StatusCode == System.Net.HttpStatusCode.PartialContent;
+        if (existingLength > 0 && response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            // Server ignored the requested range. Restart the file from scratch.
+            shouldAppend = false;
+            existingLength = 0;
+        }
+
+        long contentLength = response.Content.Headers.ContentLength ?? -1;
+        long totalBytes = contentLength > 0 ? contentLength + existingLength : -1;
+        if (totalBytes == existingLength && existingLength > 0)
         {
             // Already fully downloaded — ensure final file exists
             if (File.Exists(destinationPath)) return;
@@ -92,7 +110,7 @@ public class DownloadManager
         }
 
         using var contentStream = await response.Content.ReadAsStreamAsync(ct);
-        using var fileStream = new FileStream(tempPath, existingLength > 0 ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+        using var fileStream = new FileStream(tempPath, shouldAppend ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
 
         var buffer = new byte[81920];
         long totalRead = existingLength;
@@ -105,26 +123,40 @@ public class DownloadManager
             await fileStream.WriteAsync(buffer, 0, bytesRead, ct);
             totalRead += bytesRead;
 
-            double progressPercent = (double)totalRead / totalBytes * 100;
-            var now = DateTimeOffset.UtcNow;
-            bool shouldReport = progressPercent - lastReportedProgress >= 0.5 ||
-                                (now - lastUpdateAt).TotalMilliseconds >= 250;
-
-            if (shouldReport)
+            if (totalBytes > 0)
             {
-                lastReportedProgress = progressPercent;
-                lastUpdateAt = now;
-                progressCallback(progressPercent);
+                double progressPercent = (double)totalRead / totalBytes * 100;
+                var now = DateTimeOffset.UtcNow;
+                bool shouldReport = progressPercent - lastReportedProgress >= 0.5 ||
+                                    (now - lastUpdateAt).TotalMilliseconds >= 250;
+
+                if (shouldReport)
+                {
+                    lastReportedProgress = progressPercent;
+                    lastUpdateAt = now;
+                    progressCallback(progressPercent);
+                }
             }
         }
 
-        // Move partial to final destination
+        // Ensure the final file exists after a successful download.
+        if (File.Exists(destinationPath))
+            return;
+
+        if (!File.Exists(tempPath))
+            throw new Exception($"Download completed but temp file is missing: {tempPath}");
+
         try
         {
-            if (File.Exists(tempPath))
-                File.Move(tempPath, destinationPath, true);
+            if (File.Exists(destinationPath))
+                File.Delete(destinationPath);
+
+            File.Move(tempPath, destinationPath, true);
         }
-        catch { /* best-effort */ }
+        catch (Exception ex)
+        {
+            throw new IOException($"Failed to finalize download file from '{tempPath}' to '{destinationPath}'", ex);
+        }
     }
 
     private async Task<bool> VerifySha256Async(string filePath, string expectedHash, CancellationToken ct)

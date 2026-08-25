@@ -1,3 +1,6 @@
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime_providers_shared.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime-genai.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\llama.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\ggml-base.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\ggml-cpu.dll
@@ -63,6 +66,7 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\w
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\Microsoft.Extensions.Options.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\Microsoft.Extensions.Primitives.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\Microsoft.ML.OnnxRuntime.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\Microsoft.ML.OnnxRuntimeGenAI.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\Mono.TextTemplating.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\UglyToad.PdfPig.Core.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\UglyToad.PdfPig.DocumentLayoutAnalysis.dll
@@ -157,10 +161,9 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\w
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\av_libglesv2.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\libHarfBuzzSharp.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime.lib
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime_providers_shared.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime_providers_shared.lib
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\onnxruntime-genai.lib
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\libSkiaSharp.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\e_sqlite3.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\Microsoft.CSharp.dll
@@ -397,7 +400,7 @@ C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\w
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\hostfxr.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\hostpolicy.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\mscordaccore.dll
-C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\mscordaccore_amd64_amd64_9.0.1726.26416.dll
+C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\mscordaccore_amd64_amd64_9.0.1926.36724.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\mscordbi.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\mscorrc.dll
 C:\Users\Fynn\nova_lite\src\NovaLite.UI\bin\Release\net9.0-windows10.0.19041.0\win-x64\msquic.dll

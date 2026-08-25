@@ -16,6 +16,7 @@ public sealed class LlamaSession : IInferenceSession
     private readonly ILogger _logger;
     private bool _disposed;
     private int _nPast;
+    private readonly List<int> _cachedTokens = new List<int>();
 
     public LlamaSession(IntPtr model, IntPtr vocab, IntPtr ctx, IntPtr sampler, ILogger logger)
     {
@@ -35,26 +36,92 @@ public sealed class LlamaSession : IInferenceSession
         
         _logger.LogInformation("LlamaSession.InferAsync — prompt length: {Len}", prompt.Length);
         
-        // Offload slow blocking P/Invoke ops to a background thread so the UI
-        // can render the user message and typing indicator immediately.
-        await Task.Run(() =>
-        {
-            LlamaCppBindings.llama_memory_clear(LlamaCppBindings.llama_get_memory(_ctx), 1);
-            _nPast = 0;
-        }, ct);
-
         int[] tokens = await Task.Run(() => TokenizePrompt(prompt), ct);
         if (tokens.Length == 0)
             throw new Exception("Tokenization produced 0 tokens.");
 
-        _logger.LogInformation("Tokenized to {Count} tokens, decoding prompt...", tokens.Length);
-        await Task.Run(() => DecodePrompt(tokens), ct);
+        const int maxPromptTokens = 16000;
+        if (tokens.Length > maxPromptTokens)
+        {
+            _logger.LogWarning("Prompt exceeds safe decode budget ({TokenCount} tokens); truncating to {Limit} tokens", tokens.Length, maxPromptTokens);
+            tokens = tokens.Skip(tokens.Length - maxPromptTokens).ToArray();
+        }
+
+        int matchLen = 0;
+        while (matchLen < tokens.Length && matchLen < _cachedTokens.Count && tokens[matchLen] == _cachedTokens[matchLen])
+        {
+            matchLen++;
+        }
+
+        if (matchLen < _cachedTokens.Count)
+        {
+            await Task.Run(() =>
+            {
+                LlamaCppBindings.llama_memory_clear(LlamaCppBindings.llama_get_memory(_ctx), 1);
+            }, ct);
+            _nPast = 0;
+            _cachedTokens.Clear();
+            matchLen = 0;
+        }
+        else
+        {
+            _nPast = matchLen;
+        }
+
+        int[] newTokens = tokens.Skip(matchLen).ToArray();
+        
+        _logger.LogInformation("Tokenized to {Count} tokens, re-using {Match} tokens, decoding {New} new tokens...", tokens.Length, matchLen, newTokens.Length);
+
+        if (newTokens.Length > 0)
+        {
+            const int maxBatchTokens = 512;
+            int totalChunks = (int)Math.Ceiling((double)newTokens.Length / maxBatchTokens);
+            
+            for (int i = 0; i < totalChunks; i++)
+            {
+                ct.ThrowIfCancellationRequested();
+                
+                int offset = i * maxBatchTokens;
+                int count = Math.Min(maxBatchTokens, newTokens.Length - offset);
+                int[] chunk = newTokens.Skip(offset).Take(count).ToArray();
+                
+                await Task.Run(() =>
+                {
+                    unsafe
+                    {
+                        fixed (int* pTok = chunk)
+                        {
+                            LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, count, _nPast, 0);
+                            int ret = LlamaCppBindings.llama_decode(_ctx, batch);
+                            if (ret != 0) throw new Exception($"llama_decode returned {ret}");
+                        }
+                    }
+                }, ct);
+                
+                _nPast += count;
+            }
+            
+            _cachedTokens.AddRange(newTokens);
+        }
 
         _logger.LogInformation("Starting token generation loop...");
         byte[] pieceBuf = new byte[256];
 
-        // Small buffer to detect multi-piece control tokens like <|im_end|>
+        // Small buffer to detect multi-piece control tokens. Some GGUF models emit
+        // their chat-template delimiter as normal text unless we stop it here.
         var pieceBuffer = new System.Text.StringBuilder(16);
+        var stopSequences = new[]
+            {
+                "<|im_end|>",
+                "<|im_start|>",
+                "<|eot_id|>",
+                "<|end_of_text|>",
+                "<\uFF5Cend of sentence\uFF5C>"
+            }
+            .Concat(options?.StopSequences ?? [])
+            .Where(sequence => !string.IsNullOrWhiteSpace(sequence))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
 
         for (int i = 0; i < maxTokens; i++)
         {
@@ -74,12 +141,8 @@ public sealed class LlamaSession : IInferenceSession
 
             string buffered = pieceBuffer.ToString();
 
-            // Check if we hit any control markers (either complete or partial)
-            int endIdx = buffered.IndexOf("<|im_end|>", StringComparison.Ordinal);
-            if (endIdx == -1)
-                endIdx = buffered.IndexOf("<|im_start|>", StringComparison.Ordinal);
-            if (endIdx == -1)
-                endIdx = buffered.IndexOf("<|", StringComparison.Ordinal); // stop if model tries to output any tag raw
+            // Check if we hit any configured end-of-turn control marker.
+            int endIdx = FindFirstStopSequence(buffered, stopSequences);
 
             if (endIdx != -1)
             {
@@ -90,20 +153,8 @@ public sealed class LlamaSession : IInferenceSession
                 break;
             }
 
-            // Hold back if the buffer ends with a partial tag prefix so we can detect it in the next loop
-            bool isMaybeTag = buffered.EndsWith("<", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|i", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_e", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_en", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_end", StringComparison.Ordinal) ||
-                              buffered.EndsWith("<|im_s", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_st", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_sta", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_star", StringComparison.Ordinal) || 
-                              buffered.EndsWith("<|im_start", StringComparison.Ordinal);
+            // Hold back a partial delimiter so it cannot leak into the visible stream.
+            bool isMaybeTag = EndsWithStopPrefix(buffered, stopSequences);
 
             if (!isMaybeTag)
             {
@@ -118,7 +169,61 @@ public sealed class LlamaSession : IInferenceSession
             await Task.Yield();
         }
 
+        // Flush any content held back in the tag-detection buffer
+        var remaining = pieceBuffer.ToString();
+        if (remaining.Length > 0)
+        {
+            // Strip any partial tag prefix before yielding
+            int tagStart = FindFirstStopSequencePrefix(remaining, stopSequences);
+            var flushed = tagStart >= 0 ? remaining[..tagStart] : remaining;
+            if (flushed.Length > 0)
+                yield return flushed;
+        }
+
         _logger.LogInformation("Generation complete.");
+    }
+
+    private static int FindFirstStopSequence(string text, IEnumerable<string> stopSequences)
+    {
+        var firstIndex = -1;
+        foreach (var stopSequence in stopSequences)
+        {
+            var index = text.IndexOf(stopSequence, StringComparison.Ordinal);
+            if (index >= 0 && (firstIndex < 0 || index < firstIndex))
+                firstIndex = index;
+        }
+
+        return firstIndex;
+    }
+
+    private static bool EndsWithStopPrefix(string text, IEnumerable<string> stopSequences)
+    {
+        foreach (var stopSequence in stopSequences)
+        {
+            for (var prefixLength = 1; prefixLength < stopSequence.Length; prefixLength++)
+            {
+                if (text.EndsWith(stopSequence[..prefixLength], StringComparison.Ordinal))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int FindFirstStopSequencePrefix(string text, IEnumerable<string> stopSequences)
+    {
+        var firstIndex = -1;
+        foreach (var stopSequence in stopSequences)
+        {
+            for (var prefixLength = 1; prefixLength <= stopSequence.Length; prefixLength++)
+            {
+                var index = text.IndexOf(stopSequence[..prefixLength], StringComparison.Ordinal);
+                if (index >= 0 && (firstIndex < 0 || index < firstIndex))
+                    firstIndex = index;
+            }
+        }
+
+        return firstIndex;
     }
 
     // ── Unsafe helpers ────────────────────────────────────────────────────────
@@ -153,42 +258,18 @@ public sealed class LlamaSession : IInferenceSession
         return result;
     }
 
-    private unsafe void DecodePrompt(int[] tokens)
-    {
-        const int maxPromptTokens = 1800;
-        const int maxBatchTokens = 512;
 
-        int tokenCount = tokens.Length;
-        if (tokenCount > maxPromptTokens)
-        {
-            _logger.LogWarning("Prompt exceeds safe decode budget ({TokenCount} tokens); truncating to {Limit} tokens", tokenCount, maxPromptTokens);
-            tokenCount = maxPromptTokens;
-        }
-
-        for (int offset = 0; offset < tokenCount; offset += maxBatchTokens)
-        {
-            int count = Math.Min(maxBatchTokens, tokenCount - offset);
-            fixed (int* pTok = &tokens[offset])
-            {
-                LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, count);
-                int ret = LlamaCppBindings.llama_decode(_ctx, batch);
-                if (ret != 0)
-                    throw new Exception($"llama_decode (prompt batch) returned {ret}");
-            }
-
-            _nPast += count;
-        }
-    }
 
     private unsafe void DecodeToken(int token)
     {
         int* pTok = stackalloc int[1];
         pTok[0] = token;
-        LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, 1);
+        LlamaCppBindings.LlamaBatch batch = LlamaCppBindings.llama_batch_get_one(pTok, 1, _nPast, 0);
         int ret = LlamaCppBindings.llama_decode(_ctx, batch);
         if (ret != 0)
             _logger.LogWarning("llama_decode (token) returned {Ret}", ret);
         _nPast += 1;
+        _cachedTokens.Add(token);
     }
 
     private int SampleNext()

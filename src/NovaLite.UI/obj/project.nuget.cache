@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "aLQt7ABkisM=",
+  "dgSpecHash": "sgzZjDBFOmE=",
   "success": true,
   "projectFilePath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.UI\\NovaLite.UI.csproj",
   "expectedPackageFiles": [
@@ -55,6 +55,8 @@
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.0\\microsoft.extensions.primitives.9.0.0.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.ml.onnxruntime\\1.20.1\\microsoft.ml.onnxruntime.1.20.1.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.ml.onnxruntime.managed\\1.20.1\\microsoft.ml.onnxruntime.managed.1.20.1.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.ml.onnxruntimegenai\\0.5.2\\microsoft.ml.onnxruntimegenai.0.5.2.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.ml.onnxruntimegenai.managed\\0.5.2\\microsoft.ml.onnxruntimegenai.managed.0.5.2.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\pdfpig\\0.1.9\\pdfpig.0.1.9.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\reactiveui\\20.1.1\\reactiveui.20.1.1.nupkg.sha512",
@@ -92,9 +94,13 @@
     "C:\\Users\\Fynn\\.nuget\\packages\\system.text.json\\9.0.0\\system.text.json.9.0.0.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\tmds.dbus.protocol\\0.20.0\\tmds.dbus.protocol.0.20.0.nupkg.sha512",
-    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.17\\microsoft.netcore.app.runtime.win-x64.9.0.17.nupkg.sha512",
-    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.17\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.17.nupkg.sha512",
-    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.17\\microsoft.aspnetcore.app.runtime.win-x64.9.0.17.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.19\\microsoft.netcore.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\9.0.19\\microsoft.netcore.app.runtime.win-x64.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\9.0.19\\microsoft.windowsdesktop.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\9.0.19\\microsoft.windowsdesktop.app.runtime.win-x64.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.19\\microsoft.aspnetcore.app.ref.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\9.0.19\\microsoft.aspnetcore.app.runtime.win-x64.9.0.19.nupkg.sha512",
+    "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.19\\microsoft.netcore.app.host.win-x64.9.0.19.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
   ],
   "logs": []

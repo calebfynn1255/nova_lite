@@ -49,6 +49,22 @@ public sealed class ContextWindowManager
         }
 
         if (systemMsg != null) result.Insert(0, systemMsg);
+
+        // Safety net: always ensure the most recent user message is present.
+        // If the budget math dropped it (e.g. a very long code paste), the model
+        // would only see the system prompt and respond with a generic greeting.
+        var lastUserMsg = messages
+            .LastOrDefault(m => m.Role == ChatRole.User || m.Role == ChatRole.Assistant);
+        if (lastUserMsg != null && !result.Contains(lastUserMsg))
+        {
+            // Insert just before any trailing empty assistant placeholder
+            int insertAt = result.Count;
+            if (insertAt > 0 && result[insertAt - 1].Role == ChatRole.Assistant 
+                             && string.IsNullOrEmpty(result[insertAt - 1].Content))
+                insertAt--;
+            result.Insert(insertAt, lastUserMsg);
+        }
+
         return result;
     }
 }

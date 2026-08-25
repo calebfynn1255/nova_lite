@@ -10,6 +10,12 @@
             Owns context-windowing, message formatting, and streaming orchestration.
             </summary>
         </member>
+        <member name="M:NovaLite.Core.AI.LocalInferenceProvider.SanitizeContent(System.String)">
+            <summary>
+            Replaces literal ChatML / Llama-3 control-token strings in user-supplied content
+            so the model cannot mistake them for real conversation boundaries.
+            </summary>
+        </member>
         <member name="T:NovaLite.Core.Files.ModelFileScanner">
             <summary>
             Scans directories for supported model files and builds <see cref="T:NovaLite.Core.Models.ModelInfo"/> records.
@@ -142,6 +148,56 @@
             Orchestrates conversation flow: maintains the active session,
             delegates inference to the <see cref="T:NovaLite.Core.Interfaces.IInferenceProvider"/>, and
             handles context window trimming via <see cref="T:NovaLite.Core.Memory.ContextWindowManager"/>.
+            </summary>
+        </member>
+        <member name="M:NovaLite.Core.Services.ConversationService.SetPcAccessEnabled(System.Boolean)">
+            <summary>
+            Enable or disable PC access for file commands handled by the conversation.
+            </summary>
+        </member>
+        <member name="P:NovaLite.Core.Services.ConversationService.IsPcAccessEnabled">
+            <summary>
+            Whether PC access is currently enabled.
+            </summary>
+        </member>
+        <member name="P:NovaLite.Core.Services.FileCommandService.IsEnabled">
+            <summary>
+            Whether the service is allowed to access local files and run commands. Default is false.
+            </summary>
+        </member>
+        <member name="M:NovaLite.Core.Services.FileCommandService.SetEnabled(System.Boolean)">
+            <summary>
+            Enable or disable PC access for file commands and shell execution.
+            </summary>
+        </member>
+        <member name="P:NovaLite.Core.Services.FileCommandService.WorkspaceDirectory">
+            <summary>
+            An optional workspace directory. When set, all executed commands run within this directory context.
+            </summary>
+        </member>
+        <member name="M:NovaLite.Core.Services.FileCommandService.CommandNeedsVisibleTerminal(System.String)">
+            <summary>
+            Returns true for commands that are long-running and need a visible terminal window
+            so the user can track progress (e.g. sfc, dism, chkdsk, defrag).
+            Quick commands like ipconfig, ping, systeminfo return inline in chat.
+            </summary>
+        </member>
+        <member name="M:NovaLite.Core.Services.FileCommandService.ExecuteVisibleShellCommandAsync(System.String)">
+            <summary>
+            Opens a visible cmd.exe window so the user can track progress of long-running commands.
+            Uses /K so the window stays open after the command finishes.
+            </summary>
+        </member>
+        <member name="M:NovaLite.Core.Services.FileCommandService.ExecuteElevatedShellCommandAsync(System.String)">
+            <summary>
+            Runs a command elevated (as admin) in a visible terminal window.
+            Uses /K so the window stays open after the command finishes for review.
+            </summary>
+        </member>
+        <member name="T:NovaLite.Core.Services.ResponseReliabilityGuard">
+            <summary>
+            Prevents an offline model from presenting changing market information as fact.
+            The local model has no live catalogue, retailer, or exchange-rate source.
             </summary>
         </member>
         <member name="T:NovaLite.Core.Settings.AppSettings">

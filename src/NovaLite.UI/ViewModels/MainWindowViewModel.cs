@@ -19,6 +19,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty] private bool _isModelsActive;
     [ObservableProperty] private bool _isSettingsActive;
     [ObservableProperty] private bool _isAboutActive;
+    [ObservableProperty] private bool _isPcAccessEnabled;
 
     [ObservableProperty] private ChatSessionEntity? _selectedChatSession;
 
@@ -32,8 +33,22 @@ public partial class MainWindowViewModel : ObservableObject
 
     public MainWindowViewModel()
     {
+        // Initialize PC access toggle from ConversationService
+        try
+        {
+            IsPcAccessEnabled = App.Conversation.IsPcAccessEnabled;
+        }
+        catch
+        {
+            IsPcAccessEnabled = false;
+        }
+
+        // Persist toggle changes back to ConversationService
+        OnIsPcAccessEnabledChanged(IsPcAccessEnabled);
+
         _settingsVm = new SettingsViewModel(this);
         _modelsVm.OnModelLoaded = name => SetActiveModel(name);
+        _modelsVm.OnProceedToChatRequested = () => NavigateChat();
         
         _chatVm.ChatUpdated += () => 
         {
@@ -47,6 +62,11 @@ public partial class MainWindowViewModel : ObservableObject
         // it NEVER touches the Avalonia UI event loop.
         Task.Run(InitializeAsync);
         AutoLoadModelBackground();
+    }
+
+    partial void OnIsPcAccessEnabledChanged(bool value)
+    {
+        try { App.Conversation.SetPcAccessEnabled(value); } catch { }
     }
 
     private async Task InitializeAsync()
@@ -106,9 +126,9 @@ public partial class MainWindowViewModel : ObservableObject
         });
     }
 
-    private async Task RefreshChatSessionsAsync()
+    private async Task RefreshChatSessionsAsync(Guid? preferredSelectedId = null)
     {
-        var currentSelectedId = SelectedChatSession?.Id;
+        var targetId = preferredSelectedId ?? SelectedChatSession?.Id;
         var sessions = await App.ChatRepository.GetAllSessionsAsync();
         
         await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
@@ -118,9 +138,9 @@ public partial class MainWindowViewModel : ObservableObject
                 ChatSessions.Add(s);
             _chatVm.SyncSessions(sessions);
             
-            if (currentSelectedId != null)
+            if (targetId != null)
             {
-                SelectedChatSession = ChatSessions.FirstOrDefault(s => s.Id == currentSelectedId.Value);
+                SelectedChatSession = ChatSessions.FirstOrDefault(s => s.Id == targetId.Value);
             }
         });
     }
@@ -135,11 +155,8 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task NewChat()
     {
-        if (!_chatVm.HasMessages && SelectedChatSession?.Title == "New Chat") return;
-        
-        await _chatVm.StartNewChatAsync();
-        await RefreshChatSessionsAsync();
-        SelectedChatSession = ChatSessions.FirstOrDefault();
+        var newSessionId = await _chatVm.StartNewChatAsync();
+        await RefreshChatSessionsAsync(newSessionId);
         NavigateChat();
     }
 
@@ -175,8 +192,9 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     public void NavigateWelcome()
     {
-        CurrentPage = _chatVm;
-        SetActive(chat: true);
+        // Hardware detection belongs to the first-run setup window. Once setup is
+        // complete, returning here should take the user to their conversation.
+        NavigateChat();
     }
 
     [RelayCommand]
