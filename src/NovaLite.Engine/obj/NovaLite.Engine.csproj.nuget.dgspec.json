@@ -1,7 +1,7 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj": {}
+    "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj": {}
   },
   "projects": {
     "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Core\\NovaLite.Core.csproj": {
@@ -231,14 +231,14 @@
         }
       }
     },
-    "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj": {
+    "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
+        "projectUniqueName": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
         "projectName": "NovaLite.Engine",
-        "projectPath": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
+        "projectPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
         "packagesPath": "C:\\Users\\Fynn\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\obj\\",
+        "outputPath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Fynn\\AppData\\Roaming\\NuGet\\NuGet.Config"

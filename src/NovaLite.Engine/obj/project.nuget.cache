@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "aYYcwu6LdUU=",
+  "dgSpecHash": "yUr0Ub/MPiI=",
   "success": true,
-  "projectFilePath": "c:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
+  "projectFilePath": "C:\\Users\\Fynn\\nova_lite\\src\\NovaLite.Engine\\NovaLite.Engine.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Fynn\\.nuget\\packages\\communitytoolkit.mvvm\\8.3.2\\communitytoolkit.mvvm.8.3.2.nupkg.sha512",
     "C:\\Users\\Fynn\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
